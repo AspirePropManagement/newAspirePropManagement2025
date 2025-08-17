@@ -1,0 +1,139 @@
+'use client'
+
+import React from 'react'
+import { useAuth } from '@/contexts/AuthContext'
+import Link from 'next/link'
+
+/**
+ * Header component that displays the application navigation
+ * Implements the Single Responsibility Principle by only handling header display
+ */
+
+const getRoleDisplayName = (role: string) => {
+  const roleMap: Record<string, string> = {
+    buyer: 'Property Buyer',
+    agent: 'Real Estate Agent',
+    builder: 'Property Builder',
+    admin: 'System Administrator'
+  }
+  return roleMap[role] || role
+}
+
+const getRoleBadgeColor = (role: string) => {
+  const colorMap: Record<string, string> = {
+    buyer: 'bg-blue-100 text-blue-800',
+    agent: 'bg-green-100 text-green-800',
+    builder: 'bg-purple-100 text-purple-800',
+    admin: 'bg-red-100 text-red-800'
+  }
+  return colorMap[role] || 'bg-gray-100 text-gray-800'
+}
+
+export function Header() {
+  const { user, isAuthenticated, logout } = useAuth()
+
+  return (
+    <div className="navbar bg-white shadow-lg border-b border-gray-200">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center">
+          {/* Logo Section - Left Side */}
+          <div className="flex items-center space-x-3">
+            {/* Bar chart/skyline icon */}
+            <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+              </svg>
+            </div>
+            {/* Logo Text */}
+            <div className="flex flex-col">
+              <h1 className="text-xl font-bold">
+                <span className="text-gray-800">ASPIRE</span>
+                <span className="text-orange-500">PROP MANAGEMENT</span>
+              </h1>
+              <p className="text-xs text-gray-500 -mt-1">NO ONE TARGETS YOUR NEED BETTER</p>
+            </div>
+          </div>
+
+          {/* Navigation Menu - Left Side (after logo) */}
+          <nav className="hidden md:flex items-center space-x-8 ml-8">
+            <a href="#" className="text-gray-700 hover:text-orange-500 transition-colors font-medium">
+              Why Us?
+            </a>
+            <a href="#" className="text-gray-700 hover:text-orange-500 transition-colors font-medium">
+              Services
+            </a>
+            <div className="flex items-center space-x-2">
+              <a href="#" className="text-gray-700 hover:text-orange-500 transition-colors font-medium">
+                Post Property
+              </a>
+              <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                FREE
+              </span>
+            </div>
+          </nav>
+
+          {/* Spacer to push contact info to the right */}
+          <div className="flex-1"></div>
+
+          {/* Contact & User Info - Right Side */}
+          <div className="flex items-center space-x-6">
+            {/* Toll Free Number */}
+            <div className="text-right">
+              <p className="text-xs text-gray-600 font-medium">Toll Free Number</p>
+              <p className="text-sm font-bold text-gray-800">+91 8080 190190</p>
+            </div>
+            
+            {/* Icons */}
+            <div className="flex items-center space-x-3">
+              <button className="w-8 h-8 text-gray-400 hover:text-gray-600 transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"/>
+                </svg>
+              </button>
+              
+              {/* User Profile Section */}
+              {isAuthenticated ? (
+                <div className="relative group">
+                  <button className="w-8 h-8 text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
+                    </svg>
+                  </button>
+                  
+                  {/* Dropdown Menu */}
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="py-2">
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                        <p className="text-xs text-gray-500">{user?.email}</p>
+                        <p className="text-xs text-gray-500">{user?.phone}</p>
+                        <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-2 ${getRoleBadgeColor(user?.role || '')}`}>
+                          {getRoleDisplayName(user?.role || '')}
+                        </span>
+                      </div>
+                      <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        Profile Settings
+                      </Link>
+                      <button
+                        onClick={logout}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link href="/auth" className="w-8 h-8 text-gray-400 hover:text-gray-600 transition-colors">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
+                  </svg>
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
