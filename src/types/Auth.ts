@@ -12,6 +12,7 @@ export interface User {
   phone: string
   role: UserRole
   isVerified: boolean
+  phoneVerified?: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -55,4 +56,7 @@ export interface AuthContextType extends AuthState {
   verifyOTP: (verification: OTPVerification) => Promise<void>
   logout: () => void
   resendOTP: (phone: string) => Promise<void>
+  sendOTP: (phone: string, verifier: any) => Promise<any>
+  verifyOTPAndSignIn: (confirmationResult: any, otpCode: string, role: UserRole) => Promise<void>
+  signInWithGoogle: (role: UserRole) => Promise<void>
 }

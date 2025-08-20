@@ -1,167 +1,258 @@
 'use client'
 
-import { useAuth } from '@/contexts/AuthContext'
-import { Header } from '@/components/Header'
-import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { useAuth } from '@/hooks/useAuth'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import AuthGuard from '@/components/AuthGuard'
 
 /**
- * Profile page component for authenticated users
- * Implements the Single Responsibility Principle by only handling profile display and management
+ * Profile page that displays user information and allows basic profile management
+ * Protected by authentication guard
  */
-
-const getRoleDisplayName = (role: string) => {
-  const roleMap: Record<string, string> = {
-    buyer: 'Property Buyer',
-    agent: 'Real Estate Agent',
-    builder: 'Property Builder',
-    admin: 'System Administrator'
-  }
-  return roleMap[role] || role
-}
-
-const getRoleBadgeColor = (role: string) => {
-  const colorMap: Record<string, string> = {
-    buyer: 'bg-blue-100 text-blue-800',
-    agent: 'bg-green-100 text-green-800',
-    builder: 'bg-purple-100 text-purple-800',
-    admin: 'bg-red-100 text-red-800'
-  }
-  return colorMap[role] || 'bg-gray-100 text-gray-800'
-}
-
 export default function ProfilePage() {
-  const { user } = useAuth()
+  const { user, userRole, signOut } = useAuth()
+  const router = useRouter()
+  const [isEditing, setIsEditing] = useState(false)
+  const [formData, setFormData] = useState({
+    first_name: user?.first_name || '',
+    last_name: user?.last_name || '',
+    phone: user?.phone || ''
+  })
+
+  const handleSignOut = () => {
+    signOut()
+    router.push('/auth')
+  }
+
+  const handleEdit = () => {
+    setIsEditing(true)
+  }
+
+  const handleSave = () => {
+    // In a real app, you would save to the database here
+    setIsEditing(false)
+    // You could also update the user state here
+  }
+
+  const handleCancel = () => {
+    setFormData({
+      first_name: user?.first_name || '',
+      last_name: user?.last_name || '',
+      phone: user?.phone || ''
+    })
+    setIsEditing(false)
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
 
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-base-200">
-        <Header />
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">Profile Settings</h1>
-            
-            <div className="card bg-base-100 shadow-lg">
-              <div className="card-body p-6">
-                <div className="space-y-6">
-                  {/* Profile Picture Section */}
-                  <div className="flex items-center space-x-4">
-                    <div className="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center">
-                      <span className="text-2xl font-bold text-white">
-                        {user?.name?.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-semibold text-gray-900">{user?.name}</h2>
-                      <p className="text-gray-600">{user?.email}</p>
-                      <p className="text-gray-600">{user?.phone}</p>
-                      <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium mt-2 ${getRoleBadgeColor(user?.role || '')}`}>
-                        {getRoleDisplayName(user?.role || '')}
-                      </span>
-                    </div>
-                  </div>
+    <AuthGuard>
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <div className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-6">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
+                <p className="mt-1 text-sm text-gray-500">
+                  Manage your account information and preferences
+                </p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Dashboard
+                </button>
+                <button
+                  onClick={handleSignOut}
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                  {/* Account Status */}
-                  <div className="border-t pt-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Account Status</h3>
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-3 h-3 rounded-full ${user?.isVerified ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-                      <span className="text-sm text-gray-700">
-                        {user?.isVerified ? 'Phone Verified' : 'Phone Verification Pending'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Account Information */}
-                  <div className="border-t pt-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Account Information</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Full Name
-                        </label>
-                        <input
-                          type="text"
-                          value={user?.name || ''}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50"
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Email Address
-                        </label>
-                        <input
-                          type="email"
-                          value={user?.email || ''}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50"
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Phone Number
-                        </label>
-                        <input
-                          type="tel"
-                          value={user?.phone || ''}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50"
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          User Role
-                        </label>
-                        <input
-                          type="text"
-                          value={getRoleDisplayName(user?.role || '')}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50"
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Member Since
-                        </label>
-                        <input
-                          type="text"
-                          value={user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : ''}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50"
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Last Updated
-                        </label>
-                        <input
-                          type="text"
-                          value={user?.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : ''}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50"
-                          disabled
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="border-t pt-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Actions</h3>
-                    <div className="flex space-x-4">
-                      <button className="px-6 py-3 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors">
-                        Edit Profile
-                      </button>
-                      <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
-                        Change Password
-                      </button>
-                    </div>
-                  </div>
+        {/* Main Content */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Profile Card */}
+          <div className="bg-white rounded-lg shadow p-6 mb-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Personal Information</h2>
+              {!isEditing ? (
+                <button
+                  onClick={handleEdit}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                >
+                  Edit Profile
+                </button>
+              ) : (
+                <div className="flex space-x-2">
+                  <button
+                    onClick={handleSave}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </button>
                 </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  First Name
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="first_name"
+                    value={formData.first_name}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter your first name"
+                  />
+                ) : (
+                  <p className="text-gray-900">
+                    {user?.first_name || 'Not provided'}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Last Name
+                </label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="last_name"
+                    value={formData.last_name}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter your last name"
+                  />
+                ) : (
+                  <p className="text-gray-900">
+                    {user?.last_name || 'Not provided'}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
+                </label>
+                <p className="text-gray-900">{user?.email}</p>
+                <p className="text-sm text-gray-500 mt-1">Email cannot be changed</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                {isEditing ? (
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter your phone number"
+                  />
+                ) : (
+                  <p className="text-gray-900">
+                    {user?.phone || 'Not provided'}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Role
+                </label>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  {userRole}
+                </span>
+                <p className="text-sm text-gray-500 mt-1">Role cannot be changed</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Account Status
+                </label>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Active
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Account Information */}
+          <div className="bg-white rounded-lg shadow p-6 mb-8">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Account Information</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Member Since
+                </label>
+                <p className="text-gray-900">
+                  {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Last Updated
+                </label>
+                <p className="text-gray-900">
+                  {user?.updated_at ? new Date(user.updated_at).toLocaleDateString() : 'N/A'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Security Section */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Security</h2>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900">Password</h3>
+                  <p className="text-sm text-gray-500">Last changed: Never</p>
+                </div>
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                  Change Password
+                </button>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-900">Two-Factor Authentication</h3>
+                  <p className="text-sm text-gray-500">Add an extra layer of security</p>
+                </div>
+                <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                  Enable 2FA
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </ProtectedRoute>
+    </AuthGuard>
   )
 }
