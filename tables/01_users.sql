@@ -1,62 +1,26 @@
 -- =====================================================
--- USERS TABLE - Base user profiles
+-- SIMPLE USERS TABLE
 -- =====================================================
 
--- Create users table
-CREATE TABLE users (
-  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-  email TEXT UNIQUE NOT NULL,
-  full_name TEXT NOT NULL,
-  phone TEXT,
-  avatar_url TEXT,
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+CREATE TABLE public.users (
+  id uuid not null default gen_random_uuid(),
+  email character varying(255) not null,
+  password_hash character varying(255) not null,
+  first_name character varying(100) null,
+  last_name character varying(100) null,
+  phone character varying(20) null,
+  role character varying(50) not null default 'BUYER'::character varying,
+  is_active boolean null default true,
+  created_at timestamp with time zone null default now(),
+  updated_at timestamp with time zone null default now(),
+  constraint users_pkey primary key (id),
+  constraint users_email_key unique (email),
+  constraint users_role_check check (
+    role IN ('ADMIN', 'AGENT', 'BUYER', 'BUILDER')
+  )
 );
 
--- Enable Row Level Security
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-
--- Create policies
-CREATE POLICY "Users can view their own profile" ON users
-  FOR SELECT USING (auth.uid() = id);
-
-CREATE POLICY "Users can update their own profile" ON users
-  FOR UPDATE USING (auth.uid() = id);
-
-CREATE POLICY "Admins can view all users" ON users
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM admins WHERE user_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "Admins can update all users" ON users
-  FOR UPDATE USING (
-    EXISTS (
-      SELECT 1 FROM admins WHERE user_id = auth.uid()
-    )
-  );
-
--- Create indexes for better performance
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_full_name ON users(full_name);
-CREATE INDEX idx_users_is_active ON users(is_active);
-
--- Create updated_at trigger
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
-CREATE TRIGGER update_users_updated_at 
-    BEFORE UPDATE ON users 
-    FOR EACH ROW 
-    EXECUTE FUNCTION update_updated_at_column();
-
--- Insert sample user (optional - for testing)
--- INSERT INTO users (id, email, full_name, phone) 
--- VALUES ('00000000-0000-0000-0000-000000000000', 'admin@aspire.com', 'System Administrator', '+1234567890');
+-- Simple indexes
+CREATE INDEX IF NOT EXISTS idx_users_email ON public.users (email);
+CREATE INDEX IF NOT EXISTS idx_users_role ON public.users (role);
+CREATE INDEX IF NOT EXISTS idx_users_active ON public.users (is_active);
