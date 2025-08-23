@@ -1,231 +1,232 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import DashboardLayout from '../../../components/DashboardLayout';
-import { useAuth } from '../../../hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import React, { useState, useMemo } from 'react';
+import { useUserManagement } from '@/hooks/useUserManagement';
+import { UserTableRow } from '@/components/UserTableRow';
+import { UserTableHeader } from '@/components/UserTableHeader';
+import { UserEditModal } from '@/components/UserEditModal';
+import { InlinePreloader } from '@/components/Preloader';
+import { Pagination } from '@/components/Pagination';
+import DashboardLayout from '@/components/DashboardLayout';
+import { User } from '@/types/User';
+import { UserUpdateData } from '@/types/User';
 
-interface User {
-  id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  phone: string;
-  role: string;
-  is_active: boolean;
-  created_at: string;
-}
-
+/**
+ * Admin Agents page - displays all agent users with admin management capabilities
+ */
 export default function AdminAgentsPage() {
-  const { user, isAuthenticated, loading } = useAuth();
-  const router = useRouter();
-  const [agents, setAgents] = useState<User[]>([]);
-  const [dataLoading, setDataLoading] = useState(true);
+  const { users, loading, error, updateUser, deleteUser, toggleUserStatus } = useUserManagement('AGENT');
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
 
-  useEffect(() => {
-    // Check if user is authenticated and is admin
-    if (loading) return; // Wait for auth to load
-    
-    if (!isAuthenticated || !user) {
-      router.push('/auth');
-      return;
-    }
-
-    if (user.role !== 'ADMIN') {
-      router.push('/dashboard');
-      return;
-    }
-
-    // Fetch agents data
-    fetchAgents();
-  }, [user, isAuthenticated, loading, router]);
-
-  const fetchAgents = async () => {
-    try {
-      // This would be your actual API call
-      // const response = await fetch('/api/admin/agents');
-      // const data = await response.json();
+  // Filter users based on search and status
+  const filteredUsers = useMemo(() => {
+    return users.filter(user => {
+      const matchesSearch = searchQuery === '' || 
+        user.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.last_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.phone?.toLowerCase().includes(searchQuery.toLowerCase());
       
-      // Mock data for now
-      const mockAgents: User[] = [
-        {
-          id: '1',
-          email: 'agent1@aspire.com',
-          first_name: 'John',
-          last_name: 'Doe',
-          phone: '+919876543210',
-          role: 'AGENT',
-          is_active: true,
-          created_at: '2024-01-15T10:00:00Z'
-        },
-        {
-          id: '2',
-          email: 'agent2@aspire.com',
-          first_name: 'Jane',
-          last_name: 'Smith',
-          phone: '+919876543211',
-          role: 'AGENT',
-          is_active: true,
-          created_at: '2024-01-20T14:30:00Z'
-        }
-      ];
+      const matchesStatus = statusFilter === 'all' || 
+        (statusFilter === 'active' && user.is_active) ||
+        (statusFilter === 'inactive' && !user.is_active);
       
-      setAgents(mockAgents);
-      setDataLoading(false);
-    } catch (error) {
-      console.error('Error fetching agents:', error);
-      setDataLoading(false);
+      return matchesSearch && matchesStatus;
+    });
+  }, [users, searchQuery, statusFilter]);
+
+  // Paginate filtered users
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredUsers.slice(startIndex, endIndex);
+  }, [filteredUsers, currentPage, pageSize]);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredUsers.length / pageSize);
+
+  // Reset to first page when filters change
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
+
+  const handleEdit = (user: User) => {
+    setEditingUser(user);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDelete = async (userId: string) => {
+    if (window.confirm('Are you sure you want to delete this agent? This action cannot be undone.')) {
+      try {
+        await deleteUser(userId);
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Failed to delete user. Please try again.');
+      }
     }
   };
 
-  const toggleAgentStatus = async (agentId: string, currentStatus: boolean) => {
+  const handleToggleStatus = async (userId: string, isActive: boolean) => {
     try {
-      // This would be your actual API call
-      // await fetch(`/api/admin/agents/${agentId}/toggle-status`, {
-      //   method: 'PATCH',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ is_active: !currentStatus })
-      // });
-      
-      // Update local state
-      setAgents(prev => prev.map(agent => 
-        agent.id === agentId 
-          ? { ...agent, is_active: !currentStatus }
-          : agent
-      ));
+      await toggleUserStatus(userId, isActive);
     } catch (error) {
-      console.error('Error updating agent status:', error);
+      console.error('Error toggling user status:', error);
+      alert('Failed to update user status. Please try again.');
     }
   };
 
-  // Show loading while checking authentication
+  const handleSaveEdit = async (userId: string, userData: UserUpdateData) => {
+    try {
+      await updateUser(userId, userData);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      alert('Failed to update user. Please try again.');
+      throw error;
+    }
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingUser(null);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleStatusFilter = (status: string) => {
+    setStatusFilter(status);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1);
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+      <DashboardLayout>
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Agent Management</h1>
+            <p className="text-gray-600 mt-2">Manage all agent accounts in the system</p>
+          </div>
+          <InlinePreloader text="Fetching agents..." />
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
-  // Redirect to login if not authenticated
-  if (!isAuthenticated || !user) {
-    router.push('/auth');
-    return null;
-  }
-
-  // Redirect to dashboard if not admin
-  if (user.role !== 'ADMIN') {
-    router.push('/dashboard');
-    return null;
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-50">
+  if (error) {
+    return (
       <DashboardLayout>
-        <div className="space-y-6">
-          {/* Page Header */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Manage Agents</h1>
-            <p className="text-gray-600">View and manage all registered agents on the platform</p>
-          </div>
-
-          {/* Agents Table */}
-          <div className="bg-white rounded-lg shadow-md">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-900">Registered Agents</h2>
-            </div>
-            
-            {dataLoading ? (
-              <div className="p-6 text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="mt-2 text-gray-600">Loading agents...</p>
-              </div>
-            ) : agents.length === 0 ? (
-              <div className="p-6 text-center text-gray-500">
-                <p>No agents found.</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Agent
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Contact
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Joined
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {agents.map((agent) => (
-                      <tr key={agent.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10">
-                              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                <span className="text-sm font-medium text-blue-600">
-                                  {agent.first_name.charAt(0)}{agent.last_name.charAt(0)}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                {agent.first_name} {agent.last_name}
-                              </div>
-                              <div className="text-sm text-gray-500">{agent.role}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{agent.email}</div>
-                          <div className="text-sm text-gray-500">{agent.phone}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            agent.is_active
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}>
-                            {agent.is_active ? 'Active' : 'Inactive'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(agent.created_at).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button
-                            onClick={() => toggleAgentStatus(agent.id, agent.is_active)}
-                            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
-                              agent.is_active
-                                ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                                : 'bg-green-100 text-green-700 hover:bg-green-200'
-                            }`}
-                          >
-                            {agent.is_active ? 'Deactivate' : 'Activate'}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-12">
+            <div className="text-red-600 text-6xl mb-4">⚠️</div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Agents</h1>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
+            >
+              Try Again
+            </button>
           </div>
         </div>
       </DashboardLayout>
-    </div>
+    );
+  }
+
+  return (
+    <DashboardLayout>
+      <div className="max-w-7xl mx-auto">
+        <UserTableHeader
+          title="Agent Management"
+          totalUsers={users.length}
+          onSearch={handleSearch}
+          onFilterStatus={handleStatusFilter}
+        />
+
+        {filteredUsers.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-gray-400 text-6xl mb-4">👨‍💼</div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              {users.length === 0 ? 'No Agents Found' : 'No Agents Match Your Search'}
+            </h2>
+            <p className="text-gray-600">
+              {users.length === 0 
+                ? 'There are currently no agent accounts in the system.'
+                : 'Try adjusting your search criteria or filters.'
+              }
+            </p>
+          </div>
+        ) : (
+          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    User
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Phone
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Joined
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {paginatedUsers.map((user) => (
+                  <UserTableRow
+                    key={user.id}
+                    user={user}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onToggleStatus={handleToggleStatus}
+                  />
+                ))}
+              </tbody>
+            </table>
+            
+            {/* Pagination */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredUsers.length}
+              pageSize={pageSize}
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          </div>
+        )}
+      </div>
+
+      <UserEditModal
+        user={editingUser}
+        isOpen={isEditModalOpen}
+        onClose={closeEditModal}
+        onSave={handleSaveEdit}
+      />
+    </DashboardLayout>
   );
 }

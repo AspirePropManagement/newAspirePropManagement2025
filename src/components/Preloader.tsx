@@ -1,51 +1,66 @@
 'use client'
 
-import React from 'react'
+import React from 'react';
 
-/**
- * Preloader component for authentication state
- * Shows a loading animation while determining user authentication status
- */
 interface PreloaderProps {
-  message?: string
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg';
+  text?: string;
+  className?: string;
 }
 
-export function Preloader({ message = 'Loading...', size = 'md' }: PreloaderProps) {
+/**
+ * Preloader component displays a loading animation with optional text
+ */
+export const Preloader: React.FC<PreloaderProps> = ({ 
+  size = 'md', 
+  text = 'Loading...',
+  className = ''
+}) => {
   const sizeClasses = {
-    sm: 'w-6 h-6',
+    sm: 'w-4 h-4',
     md: 'w-8 h-8',
     lg: 'w-12 h-12'
-  }
+  };
 
   const textSizes = {
     sm: 'text-sm',
     md: 'text-base',
     lg: 'text-lg'
-  }
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[200px]">
-      <div className={`animate-spin rounded-full border-b-2 border-orange-500 ${sizeClasses[size]}`}></div>
-      {message && (
-        <p className={`mt-4 text-gray-600 ${textSizes[size]} font-medium`}>
-          {message}
+    <div className={`flex flex-col items-center justify-center ${className}`}>
+      <div className={`${sizeClasses[size]} animate-spin rounded-full border-2 border-gray-300 border-t-blue-600`}></div>
+      {text && (
+        <p className={`mt-3 text-gray-600 ${textSizes[size]} font-medium`}>
+          {text}
         </p>
       )}
     </div>
-  )
-}
+  );
+};
 
 /**
- * Full screen preloader for page-level loading states
+ * Full screen preloader for page-level loading
  */
-export function FullScreenPreloader({ message = 'Loading...' }: { message?: string }) {
+export const FullScreenPreloader: React.FC<{ text?: string }> = ({ text = 'Loading...' }) => {
   return (
     <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-500 mx-auto"></div>
-        <p className="mt-4 text-gray-600 text-lg font-medium">{message}</p>
-      </div>
+      <Preloader size="lg" text={text} />
     </div>
-  )
-}
+  );
+};
+
+/**
+ * Inline preloader for component-level loading
+ */
+export const InlinePreloader: React.FC<{ text?: string; className?: string }> = ({ 
+  text = 'Loading...',
+  className = ''
+}) => {
+  return (
+    <div className={`flex items-center justify-center py-8 ${className}`}>
+      <Preloader size="md" text={text} />
+    </div>
+  );
+};

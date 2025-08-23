@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
-import { NavigationService, type UserRole } from '@/lib/authService'
+type UserRole = 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER'
 
 interface AuthGuardProps {
   children: React.ReactNode
@@ -45,7 +45,23 @@ export default function AuthGuard({
 
       if (!hasAccess) {
         // User doesn't have required role, redirect to their dashboard
-        const dashboardRoute = NavigationService.getDashboardRoute(userRole!)
+        let dashboardRoute = '/dashboard';
+        switch (userRole) {
+          case 'ADMIN':
+            dashboardRoute = '/admin';
+            break;
+          case 'AGENT':
+            dashboardRoute = '/agent';
+            break;
+          case 'BUILDER':
+            dashboardRoute = '/builder';
+            break;
+          case 'BUYER':
+            dashboardRoute = '/buyer';
+            break;
+          default:
+            dashboardRoute = '/dashboard';
+        }
         router.push(dashboardRoute)
         return
       }

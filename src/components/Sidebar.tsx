@@ -9,14 +9,12 @@ import {
   BuildingOfficeIcon, 
   UserGroupIcon, 
   UsersIcon,
-  UserIcon,
   WrenchScrewdriverIcon,
   ShoppingBagIcon,
   Bars3Icon,
   XMarkIcon,
   Cog6ToothIcon,
   ChartBarIcon,
-  UserCircleIcon,
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
 
@@ -24,9 +22,10 @@ interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
   userRole: string;
+  isMobile?: boolean;
 }
 
-export default function Sidebar({ collapsed, onToggle, userRole }: SidebarProps) {
+export default function Sidebar({ collapsed, onToggle, userRole, isMobile = false }: SidebarProps) {
   const pathname = usePathname();
   const { logout } = useAuth();
 
@@ -62,7 +61,7 @@ export default function Sidebar({ collapsed, onToggle, userRole }: SidebarProps)
       icon: WrenchScrewdriverIcon,
     },
     {
-      name: 'System Settings',
+      name: 'Settings & Profile',
       href: '/admin/settings',
       icon: Cog6ToothIcon,
     },
@@ -75,11 +74,6 @@ export default function Sidebar({ collapsed, onToggle, userRole }: SidebarProps)
 
   // User account menu items
   const userMenuItems = [
-    {
-      name: 'Profile',
-      href: '/profile',
-      icon: UserCircleIcon,
-    },
     {
       name: 'Sign Out',
       href: '#',
@@ -97,8 +91,8 @@ export default function Sidebar({ collapsed, onToggle, userRole }: SidebarProps)
           onClick={item.onClick}
           className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-100 hover:text-gray-900"
         >
-          <item.icon className={`h-5 w-5 ${collapsed ? 'mx-auto' : 'mr-3'}`} />
-          {!collapsed && <span>{item.name}</span>}
+          <item.icon className={`h-5 w-5 ${(isMobile || !collapsed) ? 'mr-3' : 'mx-auto'}`} />
+          {(isMobile || !collapsed) && <span>{item.name}</span>}
         </button>
       );
     }
@@ -112,32 +106,46 @@ export default function Sidebar({ collapsed, onToggle, userRole }: SidebarProps)
             : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
         }`}
       >
-        <item.icon className={`h-5 w-5 ${collapsed ? 'mx-auto' : 'mr-3'}`} />
-        {!collapsed && <span>{item.name}</span>}
+        <item.icon className={`h-5 w-5 ${(isMobile || !collapsed) ? 'mr-3' : 'mx-auto'}`} />
+        {(isMobile || !collapsed) && <span>{item.name}</span>}
       </Link>
     );
   };
 
   return (
-    <div className={`bg-white shadow-lg border-r border-gray-200 transition-all duration-300 ${
-      collapsed ? 'w-16' : 'w-64'
+    <div className={`bg-white shadow-lg border-r border-gray-200 transition-all duration-300 h-screen flex flex-col ${
+      isMobile ? 'w-64' : (collapsed ? 'w-16' : 'w-64')
     }`}>
-      {/* Toggle Button */}
-      <div className="flex justify-end p-4">
-        <button
-          onClick={onToggle}
-          className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-        >
-          {collapsed ? (
-            <Bars3Icon className="h-5 w-5" />
-          ) : (
-            <XMarkIcon className="h-5 w-5" />
-          )}
-        </button>
-      </div>
+      {/* Toggle Button - Only show on desktop */}
+      {!isMobile && (
+        <div className="flex-shrink-0 flex justify-end p-4 border-b border-gray-200">
+          <button
+            onClick={onToggle}
+            className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+          >
+            {collapsed ? (
+              <Bars3Icon className="h-5 w-5" />
+            ) : (
+              <XMarkIcon className="h-5 w-5" />
+            )}
+          </button>
+        </div>
+      )}
 
-      {/* Menu Items */}
-      <nav className="mt-4 px-2 space-y-1">
+      {/* Mobile Close Button */}
+      {isMobile && (
+        <div className="flex-shrink-0 flex justify-end p-4 border-b border-gray-200">
+          <button
+            onClick={onToggle}
+            className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+          >
+            <XMarkIcon className="h-5 w-5" />
+          </button>
+        </div>
+      )}
+
+      {/* Scrollable Menu Items */}
+      <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-1">
         {/* Common Menu Items */}
         {commonMenuItems.map((item) => (
           <MenuItem key={item.name} item={item} />
@@ -147,9 +155,9 @@ export default function Sidebar({ collapsed, onToggle, userRole }: SidebarProps)
         {userRole === 'ADMIN' && (
           <>
             <div className={`px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider ${
-              collapsed ? 'text-center' : ''
+              isMobile ? '' : (collapsed ? 'text-center' : '')
             }`}>
-              {!collapsed && 'Admin Panel'}
+              {(isMobile || !collapsed) && 'Admin Panel'}
             </div>
             {adminMenuItems.map((item) => (
               <MenuItem key={item.name} item={item} />
@@ -159,9 +167,9 @@ export default function Sidebar({ collapsed, onToggle, userRole }: SidebarProps)
 
         {/* User Account Menu Items */}
         <div className={`px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider ${
-          collapsed ? 'text-center' : ''
+          isMobile ? '' : (collapsed ? 'text-center' : '')
         }`}>
-          {!collapsed && 'Account'}
+          {(isMobile || !collapsed) && 'Account'}
         </div>
         {userMenuItems.map((item) => (
           <MenuItem key={item.name} item={item} />

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
-import { NavigationService } from '@/lib/authService'
+
 
 /**
  * Header component that displays the application navigation
@@ -36,18 +36,47 @@ export function Header() {
   const { user, userRole, isAuthenticated, loading, signOut } = useAuth()
   const router = useRouter()
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   // Handle profile dropdown toggle
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen)
   }
 
+  // Handle mobile menu toggle
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
+
+  // Close mobile menu
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false)
+  }
+
   // Handle role-based navigation
   const handleRoleNavigation = () => {
     if (!userRole) return
     
-    const dashboardRoute = NavigationService.getDashboardRoute(userRole)
-    router.push(dashboardRoute)
+    // Simple role-based routing
+    let dashboardRoute = '/dashboard';
+    switch (userRole) {
+      case 'ADMIN':
+        dashboardRoute = '/admin';
+        break;
+      case 'AGENT':
+        dashboardRoute = '/agent';
+        break;
+      case 'BUILDER':
+        dashboardRoute = '/builder';
+        break;
+      case 'BUYER':
+        dashboardRoute = '/buyer';
+        break;
+      default:
+        dashboardRoute = '/dashboard';
+    }
+    
+    router.push(dashboardRoute);
   }
 
   if (loading) {
@@ -69,7 +98,7 @@ export function Header() {
   return (
     <div className="navbar bg-white shadow-lg border-b border-gray-200">
       <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center">
+        <div className="flex items-center justify-between">
           {/* Logo Section - Left Side */}
           <div className="flex items-center space-x-3">
             {/* Bar chart/skyline icon */}
@@ -80,16 +109,16 @@ export function Header() {
             </div>
             {/* Logo Text */}
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold">
+              <h1 className="text-lg sm:text-xl font-bold">
                 <span className="text-gray-800">ASPIRE</span>
-                <span className="text-orange-500">PROP MANAGEMENT</span>
+                <span className="text-orange-500 hidden sm:inline">PROP MANAGEMENT</span>
               </h1>
-              <p className="text-xs text-gray-500 -mt-1">NO ONE TARGETS YOUR NEED BETTER</p>
+              <p className="text-xs text-gray-500 -mt-1 hidden sm:block">NO ONE TARGETS YOUR NEED BETTER</p>
             </div>
           </div>
 
-          {/* Navigation Menu - Left Side (after logo) */}
-          <nav className="hidden md:flex items-center space-x-8 ml-8">
+          {/* Desktop Navigation Menu */}
+          <nav className="hidden lg:flex items-center space-x-8 ml-8">
             <Link href="/" className="text-gray-700 hover:text-orange-500 transition-colors font-medium">
               Home
             </Link>
@@ -112,11 +141,33 @@ export function Header() {
             </div>
           </nav>
 
-          {/* Spacer to push contact info to the right */}
-          <div className="flex-1"></div>
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden">
+            <button
+              onClick={toggleMobileMenu}
+              className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+            >
+              <svg
+                className={`${isMobileMenuOpen ? 'hidden' : 'block'} h-6 w-6`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <svg
+                className={`${isMobileMenuOpen ? 'block' : 'hidden'} h-6 w-6`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
           {/* Contact & User Info - Right Side */}
-          <div className="flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-6">
             {/* Toll Free Number */}
             <div className="text-right">
               <p className="text-xs text-gray-600 font-medium">Toll Free Number</p>
@@ -190,38 +241,40 @@ export function Header() {
                             )}
                           </div>
                           
-                          {/* Navigation Links */}
-                          {userRole && (
-                            <div className="py-2">
-                              <button
-                                onClick={handleRoleNavigation}
-                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                              >
-                                Go to Dashboard
-                              </button>
-                            </div>
-                          )}
+                                                     {/* Navigation Links */}
+                           {userRole && (
+                             <div className="py-2">
+                               <button
+                                 onClick={handleRoleNavigation}
+                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                               >
+                                 Go to Dashboard
+                               </button>
+                               {userRole === 'ADMIN' && (
+                                 <Link 
+                                   href="/admin/settings" 
+                                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                   onClick={() => setIsProfileOpen(false)}
+                                 >
+                                   Settings & Profile
+                                 </Link>
+                               )}
+                             </div>
+                           )}
                           
-                          {/* Profile & Sign Out */}
-                          <div className="py-2 border-t border-gray-100">
-                            <Link 
-                              href="/profile" 
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                              onClick={() => setIsProfileOpen(false)}
-                            >
-                              Profile Settings
-                            </Link>
-                            <button 
-                              onClick={() => {
-                                signOut()
-                                setIsProfileOpen(false)
-                                router.push('/auth')
-                              }}
-                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                            >
-                              Sign Out
-                            </button>
-                          </div>
+                                                     {/* Sign Out */}
+                           <div className="py-2 border-t border-gray-100">
+                             <button 
+                               onClick={() => {
+                                 signOut()
+                                 setIsProfileOpen(false)
+                                 router.push('/auth')
+                               }}
+                               className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                             >
+                               Sign Out
+                             </button>
+                           </div>
                         </div>
                       </div>
                     )}
@@ -241,6 +294,144 @@ export function Header() {
         </div>
       </div>
       
+             {/* Mobile Menu Overlay */}
+       {isMobileMenuOpen && (
+         <div 
+           className="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 lg:hidden"
+           onClick={closeMobileMenu}
+         />
+       )}
+
+              {/* Mobile Navigation Menu */}
+       <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:hidden fixed top-0 left-0 w-80 h-full bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+       }`}>
+         {/* Mobile Menu Header */}
+         <div className="flex items-center justify-between p-4 border-b border-gray-200">
+           <div className="flex items-center space-x-3">
+             <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+               <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                 <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+               </svg>
+             </div>
+             <div>
+               <h2 className="text-lg font-bold text-gray-800">ASPIRE</h2>
+               <p className="text-xs text-gray-500">Property Management</p>
+             </div>
+           </div>
+           <button
+             onClick={closeMobileMenu}
+             className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+           >
+             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+             </svg>
+           </button>
+         </div>
+
+         <div className="px-4 py-6 space-y-4 overflow-y-auto h-full">
+                      {/* Mobile Navigation Links */}
+           <nav className="space-y-2">
+             <Link 
+               href="/" 
+               className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium"
+               onClick={closeMobileMenu}
+             >
+               <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+               </svg>
+               Home
+             </Link>
+             <Link 
+               href="/properties" 
+               className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium"
+               onClick={closeMobileMenu}
+             >
+               <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+               </svg>
+               Properties
+             </Link>
+             <a href="#" className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+               <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+               </svg>
+               Why Us?
+             </a>
+             <a href="#" className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+               <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+               </svg>
+               Services
+             </a>
+             <div className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+               <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+               </svg>
+               <span>Post Property</span>
+               <span className="ml-auto bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                 FREE
+               </span>
+             </div>
+           </nav>
+
+                     {/* Mobile Contact Info */}
+           <div className="pt-4 border-t border-gray-200">
+             <div className="text-center p-4 bg-gray-50 rounded-lg">
+               <svg className="w-8 h-8 text-orange-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+               </svg>
+               <p className="text-xs text-gray-600 font-medium">Toll Free Number</p>
+               <p className="text-lg font-bold text-gray-800">+91 8080 190190</p>
+             </div>
+           </div>
+
+           {/* Mobile User Actions */}
+           {isAuthenticated && user ? (
+             <div className="pt-4 border-t border-gray-200 space-y-3">
+               <button
+                 onClick={() => {
+                   handleRoleNavigation()
+                   closeMobileMenu()
+                 }}
+                 className="w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-lg transition-colors font-medium flex items-center justify-center"
+               >
+                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                 </svg>
+                 Go to Dashboard
+               </button>
+               <button
+                 onClick={() => {
+                   signOut()
+                   closeMobileMenu()
+                   router.push('/auth')
+                 }}
+                 className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-lg transition-colors font-medium flex items-center justify-center"
+               >
+                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                 </svg>
+                 Sign Out
+               </button>
+             </div>
+           ) : (
+             <div className="pt-4 border-t border-gray-200">
+               <Link 
+                 href="/auth" 
+                 className="block w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center flex items-center justify-center"
+                 onClick={closeMobileMenu}
+               >
+                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                 </svg>
+                 Sign In
+               </Link>
+             </div>
+           )}
+        </div>
+      </div>
+
       {/* Click outside to close profile dropdown */}
       {isProfileOpen && (
         <div 

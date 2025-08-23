@@ -1,174 +1,216 @@
 'use client';
 
 import React from 'react';
-import DashboardLayout from '../../components/DashboardLayout';
-import { useAuth } from '../../hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import { useUserManagement } from '@/hooks/useUserManagement';
+import { InlinePreloader } from '@/components/Preloader';
+import DashboardLayout from '@/components/DashboardLayout';
+import Link from 'next/link';
 
+/**
+ * Admin Dashboard page - shows overview of all users and quick navigation
+ */
 export default function AdminDashboardPage() {
-  const { user, isAuthenticated, loading } = useAuth();
-  const router = useRouter();
+  const { users: allUsers, loading, error } = useUserManagement();
 
-  // Show loading while checking authentication
+  const getUsersByRole = (role: string) => {
+    return allUsers.filter(user => user.role === role);
+  };
+
+  const getActiveUsersByRole = (role: string) => {
+    return allUsers.filter(user => user.role === role && user.is_active);
+  };
+
+  const stats = {
+    total: allUsers.length,
+    admins: getUsersByRole('ADMIN').length,
+    agents: getUsersByRole('AGENT').length,
+    buyers: getUsersByRole('BUYER').length,
+    builders: getUsersByRole('BUILDER').length,
+    activeAdmins: getActiveUsersByRole('ADMIN').length,
+    activeAgents: getActiveUsersByRole('AGENT').length,
+    activeBuyers: getActiveUsersByRole('BUYER').length,
+    activeBuilders: getActiveUsersByRole('BUILDER').length,
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+      <DashboardLayout>
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+            <p className="text-gray-600 mt-2">System overview and user management</p>
+          </div>
+          <InlinePreloader text="Loading dashboard..." />
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
-  // Redirect to login if not authenticated
-  if (!isAuthenticated || !user) {
-    router.push('/auth');
-    return null;
-  }
-
-  // Redirect to dashboard if not admin
-  if (user.role !== 'ADMIN') {
-    router.push('/dashboard');
-    return null;
+  if (error) {
+    return (
+      <DashboardLayout>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-12">
+            <div className="text-red-600 text-6xl mb-4">⚠️</div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Dashboard</h1>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardLayout>
-        <div className="space-y-6">
-          {/* Dashboard Header */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-            <p className="text-gray-600">Welcome back, {user.first_name}! Manage your platform.</p>
-          </div>
+    <DashboardLayout>
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="text-gray-600 mt-2">System overview and user management</p>
+        </div>
 
-          {/* Administrator Information Card */}
-          <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Administrator Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <span className="text-gray-600">Name:</span>
-                <span className="ml-2 font-medium text-gray-900">{user.first_name} {user.last_name}</span>
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
               </div>
-              <div>
-                <span className="text-gray-600">Phone:</span>
-                <span className="ml-2 font-medium text-gray-900">{user.phone || 'Not provided'}</span>
-              </div>
-              <div>
-                <span className="text-gray-600">Email:</span>
-                <span className="ml-2 font-medium text-gray-900">{user.email}</span>
-              </div>
-              <div>
-                <span className="text-gray-600">Role:</span>
-                <span className="ml-2 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">
-                  {user.role}
-                </span>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Users</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats.total}</p>
               </div>
             </div>
           </div>
 
-          {/* Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="flex items-center mb-4">
-                <div className="p-2 bg-blue-100 rounded-lg mr-3">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
+          <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-              <p className="text-gray-600">Manage user accounts and roles</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="flex items-center mb-4">
-                <div className="p-2 bg-green-100 rounded-lg mr-3">
-                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">System Settings</h3>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Active Users</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {stats.activeAdmins + stats.activeAgents + stats.activeBuyers + stats.activeBuilders}
+                </p>
               </div>
-              <p className="text-gray-600">Configure platform settings</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="flex items-center mb-4">
-                <div className="p-2 bg-purple-100 rounded-lg mr-3">
-                  <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">Analytics</h3>
-              </div>
-              <p className="text-gray-600">View platform statistics</p>
             </div>
           </div>
 
-          {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-              <div className="flex items-center">
+          <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Properties</p>
+                <p className="text-2xl font-semibold text-gray-900">0</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-yellow-100 rounded-lg">
+                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Growth</p>
+                <p className="text-2xl font-semibold text-gray-900">+12%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* User Management Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Link href="/admin/agents" className="block">
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200 cursor-pointer">
+              <div className="flex items-center justify-between mb-4">
                 <div className="p-2 bg-blue-100 rounded-lg">
                   <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Users</p>
-                  <p className="text-2xl font-semibold text-gray-900">0</p>
-                </div>
+                <span className="text-sm text-blue-600 font-medium">Manage</span>
               </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Agents</h3>
+              <p className="text-2xl font-bold text-blue-600 mb-1">{stats.agents}</p>
+              <p className="text-sm text-gray-500">{stats.activeAgents} active</p>
             </div>
+          </Link>
 
-            <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-              <div className="flex items-center">
+          <Link href="/admin/buyers" className="block">
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200 cursor-pointer">
+              <div className="flex items-center justify-between mb-4">
                 <div className="p-2 bg-green-100 rounded-lg">
                   <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <span className="text-sm text-green-600 font-medium">Manage</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Buyers</h3>
+              <p className="text-2xl font-bold text-green-600 mb-1">{stats.buyers}</p>
+              <p className="text-sm text-gray-500">{stats.activeBuyers} active</p>
+            </div>
+          </Link>
+
+          <Link href="/admin/builders" className="block">
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200 cursor-pointer">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Properties</p>
-                  <p className="text-2xl font-semibold text-gray-900">0</p>
-                </div>
+                <span className="text-sm text-purple-600 font-medium">Manage</span>
               </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Builders</h3>
+              <p className="text-2xl font-bold text-purple-600 mb-1">{stats.builders}</p>
+              <p className="text-sm text-gray-500">{stats.activeBuilders} active</p>
             </div>
+          </Link>
 
-            <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-              <div className="flex items-center">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Inquiries</p>
-                  <p className="text-2xl font-semibold text-gray-900">0</p>
-                </div>
+          <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 bg-red-100 rounded-lg">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
               </div>
+              <span className="text-sm text-gray-400 font-medium">System</span>
             </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-              <div className="flex items-center">
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 4v6a2 2 0 01-2 2h-2a2 2 0 01-2-2H9a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Reports</p>
-                  <p className="text-2xl font-semibold text-gray-900">0</p>
-                </div>
-              </div>
-            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Admins</h3>
+            <p className="text-2xl font-bold text-red-600 mb-1">{stats.admins}</p>
+            <p className="text-sm text-gray-500">{stats.activeAdmins} active</p>
           </div>
         </div>
-      </DashboardLayout>
-    </div>
+
+        {/* Recent Activity */}
+        <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+          <div className="text-center py-8 text-gray-500">
+            <svg className="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p>No recent activity to display</p>
+          </div>
+        </div>
+      </div>
+    </DashboardLayout>
   );
 }

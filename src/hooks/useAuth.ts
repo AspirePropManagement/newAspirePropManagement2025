@@ -1,87 +1,136 @@
-import { useState, useEffect } from 'react'
-import { AuthService, type User, type UserRole } from '@/lib/authService'
+'use client';
 
-/**
- * Custom hook for managing authentication state
- * Provides user authentication status, user data, and authentication methods
- */
-export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
-  const [userRole, setUserRole] = useState<UserRole | null>(null)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [loading, setLoading] = useState(true)
+import { useState, useEffect } from 'react';
+import AuthService, { type User } from '@/lib/authService';
 
-  /**
-   * Signs out the current user
-   */
+interface AuthState {
+  user: User | null;
+  userRole: string | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+}
+
+interface AuthActions {
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  register: (data: any) => Promise<{ success: boolean; error?: string }>;
+  signOut: () => void;
+}
+
+export function useAuth(): AuthState & AuthActions {
+  const [authState, setAuthState] = useState<AuthState>({
+    user: null,
+    userRole: null,
+    isAuthenticated: false,
+    loading: true
+  });
+
+  // Check authentication state on mount
+  useEffect(() => {
+    checkAuthState();
+  }, []);
+
+  const checkAuthState = () => {
+    try {
+      const storedUser = localStorage.getItem('user');
+      const storedAuth = localStorage.getItem('isAuthenticated');
+      
+      if (storedUser && storedAuth === 'true') {
+        const user = JSON.parse(storedUser);
+        setAuthState({
+          user,
+          userRole: user.role,
+          isAuthenticated: true,
+          loading: false
+        });
+      } else {
+        setAuthState({
+          user: null,
+          userRole: null,
+          isAuthenticated: false,
+          loading: false
+        });
+      }
+    } catch (error) {
+      console.error('Error checking auth state:', error);
+      setAuthState({
+        user: null,
+        userRole: null,
+        isAuthenticated: false,
+        loading: false
+      });
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    try {
+      const result = await AuthService.login(email, password);
+      
+      if (result.success && result.user) {
+        // Store user data in localStorage
+        localStorage.setItem('user', JSON.stringify(result.user));
+        localStorage.setItem('isAuthenticated', 'true');
+        
+        setAuthState({
+          user: result.user,
+          userRole: result.user.role,
+          isAuthenticated: true,
+          loading: false
+        });
+        
+        return { success: true };
+      } else {
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      return { success: false, error: 'An unexpected error occurred' };
+    }
+  };
+
+  const register = async (data: any) => {
+    try {
+      const result = await AuthService.register(data);
+      
+      if (result.success && result.user) {
+        // Store user data in localStorage
+        localStorage.setItem('user', JSON.stringify(result.user));
+        localStorage.setItem('isAuthenticated', 'true');
+        
+        setAuthState({
+          user: result.user,
+          userRole: result.user.role,
+          isAuthenticated: true,
+          loading: false
+        });
+        
+        return { success: true };
+      } else {
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      return { success: false, error: 'An unexpected error occurred' };
+    }
+  };
+
   const signOut = () => {
     // Clear localStorage
-    AuthService.clearUserFromLocalStorage()
+    localStorage.removeItem('user');
+    localStorage.removeItem('isAuthenticated');
     
-    // Clear all state
-    setUser(null)
-    setUserRole(null)
-    setIsAuthenticated(false)
-    
-    // Force a page refresh to clear any cached state
-    window.location.href = '/'
-  }
-
-  /**
-   * Logout function (alias for signOut)
-   */
-  const logout = signOut
-
-  /**
-   * Refreshes authentication state from localStorage
-   */
-  const refreshAuthState = () => {
-    const storedUser = AuthService.getUserFromLocalStorage()
-    const storedRole = AuthService.getUserRole()
-    const storedAuthStatus = AuthService.isAuthenticated()
-
-    setUser(storedUser)
-    setUserRole(storedRole)
-    setIsAuthenticated(storedAuthStatus)
-    setLoading(false)
-  }
-
-  // Initialize authentication state
-  useEffect(() => {
-    refreshAuthState()
-  }, [])
-
-  // Listen for storage changes (when user logs in/out in another tab)
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'isAuthenticated' || e.key === 'user' || e.key === 'userRole') {
-        refreshAuthState()
-      }
-    }
-
-    // Also listen for custom logout event
-    const handleLogout = () => {
-      setUser(null)
-      setUserRole(null)
-      setIsAuthenticated(false)
-    }
-
-    window.addEventListener('storage', handleStorageChange)
-    window.addEventListener('logout', handleLogout)
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      window.removeEventListener('logout', handleLogout)
-    }
-  }, [])
+    // Reset state
+    setAuthState({
+      user: null,
+      userRole: null,
+      isAuthenticated: false,
+      loading: false
+    });
+  };
 
   return {
-    user,
-    userRole,
-    isAuthenticated,
-    loading,
-    signOut,
-    logout,
-    refreshAuthState
-  }
+    ...authState,
+    login,
+    register,
+    signOut
+  };
 }

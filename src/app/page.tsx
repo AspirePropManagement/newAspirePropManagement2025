@@ -1,184 +1,131 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { Footer } from '@/components/Footer';
-import { PropertyDashboard } from '@/components/PropertyDashboard';
-import { ImageCarousel } from '@/components/ImageCarousel';
 import Link from 'next/link';
 
-/**
- * Home page component that displays hero section and either property dashboard or welcome content
- * based on user authentication status
- */
+
 export default function HomePage() {
   const { user, isAuthenticated, loading } = useAuth();
+  const [debugInfo, setDebugInfo] = useState<string>('Initializing...');
 
-  // Show loading state while checking authentication
+  useEffect(() => {
+    // Debug information
+    if (loading) {
+      setDebugInfo('Loading authentication state...');
+    } else if (isAuthenticated) {
+      setDebugInfo(`Authenticated as: ${user?.email || 'Unknown'}`);
+    } else {
+      setDebugInfo('Not authenticated');
+    }
+  }, [loading, isAuthenticated, user]);
+
+  // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="flex items-center justify-center min-h-[600px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center space-y-6">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-500 mx-auto"></div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold text-gray-700">Loading...</h2>
+            <p className="text-sm text-gray-500">{debugInfo}</p>
           </div>
+          
+          {/* Debug Information */}
+          <div className="mt-8 p-4 bg-white rounded-lg shadow-sm max-w-md mx-auto">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Debug Info:</h3>
+            <div className="text-xs text-gray-600 space-y-1">
+              <p>Loading: {loading ? 'true' : 'false'}</p>
+              <p>Authenticated: {isAuthenticated ? 'true' : 'false'}</p>
+              <p>User: {user ? 'exists' : 'null'}</p>
+              <p>Environment: {process.env.NODE_ENV}</p>
+              <p>Supabase URL: {process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Missing'}</p>
+              <p>Supabase Key: {process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Missing'}</p>
+            </div>
+          </div>
+          
+
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Global Navbar */}
-      {/* Hero Image Carousel */}
-      <ImageCarousel />
-
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
-        {isAuthenticated && user ? (
-          // Logged in user - show property dashboard
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Welcome back, {user.first_name}!
-              </h2>
-              <p className="text-gray-600 mb-6">
-                You're logged in as a {user.role.toLowerCase()}. Here are your properties:
-              </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Hero Section */}
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center space-y-8">
+          <h1 className="text-5xl font-bold text-gray-900">
+            Welcome to{' '}
+            <span className="text-orange-500">Aspire Property Management</span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Your trusted partner in premium property management and real estate services. 
+            Discover exceptional properties and professional management solutions.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {isAuthenticated ? (
               <Link
                 href="/dashboard"
-                className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg"
+                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors"
               >
                 Go to Dashboard
               </Link>
-            </div>
-            <PropertyDashboard />
-          </div>
-        ) : (
-          // Not logged in user - show landing page content
-          <div className="max-w-6xl mx-auto">
-            {/* Hero Section */}
-            <div className="text-center mb-16">
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-                Find Your Dream
-                <span className="text-orange-500 block">Property</span>
-              </h1>
-              <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                Discover premium properties, connect with real estate professionals, and find your perfect home.
-                Join thousands of satisfied customers who trust us with their property needs.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/properties"
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105 shadow-lg"
-                >
-                  Browse Properties
-                </Link>
+            ) : (
+              <>
                 <Link
                   href="/auth"
-                  className="border-2 border-orange-500 text-orange-500 hover:bg-orange-50 px-8 py-4 rounded-lg font-semibold text-lg transition-all"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors"
                 >
                   Sign In
                 </Link>
-              </div>
-            </div>
-
-            {/* Features Section */}
-            <div className="grid md:grid-cols-3 gap-8 mb-16">
-              <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                <div className="text-4xl mb-4">🔍</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Find Properties</h3>
-                <p className="text-gray-600">Browse through our extensive collection of premium properties with detailed information and high-quality images.</p>
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                <div className="text-4xl mb-4">👥</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Expert Guidance</h3>
-                <p className="text-gray-600">Get professional advice from certified real estate agents who understand your needs and market trends.</p>
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                <div className="text-4xl mb-4">⚡</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Fast & Secure</h3>
-                <p className="text-gray-600">Quick transactions with bank-grade security and transparent processes throughout your property journey.</p>
-              </div>
-            </div>
-
-            {/* Stats Section */}
-            <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 mb-16 text-white">
-              <div className="grid md:grid-cols-4 gap-6 text-center">
-                <div>
-                  <div className="text-3xl font-bold mb-2">500+</div>
-                  <div className="text-orange-100">Properties Listed</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold mb-2">1000+</div>
-                  <div className="text-orange-100">Happy Clients</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold mb-2">50+</div>
-                  <div className="text-orange-100">Expert Agents</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold mb-2">5+</div>
-                  <div className="text-orange-100">Years Experience</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Services Section */}
-            <div className="mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Our Services</h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 text-center hover:shadow-lg transition-shadow">
-                  <div className="text-3xl mb-3">🏠</div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Property Search</h3>
-                  <p className="text-sm text-gray-600">Find your perfect property with advanced search filters</p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 text-center hover:shadow-lg transition-shadow">
-                  <div className="text-3xl mb-3">📋</div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Property Listing</h3>
-                  <p className="text-sm text-gray-600">List your property for sale or rent easily</p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 text-center hover:shadow-lg transition-shadow">
-                  <div className="text-3xl mb-3">👔</div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Agent Services</h3>
-                  <p className="text-sm text-gray-600">Connect with professional real estate agents</p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 text-center hover:shadow-lg transition-shadow">
-                  <div className="text-3xl mb-3">🏗️</div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Construction</h3>
-                  <p className="text-sm text-gray-600">Build your dream home with expert builders</p>
-                </div>
-              </div>
-            </div>
-
-            {/* CTA Section */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-12 text-center">
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                Ready to Get Started?
-              </h3>
-              <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                Join our platform and experience the difference in property management.
-                Whether you're buying, selling, or building, we have the perfect solution for you.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/auth"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105 shadow-lg"
-                >
-                  Sign In to Continue
-                </Link>
                 <Link
                   href="/auth?mode=signup"
-                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-lg font-semibold text-lg transition-all"
+                  className="bg-white hover:bg-gray-50 text-orange-500 border-2 border-orange-500 px-8 py-3 rounded-lg font-semibold text-lg transition-colors"
                 >
-                  Create New Account
+                  Sign Up
                 </Link>
-              </div>
-            </div>
+              </>
+            )}
           </div>
-        )}
+        </div>
       </div>
-      <Footer />
+
+      {/* Features Section */}
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
+              <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clipRule="evenodd"/>
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900">Property Management</h3>
+            <p className="text-gray-600">Professional management services for property owners and investors.</p>
+          </div>
+          
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
+              <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900">Quality Assurance</h3>
+            <p className="text-gray-600">Rigorous quality standards ensure the best properties and services.</p>
+          </div>
+          
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
+              <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd"/>
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900">Expert Support</h3>
+            <p className="text-gray-600">Dedicated support team available to assist you every step of the way.</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

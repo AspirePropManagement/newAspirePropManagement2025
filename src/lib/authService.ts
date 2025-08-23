@@ -1,225 +1,223 @@
-import { supabase } from './supabase'
-import bcrypt from 'bcryptjs'
+import { createClient } from '@supabase/supabase-js';
+import bcrypt from 'bcryptjs';
 
-/**
- * User role types for the application
- */
-export type UserRole = 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-/**
- * User interface matching the database schema
- */
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 export interface User {
-  id: string
-  email: string
-  password_hash: string
-  first_name?: string
-  last_name?: string
-  phone?: string
-  role: UserRole
-  is_active: boolean
-  created_at: string
-  updated_at: string
+  id: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  role: 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER';
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  email: string;
+  password: string;
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  role?: 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER';
 }
 
 /**
- * User registration data interface
+ * Simple authentication service using Supabase database directly
  */
-export interface UserRegistrationData {
-  email: string
-  password: string
-  first_name: string
-  last_name: string
-  phone: string
-  role: UserRole
-}
-
-/**
- * User login data interface
- */
-export interface UserLoginData {
-  email: string
-  password: string
-}
-
-/**
- * Authentication service for user management
- */
-export class AuthService {
+class AuthService {
   /**
-   * Registers a new user in the users table
+   * Authenticates a user by email and password
    */
-  static async registerUser(userData: UserRegistrationData): Promise<{ success: boolean; error?: string; user?: User }> {
+  async login(email: string, password: string): Promise<{ success: boolean; user?: User; error?: string }> {
     try {
-      // Check if user already exists
-      const { data: existingUser } = await supabase
+      // Query the users table directly
+      const { data: users, error } = await supabase
         .from('users')
-        .select('email')
-        .eq('email', userData.email)
-        .single()
+        .select('*')
+        .eq('email', email)
+        .eq('is_active', true)
+        .limit(1);
 
-      if (existingUser) {
-        return { success: false, error: 'Email address is already registered' }
+      if (error) {
+        console.error('Database error:', error);
+        return { success: false, error: 'Database connection failed' };
       }
 
-      // Hash the password
-      const saltRounds = 12
-      const passwordHash = await bcrypt.hash(userData.password, saltRounds)
+      if (!users || users.length === 0) {
+        return { success: false, error: 'Account not found. Please sign up first.' };
+      }
+
+      const user = users[0];
+
+      // Verify password
+      const isValidPassword = await bcrypt.compare(password, user.password_hash);
+      if (!isValidPassword) {
+        return { success: false, error: 'Invalid password' };
+      }
+
+      // Remove password_hash from user object
+      const { password_hash, ...userWithoutPassword } = user;
+      
+      return { success: true, user: userWithoutPassword as User };
+    } catch (error) {
+      console.error('Login error:', error);
+      return { success: false, error: 'An unexpected error occurred' };
+    }
+  }
+
+  /**
+   * Registers a new user
+   */
+  async register(data: RegisterData): Promise<{ success: boolean; user?: User; error?: string }> {
+    try {
+      // Check if user already exists
+      const { data: existingUsers, error: checkError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', data.email)
+        .limit(1);
+
+      if (checkError) {
+        console.error('Database error:', checkError);
+        return { success: false, error: 'Database connection failed' };
+      }
+
+      if (existingUsers && existingUsers.length > 0) {
+        return { success: false, error: 'User with this email already exists' };
+      }
+
+      // Hash password
+      const saltRounds = 12;
+      const passwordHash = await bcrypt.hash(data.password, saltRounds);
 
       // Insert new user
-      const { data: newUser, error } = await supabase
+      const { data: newUser, error: insertError } = await supabase
         .from('users')
         .insert({
-          email: userData.email,
+          email: data.email,
           password_hash: passwordHash,
-          first_name: userData.first_name,
-          last_name: userData.last_name,
-          phone: userData.phone,
-          role: userData.role,
+          first_name: data.first_name || '',
+          last_name: data.last_name || '',
+          phone: data.phone || '',
+          role: data.role || 'BUYER',
           is_active: true
         })
         .select()
-        .single()
+        .single();
 
-      if (error) {
-        console.error('Error creating user:', error)
-        return { success: false, error: 'Failed to create user account' }
+      if (insertError) {
+        console.error('Insert error:', insertError);
+        return { success: false, error: 'Failed to create account' };
       }
 
-      return { success: true, user: newUser }
+      // Remove password_hash from user object
+      const { password_hash, ...userWithoutPassword } = newUser;
+      
+      return { success: true, user: userWithoutPassword as User };
     } catch (error) {
-      console.error('Registration error:', error)
-      return { success: false, error: 'An unexpected error occurred during registration' }
+      console.error('Registration error:', error);
+      return { success: false, error: 'An unexpected error occurred' };
     }
   }
 
   /**
-   * Authenticates user by checking email and password
+   * Gets user by ID
    */
-  static async loginUser(loginData: UserLoginData): Promise<{ success: boolean; error?: string; user?: User }> {
+  async getUserById(id: string): Promise<{ success: boolean; user?: User; error?: string }> {
     try {
-      // Find user by email
       const { data: user, error } = await supabase
         .from('users')
         .select('*')
-        .eq('email', loginData.email)
+        .eq('id', id)
         .eq('is_active', true)
-        .single()
+        .single();
 
-      if (error || !user) {
-        return { success: false, error: 'Invalid email or password' }
+      if (error) {
+        return { success: false, error: 'User not found' };
       }
 
-      // Verify password
-      const isPasswordValid = await bcrypt.compare(loginData.password, user.password_hash)
-      if (!isPasswordValid) {
-        return { success: false, error: 'Invalid email or password' }
+      const { password_hash, ...userWithoutPassword } = user;
+      return { success: true, user: userWithoutPassword as User };
+    } catch (error) {
+      return { success: false, error: 'Failed to fetch user' };
+    }
+  }
+
+  /**
+   * Updates user information
+   */
+  async updateUser(id: string, updates: Partial<User>): Promise<{ success: boolean; user?: User; error?: string }> {
+    try {
+      const { data: user, error } = await supabase
+        .from('users')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        return { success: false, error: 'Failed to update user' };
       }
 
-      return { success: true, user }
+      const { password_hash, ...userWithoutPassword } = user;
+      return { success: true, user: userWithoutPassword as User };
     } catch (error) {
-      console.error('Login error:', error)
-      return { success: false, error: 'An unexpected error occurred during login' }
+      return { success: false, error: 'Failed to update user' };
     }
   }
 
   /**
-   * Stores user data in localStorage
+   * Changes user password
    */
-  static storeUserInLocalStorage(user: User): void {
+  async changePassword(id: string, currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
     try {
-      localStorage.setItem('user', JSON.stringify(user))
-      localStorage.setItem('userRole', user.role)
-      localStorage.setItem('isAuthenticated', 'true')
-    } catch (error) {
-      console.error('Error storing user in localStorage:', error)
-    }
-  }
+      // Get current user to verify password
+      const { data: user, error: fetchError } = await supabase
+        .from('users')
+        .select('password_hash')
+        .eq('id', id)
+        .single();
 
-  /**
-   * Retrieves user data from localStorage
-   */
-  static getUserFromLocalStorage(): User | null {
-    try {
-      const userData = localStorage.getItem('user')
-      return userData ? JSON.parse(userData) : null
-    } catch (error) {
-      console.error('Error retrieving user from localStorage:', error)
-      return null
-    }
-  }
+      if (fetchError) {
+        return { success: false, error: 'User not found' };
+      }
 
-  /**
-   * Clears user data from localStorage
-   */
-  static clearUserFromLocalStorage(): void {
-    try {
-      localStorage.removeItem('user')
-      localStorage.removeItem('userRole')
-      localStorage.removeItem('isAuthenticated')
-    } catch (error) {
-      console.error('Error clearing user from localStorage:', error)
-    }
-  }
+      // Verify current password
+      const isValidPassword = await bcrypt.compare(currentPassword, user.password_hash);
+      if (!isValidPassword) {
+        return { success: false, error: 'Current password is incorrect' };
+      }
 
-  /**
-   * Checks if user is authenticated
-   */
-  static isAuthenticated(): boolean {
-    try {
-      return localStorage.getItem('isAuthenticated') === 'true'
-    } catch (error) {
-      return false
-    }
-  }
+      // Hash new password
+      const saltRounds = 12;
+      const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
 
-  /**
-   * Gets user role from localStorage
-   */
-  static getUserRole(): UserRole | null {
-    try {
-      return localStorage.getItem('userRole') as UserRole | null
+      // Update password
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ password_hash: newPasswordHash })
+        .eq('id', id);
+
+      if (updateError) {
+        return { success: false, error: 'Failed to update password' };
+      }
+
+      return { success: true };
     } catch (error) {
-      return null
+      return { success: false, error: 'Failed to change password' };
     }
   }
 }
 
-/**
- * Navigation service for role-based routing
- */
-export class NavigationService {
-  /**
-   * Gets the appropriate dashboard route based on user role
-   */
-  static getDashboardRoute(role: UserRole): string {
-    switch (role) {
-      case 'ADMIN':
-        return '/admin'
-      case 'AGENT':
-        return '/agent'
-      case 'BUILDER':
-        return '/builder'
-      case 'BUYER':
-        return '/buyer'
-      default:
-        return '/dashboard'
-    }
-  }
-
-  /**
-   * Checks if user has access to a specific route
-   */
-  static hasRouteAccess(route: string, userRole: UserRole): boolean {
-    const roleRoutes = {
-      '/admin': ['ADMIN'],
-      '/agent': ['AGENT'],
-      '/builder': ['BUILDER'],
-      '/buyer': ['BUYER'],
-      '/dashboard': ['ADMIN', 'AGENT', 'BUILDER', 'BUYER']
-    }
-
-    const allowedRoles = roleRoutes[route as keyof typeof roleRoutes] || []
-    return allowedRoles.includes(userRole)
-  }
-}
+export default new AuthService();
