@@ -15,11 +15,22 @@ export function useAuth() {
    * Signs out the current user
    */
   const signOut = () => {
+    // Clear localStorage
     AuthService.clearUserFromLocalStorage()
+    
+    // Clear all state
     setUser(null)
     setUserRole(null)
     setIsAuthenticated(false)
+    
+    // Force a page refresh to clear any cached state
+    window.location.href = '/'
   }
+
+  /**
+   * Logout function (alias for signOut)
+   */
+  const logout = signOut
 
   /**
    * Refreshes authentication state from localStorage
@@ -48,8 +59,20 @@ export function useAuth() {
       }
     }
 
+    // Also listen for custom logout event
+    const handleLogout = () => {
+      setUser(null)
+      setUserRole(null)
+      setIsAuthenticated(false)
+    }
+
     window.addEventListener('storage', handleStorageChange)
-    return () => window.removeEventListener('storage', handleStorageChange)
+    window.addEventListener('logout', handleLogout)
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('logout', handleLogout)
+    }
   }, [])
 
   return {
@@ -58,6 +81,7 @@ export function useAuth() {
     isAuthenticated,
     loading,
     signOut,
+    logout,
     refreshAuthState
   }
 }

@@ -1,17 +1,17 @@
-'use client'
+'use client';
 
-import { useAuth } from '@/hooks/useAuth'
-import { Footer } from '@/components/Footer'
-import { PropertyDashboard } from '@/components/PropertyDashboard'
-import { ImageCarousel } from '@/components/ImageCarousel'
-import Link from 'next/link'
+import { useAuth } from '@/hooks/useAuth';
+import { Footer } from '@/components/Footer';
+import { PropertyDashboard } from '@/components/PropertyDashboard';
+import { ImageCarousel } from '@/components/ImageCarousel';
+import Link from 'next/link';
 
 /**
  * Home page component that displays hero section and either property dashboard or welcome content
  * based on user authentication status
  */
 export default function HomePage() {
-  const { user, isAuthenticated, loading } = useAuth()
+  const { user, isAuthenticated, loading } = useAuth();
 
   // Show loading state while checking authentication
   if (loading) {
@@ -24,19 +24,38 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Global Navbar */}
       {/* Hero Image Carousel */}
       <ImageCarousel />
-      
+
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
         {isAuthenticated && user ? (
-          <PropertyDashboard />
+          // Logged in user - show property dashboard
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Welcome back, {user.first_name}!
+              </h2>
+              <p className="text-gray-600 mb-6">
+                You're logged in as a {user.role.toLowerCase()}. Here are your properties:
+              </p>
+              <Link
+                href="/dashboard"
+                className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg"
+              >
+                Go to Dashboard
+              </Link>
+            </div>
+            <PropertyDashboard />
+          </div>
         ) : (
+          // Not logged in user - show landing page content
           <div className="max-w-6xl mx-auto">
             {/* Hero Section */}
             <div className="text-center mb-16">
@@ -45,18 +64,18 @@ export default function HomePage() {
                 <span className="text-orange-500 block">Property</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                Discover premium properties, connect with real estate professionals, and find your perfect home. 
+                Discover premium properties, connect with real estate professionals, and find your perfect home.
                 Join thousands of satisfied customers who trust us with their property needs.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link 
-                  href="/properties" 
+                <Link
+                  href="/properties"
                   className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105 shadow-lg"
                 >
                   Browse Properties
                 </Link>
-                <Link 
-                  href="/auth" 
+                <Link
+                  href="/auth"
                   className="border-2 border-orange-500 text-orange-500 hover:bg-orange-50 px-8 py-4 rounded-lg font-semibold text-lg transition-all"
                 >
                   Sign In
@@ -138,18 +157,18 @@ export default function HomePage() {
                 Ready to Get Started?
               </h3>
               <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                Join our platform and experience the difference in property management. 
-                Whether you&apos;re buying, selling, or building, we have the perfect solution for you.
+                Join our platform and experience the difference in property management.
+                Whether you're buying, selling, or building, we have the perfect solution for you.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link 
-                  href="/auth" 
+                <Link
+                  href="/auth"
                   className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105 shadow-lg"
                 >
                   Sign In to Continue
                 </Link>
-                <Link 
-                  href="/auth?mode=signup" 
+                <Link
+                  href="/auth?mode=signup"
                   className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-lg font-semibold text-lg transition-all"
                 >
                   Create New Account
@@ -161,5 +180,5 @@ export default function HomePage() {
       </div>
       <Footer />
     </div>
-  )
+  );
 }
