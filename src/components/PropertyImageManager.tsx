@@ -193,6 +193,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
         URL.revokeObjectURL(fileInfo.url);
       }
       subcatImages.splice(index, 1);
+      
       setLocalImages(newImages);
     }
   }, [localImages, isSubmitting]);

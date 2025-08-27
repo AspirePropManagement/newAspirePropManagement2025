@@ -2,15 +2,25 @@
 
 import React from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
+import DashboardStats from '../../components/DashboardStats';
+import PropertyBreakdown from '../../components/PropertyBreakdown';
+import RecentActivity from '../../components/RecentActivity';
+import UserColumn from '../../components/UserColumn';
 import { useAuth } from '../../hooks/useAuth';
+import { useDashboardData } from '../../hooks/useDashboardData';
 import { useRouter } from 'next/navigation';
 
+/**
+ * Main dashboard page displaying comprehensive property management statistics
+ * Implements the Single Responsibility Principle by orchestrating dashboard components
+ */
 export default function DashboardPage() {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { stats, analytics, isLoading: dataLoading, error, refreshData } = useDashboardData();
   const router = useRouter();
 
   // Show loading while checking authentication
-  if (loading) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -27,105 +37,81 @@ export default function DashboardPage() {
     return null;
   }
 
+  const isLoading = authLoading || dataLoading;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardLayout>
         <div className="space-y-6">
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            <div className="bg-white p-4 lg:p-6 rounded-lg shadow-md border border-gray-200">
-              <div className="flex items-center">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <svg className="w-5 h-5 lg:w-6 lg:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                </div>
-                <div className="ml-3 lg:ml-4">
-                  <p className="text-xs lg:text-sm font-medium text-gray-600">Total Properties</p>
-                  <p className="text-xl lg:text-2xl font-semibold text-gray-900">0</p>
-                </div>
-              </div>
+          {/* Page Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+              <p className="text-gray-600">Welcome back, {user.first_name || user.email}</p>
             </div>
-
-            <div className="bg-white p-4 lg:p-6 rounded-lg shadow-md border border-gray-200">
-              <div className="flex items-center">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <svg className="w-5 h-5 lg:w-6 lg:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div className="ml-3 lg:ml-4">
-                  <p className="text-xs lg:text-sm font-medium text-gray-600">Active Listings</p>
-                  <p className="text-xl lg:text-2xl font-semibold text-gray-900">0</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-4 lg:p-6 rounded-lg shadow-md border border-gray-200">
-              <div className="flex items-center">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <svg className="w-5 h-5 lg:w-6 lg:h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div className="ml-3 lg:ml-4">
-                  <p className="text-xs lg:text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-xl lg:text-2xl font-semibold text-gray-900">0</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-4 lg:p-6 rounded-lg shadow-md border border-gray-200">
-              <div className="flex items-center">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <svg className="w-5 h-5 lg:w-6 lg:h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                  </svg>
-                </div>
-                <div className="ml-3 lg:ml-4">
-                  <p className="text-xs lg:text-sm font-medium text-gray-600">Total Value</p>
-                  <p className="text-xl lg:text-2xl font-semibold text-gray-900">₹0</p>
-                </div>
-              </div>
-            </div>
+            <button
+              onClick={refreshData}
+              disabled={isLoading}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            >
+              {isLoading ? 'Refreshing...' : 'Refresh Data'}
+            </button>
           </div>
 
-          {/* Recent Activity */}
-          <div className="bg-white p-4 lg:p-6 rounded-lg shadow-md border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Activity</h2>
-            <div className="text-center py-8">
-              <div className="text-4xl mb-4">📋</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Recent Activity</h3>
-              <p className="text-gray-600">Start by adding your first property to see activity here.</p>
+          {/* Error Display */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">Error loading dashboard data</h3>
+                  <p className="mt-1 text-sm text-red-700">{error}</p>
+                </div>
+              </div>
             </div>
+          )}
+
+          {/* Dashboard Statistics */}
+          <DashboardStats stats={stats} isLoading={isLoading} />
+
+          {/* Property Breakdown and Recent Activity Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PropertyBreakdown stats={stats} isLoading={isLoading} />
+            <RecentActivity activities={stats?.recentActivity || []} isLoading={isLoading} />
           </div>
 
-          {/* Quick Actions */}
-          <div className="bg-white p-4 lg:p-6 rounded-lg shadow-md border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
-              <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors">
-                <div className="text-center">
-                  <div className="text-2xl mb-2">🏠</div>
-                  <p className="font-medium text-gray-900">Add Property</p>
-                  <p className="text-sm text-gray-600">List a new property</p>
-                </div>
-              </button>
-              <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-400 hover:bg-green-50 transition-colors">
-                <div className="text-center">
-                  <div className="text-2xl mb-2">🔑</div>
-                  <p className="font-medium text-gray-900">Add Rental</p>
-                  <p className="text-sm text-gray-600">List for rent</p>
-                </div>
-              </button>
-              <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-400 hover:bg-purple-50 transition-colors">
-                <div className="text-center">
-                  <div className="text-2xl mb-2">🏗️</div>
-                  <p className="font-medium text-gray-900">New Project</p>
-                  <p className="text-sm text-gray-600">Add construction project</p>
-                </div>
-              </button>
-            </div>
+          {/* User Role Columns */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <UserColumn
+              title="Buyers"
+              users={stats?.usersByRole?.buyers || []}
+              count={stats?.totalBuyers || 0}
+              isLoading={isLoading}
+              color="text-green-600"
+              icon="👥"
+            />
+
+            <UserColumn
+              title="Builders"
+              users={stats?.usersByRole?.builders || []}
+              count={stats?.totalBuilders || 0}
+              isLoading={isLoading}
+              color="text-orange-600"
+              icon="🏗️"
+            />
+
+            <UserColumn
+              title="Agents"
+              users={stats?.usersByRole?.agents || []}
+              count={stats?.totalAgents || 0}
+              isLoading={isLoading}
+              color="text-purple-600"
+              icon="👨‍💼"
+            />
           </div>
         </div>
       </DashboardLayout>

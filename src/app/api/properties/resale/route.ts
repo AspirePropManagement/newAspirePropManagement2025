@@ -6,12 +6,22 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const { data, error } = await supabase
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    let query = supabase
       .from('resale_properties')
       .select('*')
       .order('created_at', { ascending: false });
+
+    // If userId is provided, filter by that user's properties
+    if (userId) {
+      query = query.eq('user_id', userId);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Error fetching resale properties:', error);
