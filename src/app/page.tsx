@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
+import { HeroCarousel } from '@/components/HeroCarousel';
 
 
 export default function HomePage() {
@@ -52,45 +53,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center space-y-8">
-          <h1 className="text-5xl font-bold text-gray-900">
-            Welcome to{' '}
-            <span className="text-orange-500">Aspire Property Management</span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Your trusted partner in premium property management and real estate services. 
-            Discover exceptional properties and professional management solutions.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {isAuthenticated ? (
-              <Link
-                href="/dashboard"
-                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors"
-              >
-                Go to Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/auth"
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/auth?mode=signup"
-                  className="bg-white hover:bg-gray-50 text-orange-500 border-2 border-orange-500 px-8 py-3 rounded-lg font-semibold text-lg transition-colors"
-                >
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Hero Carousel */}
+      <HeroCarousel />
 
       {/* Features Section */}
       <div className="container mx-auto px-4 py-16">

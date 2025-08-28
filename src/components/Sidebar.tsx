@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '../hooks/useAuth';
@@ -15,7 +15,8 @@ import {
   XMarkIcon,
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
-  ListBulletIcon
+  ListBulletIcon,
+  PhotoIcon
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -28,6 +29,23 @@ interface SidebarProps {
 export default function Sidebar({ collapsed, onToggle, userRole, isMobile = false }: SidebarProps) {
   const pathname = usePathname();
   const { signOut } = useAuth();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // Handle logout confirmation
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    signOut();
+    setShowLogoutModal(false);
+    // Redirect to login page after logout
+    window.location.href = '/auth';
+  };
+
+  const cancelLogout = () => {
+    setShowLogoutModal(false);
+  };
 
   // Common menu items for all roles
   const commonMenuItems = [
@@ -37,8 +55,6 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
       icon: HomeIcon,
     },
   ];
-
-
 
   // Role-specific property management items
   const getRoleSpecificPropertyItems = (role: string) => {
@@ -101,6 +117,11 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
       href: '/admin/builders',
       icon: WrenchScrewdriverIcon,
     },
+    {
+      name: 'Hero Carousel',
+      href: '/admin/hero-carousel',
+      icon: PhotoIcon,
+    },
   ];
 
   // User account menu items
@@ -114,7 +135,7 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
       name: 'Sign Out',
       href: '#',
       icon: ArrowRightOnRectangleIcon,
-      onClick: signOut,
+      onClick: handleLogoutClick,
     },
   ];
 
@@ -244,6 +265,34 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
           <MenuItem key={item.name} item={item} />
         ))}
       </nav>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900">Confirm Logout</h3>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to sign out?
+              <br />
+              <span className="text-sm text-gray-500">You will need to sign in again to access your account.</span>
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={cancelLogout}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmLogout}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

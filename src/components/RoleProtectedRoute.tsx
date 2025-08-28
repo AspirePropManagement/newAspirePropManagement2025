@@ -17,11 +17,17 @@ interface RoleProtectedRouteProps {
 
 export function RoleProtectedRoute({ 
   children, 
-  requiredRoles, 
+  requiredRoles = [], 
   fallback = null,
   showUnauthorized = true 
 }: RoleProtectedRouteProps) {
   const { role, hasAnyRole, loading } = useSupabaseUser()
+
+  // Safety check for requiredRoles
+  if (!requiredRoles || !Array.isArray(requiredRoles)) {
+    console.error('RoleProtectedRoute: requiredRoles must be an array', requiredRoles);
+    return fallback;
+  }
 
   if (loading) {
     return (
@@ -70,7 +76,7 @@ export function RoleProtectedRoute({
  */
 export function AdminOnly({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
   return (
-    <RoleProtectedRoute requiredRoles={['admin']} fallback={fallback}>
+    <RoleProtectedRoute requiredRoles={['ADMIN']} fallback={fallback}>
       {children}
     </RoleProtectedRoute>
   )
@@ -78,7 +84,7 @@ export function AdminOnly({ children, fallback }: { children: ReactNode; fallbac
 
 export function AgentOrAdmin({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
   return (
-    <RoleProtectedRoute requiredRoles={['agent', 'admin']} fallback={fallback}>
+    <RoleProtectedRoute requiredRoles={['AGENT', 'ADMIN']} fallback={fallback}>
       {children}
     </RoleProtectedRoute>
   )
@@ -86,7 +92,7 @@ export function AgentOrAdmin({ children, fallback }: { children: ReactNode; fall
 
 export function BuyerOnly({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
   return (
-    <RoleProtectedRoute requiredRoles={['buyer']} fallback={fallback}>
+    <RoleProtectedRoute requiredRoles={['BUYER']} fallback={fallback}>
       {children}
     </RoleProtectedRoute>
   )

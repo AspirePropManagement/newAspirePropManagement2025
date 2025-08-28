@@ -12,7 +12,7 @@ import { UserRole } from '@/types/Auth'
  */
 
 export function AuthDashboard() {
-  const [selectedRole, setSelectedRole] = useState<UserRole>('buyer')
+  const [selectedRole, setSelectedRole] = useState<UserRole>('BUYER')
   const { user: authUser, loading, signOut } = useSupabase()
   const { user, role, roleData, loading: userLoading } = useSupabaseUser()
 
@@ -61,10 +61,10 @@ export function AuthDashboard() {
                 <span className="text-sm font-medium text-gray-500">Role Details:</span>
                 <p className="text-gray-900">
                   {roleData ? (
-                    role === 'admin' ? `Admin Level: ${(roleData as any).admin_level || 'Standard'}` :
-                    role === 'agent' ? `License: ${(roleData as any).license_number || 'Not provided'}` :
-                    role === 'buyer' ? `Budget: $${(roleData as any).budget_min || '0'} - $${(roleData as any).budget_max || 'Unlimited'}` :
-                    role === 'builder' ? `Company: ${(roleData as any).company_name || 'Not provided'}` :
+                    role === 'ADMIN' ? `Admin Level: ${(roleData as any).admin_level || 'Standard'}` :
+                    role === 'AGENT' ? `License: ${(roleData as any).license_number || 'Not provided'}` :
+                    role === 'BUYER' ? `Budget: $${(roleData as any).budget_min || '0'} - $${(roleData as any).budget_max || 'Unlimited'}` :
+                    role === 'BUILDER' ? `Company: ${(roleData as any).company_name || 'Not provided'}` :
                     'No additional details'
                   ) : 'Loading role details...'}
                 </p>
