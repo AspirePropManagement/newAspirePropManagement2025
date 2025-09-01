@@ -89,6 +89,27 @@ export default function HomePage() {
             <p className="text-gray-600">Dedicated support team available to assist you every step of the way.</p>
           </div>
         </div>
+
+        {/* Call to Action Section */}
+        <div className="mt-16 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Find Your Perfect Property?</h2>
+          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+            Browse through thousands of properties across Pune. From luxury apartments to affordable homes, 
+            we have something for everyone.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/properties-listing">
+              <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors">
+                Browse Properties
+              </button>
+            </Link>
+            <Link href="/auth">
+              <button className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-3 rounded-lg font-semibold text-lg transition-colors border border-gray-300">
+                Sign Up
+              </button>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

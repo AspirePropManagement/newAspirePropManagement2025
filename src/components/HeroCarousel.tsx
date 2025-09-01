@@ -4,10 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { HeroCarouselImage } from '../types/HeroCarousel';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 
 /**
  * Hero Carousel component for the landing page
- * Displays uploaded images in a rotating carousel format
+ * Displays uploaded images in a rotating carousel format with mouse animation and filter card
  */
 export const HeroCarousel: React.FC = () => {
   const [images, setImages] = useState<HeroCarouselImage[]>([]);
@@ -124,9 +125,11 @@ export const HeroCarousel: React.FC = () => {
                   </p>
                 )}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors">
-                    Explore Properties
-                  </button>
+                  <Link href="/properties">
+                    <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors">
+                      Explore Properties
+                    </button>
+                  </Link>
                   <button className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-3 rounded-lg font-semibold text-lg transition-colors">
                     Learn More
                   </button>
@@ -185,6 +188,92 @@ export const HeroCarousel: React.FC = () => {
           />
         </div>
       )}
+
+      {/* Mouse Animation */}
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
+        <div className="animate-bounce">
+          <svg 
+            className="w-6 h-6 text-white opacity-70" 
+            fill="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path d="M7 10l5 5 5-5z"/>
+          </svg>
+        </div>
+      </div>
+
+      {/* Filter Card Component */}
+      <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-95 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-6">
+          <div className="bg-white rounded-xl shadow-lg p-6 max-w-4xl mx-auto">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Find Your Perfect Property</h2>
+              <p className="text-gray-600">Search from thousands of properties across the city</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              {/* Budget Filter */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Budget</label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                  <option value="">Select Budget</option>
+                  <option value="under-40">Under 40 Lacs</option>
+                  <option value="40-70">40 Lacs - 70 Lacs</option>
+                  <option value="70-1cr">70 Lacs - 1 Crore</option>
+                  <option value="1-2cr">1 Crore - 2 Crore</option>
+                  <option value="above-2cr">Above 2 Crore</option>
+                </select>
+              </div>
+
+              {/* Property Type Filter */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Property Type</label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                  <option value="">Select Type</option>
+                  <option value="1bhk">1 BHK</option>
+                  <option value="2bhk">2 BHK</option>
+                  <option value="3bhk">3 BHK</option>
+                  <option value="4bhk">4 BHK</option>
+                  <option value="4plus">4+ BHK</option>
+                </select>
+              </div>
+
+              {/* Location Filter */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Location</label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                  <option value="">Select Location</option>
+                  <option value="hinjawadi">Hinjawadi</option>
+                  <option value="koregaon-park">Koregaon Park</option>
+                  <option value="kharadi">Kharadi</option>
+                  <option value="baner">Baner</option>
+                  <option value="wakad">Wakad</option>
+                </select>
+              </div>
+
+              {/* Possession Filter */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Possession</label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                  <option value="">Select Possession</option>
+                  <option value="ready">Ready to Move</option>
+                  <option value="1year">In 1 Year</option>
+                  <option value="2year">In 2 Years</option>
+                  <option value="3year">In 3 Years</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <Link href="/properties-listing">
+                <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors shadow-lg">
+                  Find Properties
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
