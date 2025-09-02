@@ -42,7 +42,7 @@ export default function BlogPage() {
             {/* Empty State Content */}
             <h2 className="text-2xl font-bold text-gray-900 mb-3">No Blog Posts Yet</h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              We're working on creating valuable content for you. Check back soon for insightful articles about real estate, market trends, and property investment tips.
+              We&apos;re working on creating valuable content for you. Check back soon for insightful articles about real estate, market trends, and property investment tips.
             </p>
 
             {/* Call to Action */}

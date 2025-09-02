@@ -38,7 +38,7 @@ export default function AuthGuard({
       let hasAccess = false
       
       if (Array.isArray(requiredRole)) {
-        hasAccess = requiredRole.includes(userRole!)
+        hasAccess = requiredRole.includes(userRole! as UserRole)
       } else {
         hasAccess = userRole === requiredRole
       }

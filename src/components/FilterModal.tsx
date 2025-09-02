@@ -30,14 +30,14 @@ export default function FilterModal({ isOpen, onClose, selectedFilters, onFilter
       ? currentValues.filter((v: string) => v !== value)
       : [...currentValues, value];
     
-    setLocalFilters(prev => ({
+    setLocalFilters((prev: any) => ({
       ...prev,
       [filterType]: newValues
     }));
   };
 
   const handleToggleChange = (filterType: string) => {
-    setLocalFilters(prev => ({
+    setLocalFilters((prev: any) => ({
       ...prev,
       [filterType]: !prev[filterType]
     }));

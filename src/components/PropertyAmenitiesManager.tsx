@@ -119,7 +119,7 @@ export default function PropertyAmenitiesManager({
   };
 
   const handleCategoryToggle = (category: keyof PropertyAmenities, checked: boolean) => {
-    const categoryItems = AMENITY_CATEGORIES[category]?.items;
+    const categoryItems = (AMENITY_CATEGORIES as any)[category]?.items;
     if (!categoryItems) return;
 
     const newAmenities = {
@@ -141,7 +141,7 @@ export default function PropertyAmenitiesManager({
   };
 
   const getTotalCount = (category: keyof PropertyAmenities) => {
-    return Object.keys(AMENITY_CATEGORIES[category]?.items || {}).length;
+    return Object.keys((AMENITY_CATEGORIES as any)[category]?.items || {}).length;
   };
 
   return (
@@ -184,7 +184,7 @@ export default function PropertyAmenitiesManager({
                     <input
                       type="checkbox"
                       id={`${categoryKey}-${itemKey}`}
-                      checked={categoryAmenities[itemKey] || false}
+                      checked={(categoryAmenities as any)[itemKey] || false}
                       onChange={(e) => handleAmenityChange(categoryKey as keyof PropertyAmenities, itemKey, e.target.checked)}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />

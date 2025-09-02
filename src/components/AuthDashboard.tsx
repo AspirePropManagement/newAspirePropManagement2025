@@ -14,7 +14,7 @@ import { UserRole } from '@/types/Auth'
 export function AuthDashboard() {
   const [selectedRole, setSelectedRole] = useState<UserRole>('BUYER')
   const { user: authUser, loading, signOut } = useSupabase()
-  const { user, role, roleData, loading: userLoading } = useSupabaseUser()
+  const { user, role, loading: userLoading } = useSupabaseUser()
 
   if (loading) {
     return (
@@ -34,7 +34,7 @@ export function AuthDashboard() {
     return (
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Welcome, {user.full_name || 'User'}!</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Welcome, {user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.first_name || 'User'}!</h1>
           <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-medium">
             <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
             Authenticated as {userRole}
@@ -47,7 +47,7 @@ export function AuthDashboard() {
             <div className="space-y-3">
               <div>
                 <span className="text-sm font-medium text-gray-500">Name:</span>
-                <p className="text-gray-900">{user.full_name || 'Not provided'}</p>
+                <p className="text-gray-900">{user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.first_name || 'Not provided'}</p>
               </div>
               <div>
                 <span className="text-sm font-medium text-gray-500">Email:</span>
@@ -60,13 +60,11 @@ export function AuthDashboard() {
               <div>
                 <span className="text-sm font-medium text-gray-500">Role Details:</span>
                 <p className="text-gray-900">
-                  {roleData ? (
-                    role === 'ADMIN' ? `Admin Level: ${(roleData as any).admin_level || 'Standard'}` :
-                    role === 'AGENT' ? `License: ${(roleData as any).license_number || 'Not provided'}` :
-                    role === 'BUYER' ? `Budget: $${(roleData as any).budget_min || '0'} - $${(roleData as any).budget_max || 'Unlimited'}` :
-                    role === 'BUILDER' ? `Company: ${(roleData as any).company_name || 'Not provided'}` :
-                    'No additional details'
-                  ) : 'Loading role details...'}
+                  {role === 'ADMIN' ? 'Administrator' :
+                   role === 'AGENT' ? 'Real Estate Agent' :
+                   role === 'BUYER' ? 'Property Buyer' :
+                   role === 'BUILDER' ? 'Property Builder' :
+                   'No role assigned'}
                 </p>
               </div>
               <div>

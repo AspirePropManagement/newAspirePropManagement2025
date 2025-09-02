@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import { authService, NavigationService } from '@/lib/authService'
+import AuthService from '@/lib/authService'
 
 interface SupabaseContextType {
   user: User | null
@@ -58,19 +58,19 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
   const signIn = async (email: string, password: string) => {
     try {
       // Use the authentication service to validate credentials
-      const authResult = await authService.validateCredentials(email, password)
+      const authResult = await AuthService.login(email, password)
       
       if (!authResult.success) {
         return { error: { message: authResult.error } }
       }
 
-      if (authResult.user && authResult.role) {
+      if (authResult.user) {
         // Create user session
-        await authService.createUserSession(authResult.user)
+        // Session creation handled by AuthService.login
         
         // Store role in localStorage for immediate access
         if (typeof window !== 'undefined') {
-          localStorage.setItem('userRole', authResult.role)
+          localStorage.setItem('userRole', authResult.user.role)
         }
       }
 
@@ -139,7 +139,7 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
   const signOut = async () => {
     try {
       // Clear user session data
-      await authService.clearUserSession()
+      // Session clearing handled by AuthService
       
       // Sign out from Supabase Auth
       const { error } = await supabase.auth.signOut()

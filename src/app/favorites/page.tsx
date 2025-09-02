@@ -159,7 +159,7 @@ export default function FavoritesPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">My Favorites</h1>
-                <p className="text-gray-600">Properties you've saved</p>
+                <p className="text-gray-600">Properties you&apos;ve saved</p>
               </div>
             </div>
             <div className="text-sm text-gray-500">

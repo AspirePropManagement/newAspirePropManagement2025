@@ -321,7 +321,7 @@ export const HeroCarouselManager: React.FC = () => {
           </div>
         ) : images.length === 0 ? (
           <div className="p-6 text-center text-gray-500">
-            No images uploaded yet. Click "Add Image" to get started.
+            No images uploaded yet. Click &quot;Add Image&quot; to get started.
           </div>
         ) : (
           <div className="p-6">
@@ -592,7 +592,7 @@ export const HeroCarouselManager: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold mb-4 text-gray-900">Confirm Deletion</h3>
             <p className="text-gray-700 mb-6">
-              Are you sure you want to delete image "{images.find(img => img.id === imageToDelete)?.title}"?
+              Are you sure you want to delete image &quot;{images.find(img => img.id === imageToDelete)?.title}&quot;?
               <br />
               <span className="text-sm text-gray-500">This action cannot be undone.</span>
             </p>

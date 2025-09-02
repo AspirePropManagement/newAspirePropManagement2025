@@ -31,6 +31,17 @@ export function useAuth(): AuthState & AuthActions {
 
   const checkAuthState = () => {
     try {
+      // Check if we're in the browser environment
+      if (typeof window === 'undefined') {
+        setAuthState({
+          user: null,
+          userRole: null,
+          isAuthenticated: false,
+          loading: false
+        });
+        return;
+      }
+
       const storedUser = localStorage.getItem('user');
       const storedAuth = localStorage.getItem('isAuthenticated');
       
@@ -66,9 +77,11 @@ export function useAuth(): AuthState & AuthActions {
       const result = await AuthService.login(email, password);
       
       if (result.success && result.user) {
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(result.user));
-        localStorage.setItem('isAuthenticated', 'true');
+        // Store user data in localStorage (only in browser)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(result.user));
+          localStorage.setItem('isAuthenticated', 'true');
+        }
         
         setAuthState({
           user: result.user,
@@ -92,9 +105,11 @@ export function useAuth(): AuthState & AuthActions {
       const result = await AuthService.register(data);
       
       if (result.success && result.user) {
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(result.user));
-        localStorage.setItem('isAuthenticated', 'true');
+        // Store user data in localStorage (only in browser)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(result.user));
+          localStorage.setItem('isAuthenticated', 'true');
+        }
         
         setAuthState({
           user: result.user,
@@ -114,9 +129,11 @@ export function useAuth(): AuthState & AuthActions {
   };
 
   const signOut = () => {
-    // Clear localStorage
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAuthenticated');
+    // Clear localStorage (only in browser)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('user');
+      localStorage.removeItem('isAuthenticated');
+    }
     
     // Reset state
     setAuthState({

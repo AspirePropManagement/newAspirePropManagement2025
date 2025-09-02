@@ -33,9 +33,8 @@ export default function DemoImageUploadPage() {
               📸 Resale Property - Enhanced Image Upload
             </h2>
             <PropertyImageManager
-              propertyImages={propertyImages}
+              initialImages={propertyImages}
               onImagesChange={handleImagesChange}
-              propertyType="resale"
             />
           </div>
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '@/hooks/useAuth'
-import { Header } from '@/components/Header'
+import Navbar from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import Link from 'next/link'
 
@@ -16,7 +16,7 @@ export default function DemoPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
+        <Navbar />
         <div className="flex items-center justify-center min-h-[600px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
@@ -31,7 +31,7 @@ export default function DemoPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header/Navbar */}
-      <Header />
+      <Navbar />
       
       {/* Demo Content */}
       <div className="container mx-auto px-4 py-12">
