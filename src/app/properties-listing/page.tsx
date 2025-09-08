@@ -74,146 +74,112 @@ export default function PropertiesListingPage() {
     try {
       setLoading(true);
       
-      // Dummy properties data for now
-      const dummyProperties = [
-        {
-          id: 1,
-          type: 'new_project',
-          project_name: 'The Greenfront',
-          location: 'Hinjawadi, Pune',
-          description: '2 & 3 BHK Apartment, 4 BHK Duplex for Sale in Hinjawadi, Pune',
-          bhk_type: '2 & 3 BHK Apartment, 4 BHK Duplex',
-          starting_price: 11600000, // 1.16 Cr
-          price_per_sqft: 12290, // 12.29 K
-          built_up_area: 'On request',
-          carpet_area: '944 - 2,180 Sq.ft.',
-          project_status: 'under_construction',
-          developer_name: 'Greenfront Developers',
-          amenities: ['parking', 'swimming-pool', 'lift', 'gated-community'],
-          images: [
-            'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop'
-          ],
-          created_at: new Date().toISOString(),
-          offers_available: true
-        },
-        {
-          id: 2,
-          type: 'new_project',
-          project_name: 'Godrej Skyline',
-          location: 'Koregaon Park, Pune',
-          description: '3 & 4 BHK Apartment for Sale in Koregaon Park, Pune',
-          bhk_type: '3 & 4 BHK Apartment',
-          starting_price: 38900000, // 3.89 Cr
-          price_per_sqft: 25930, // 25.93 K
-          built_up_area: '1500 - 2400 Sq.ft.',
-          carpet_area: 'On request',
-          project_status: 'under_construction',
-          developer_name: 'Godrej Properties',
-          amenities: ['parking', 'swimming-pool', 'lift', 'gated-community', 'gas-pipeline'],
-          images: [
-            'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop'
-          ],
-          created_at: new Date().toISOString(),
-          offers_available: true
-        },
-        {
-          id: 3,
-          type: 'new_project',
-          project_name: 'Lodha Belmondo',
-          location: 'Hinjewadi, Pune',
-          description: '2, 3 & 4 BHK Luxury Apartments for Sale in Hinjewadi, Pune',
-          bhk_type: '2, 3 & 4 BHK',
-          starting_price: 8500000, // 85 Lacs
-          price_per_sqft: 8500, // 8.5 K
-          built_up_area: '1200 - 2800 Sq.ft.',
-          carpet_area: '1100 - 2600 Sq.ft.',
-          project_status: 'ready_to_move',
-          developer_name: 'Lodha Group',
-          amenities: ['parking', 'swimming-pool', 'lift', 'gated-community', 'gas-pipeline'],
-          images: [
-            'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop'
-          ],
-          created_at: new Date().toISOString(),
-          offers_available: false
-        },
-        {
-          id: 4,
-          type: 'resale',
-          society_name: 'Prestige Shantiniketan',
-          location: 'Baner, Pune',
-          description: '3 BHK Apartment for Sale in Prestige Shantiniketan, Baner',
-          bhk_type: '3 BHK',
-          asking_price: 12500000, // 1.25 Cr
-          price_per_sqft: 12500, // 12.5 K
-          built_up_area: '1200 Sq.ft.',
-          carpet_area: '1100 Sq.ft.',
-          seller_name: 'Individual Owner',
-          amenities: ['parking', 'lift', 'gated-community'],
-          images: [
-            'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=300&fit=crop'
-          ],
-          created_at: new Date().toISOString(),
-          offers_available: true
-        },
-        {
-          id: 5,
-          type: 'new_project',
-          project_name: 'Mahindra LifeSpaces',
-          location: 'Kharadi, Pune',
-          description: '2 & 3 BHK Apartments for Sale in Kharadi, Pune',
-          bhk_type: '2 & 3 BHK',
-          starting_price: 6500000, // 65 Lacs
-          price_per_sqft: 6500, // 6.5 K
-          built_up_area: '1000 - 1800 Sq.ft.',
-          carpet_area: '900 - 1600 Sq.ft.',
-          project_status: 'under_construction',
-          developer_name: 'Mahindra Lifespaces',
-          amenities: ['parking', 'swimming-pool', 'lift'],
-          images: [
-            'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop'
-          ],
-          created_at: new Date().toISOString(),
-          offers_available: true
-        },
-        {
-          id: 6,
-          type: 'rental',
-          society_name: 'Sunshine Residency',
-          location: 'Viman Nagar, Pune',
-          description: '2 BHK Apartment for Rent in Viman Nagar, Pune',
-          bhk_type: '2 BHK',
-          rent_amount: 25000, // 25K per month
-          built_up_area: '1100 Sq.ft.',
-          carpet_area: '1000 Sq.ft.',
-          owner_name: 'Individual Owner',
-          amenities: ['parking', 'lift'],
-          images: [
-            'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=300&fit=crop'
-          ],
-          created_at: new Date().toISOString(),
-          offers_available: false
-        }
-      ];
+      // Fetch properties from all tables
+      const [resaleResponse, rentalResponse, newProjectResponse] = await Promise.all([
+        fetch('/api/properties/resale'),
+        fetch('/api/properties/rental'),
+        fetch('/api/properties/new-projects')
+      ]);
 
-      let allProperties = dummyProperties;
+      const resaleProperties = resaleResponse.ok ? await resaleResponse.json() : [];
+      const rentalProperties = rentalResponse.ok ? await rentalResponse.json() : [];
+      const newProjectProperties = newProjectResponse.ok ? await newProjectResponse.json() : [];
+
+      // Transform and combine all properties into a unified format
+      let allProperties = [
+        ...resaleProperties.map((prop: any) => ({
+          id: prop.id,
+          type: 'resale',
+          title: `${prop.bhk_type || ''} ${prop.property_type || ''} - ${prop.society_name || 'Independent'}`.trim(),
+          location: prop.location || 'Not specified',
+          asking_price: prop.asking_price,
+          rent_amount: null,
+          starting_price: null,
+          price_per_sqft: prop.asking_price && prop.square_feet ? Math.round(prop.asking_price / prop.square_feet) : null,
+          built_up_area: prop.square_feet ? `${prop.square_feet} Sq.ft.` : 'On request',
+          carpet_area: prop.carpet_area ? `${prop.carpet_area} Sq.ft.` : 'On request',
+          project_status: 'ready_to_move',
+          developer_name: prop.seller_name || 'Individual Owner',
+          seller_name: prop.seller_name,
+          owner_name: null,
+          bhk_type: prop.bhk_type,
+          property_type: prop.property_type,
+          furnishing_type: prop.furnishing_type,
+          parking_type: prop.parking_type,
+          amenities: prop.amenities || {},
+          property_images: prop.property_images || {},
+          images: prop.property_images?.general_photos?.exterior || [],
+          created_at: prop.created_at,
+          offers_available: prop.is_negotiable || false,
+          status: prop.status || 'available'
+        })),
+        ...rentalProperties.map((prop: any) => ({
+          id: prop.id,
+          type: 'rental',
+          title: `${prop.bhk_type || ''} ${prop.property_type || ''} - ${prop.society_name || 'Independent'}`.trim(),
+          location: prop.location || 'Not specified',
+          asking_price: null,
+          rent_amount: prop.rent_amount,
+          starting_price: null,
+          price_per_sqft: null,
+          built_up_area: 'On request',
+          carpet_area: 'On request',
+          project_status: 'ready_to_move',
+          developer_name: prop.owner_name || 'Individual Owner',
+          seller_name: null,
+          owner_name: prop.owner_name,
+          bhk_type: prop.bhk_type,
+          property_type: prop.property_type,
+          furnishing_type: prop.furnishing_type,
+          parking_type: prop.parking_type,
+          amenities: prop.amenities || {},
+          property_images: prop.property_images || {},
+          images: prop.property_images?.general_photos?.exterior || [],
+          created_at: prop.created_at,
+          offers_available: prop.rent_negotiable || false,
+          status: prop.status || 'available',
+          immediate_possession: prop.immediate_possession,
+          available_from_date: prop.available_from_date
+        })),
+        ...newProjectProperties.map((prop: any) => ({
+          id: prop.id,
+          type: 'new_project',
+          title: prop.project_name || `${prop.property_type || 'Property'} Project`,
+          location: prop.project_location || prop.location || 'Not specified',
+          asking_price: null,
+          rent_amount: null,
+          starting_price: prop.starting_price,
+          price_per_sqft: prop.starting_price && prop.square_feet ? Math.round(prop.starting_price / prop.square_feet) : null,
+          built_up_area: prop.square_feet ? `${prop.square_feet} Sq.ft.` : 'On request',
+          carpet_area: 'On request',
+          project_status: prop.construction_status || 'under_construction',
+          developer_name: prop.builder_name || prop.crafted_by || 'Developer',
+          seller_name: null,
+          owner_name: null,
+          bhk_type: prop.bhk_type,
+          property_type: prop.property_type,
+          furnishing_type: 'Not applicable',
+          parking_type: null,
+          amenities: prop.amenities || {},
+          property_images: prop.property_images || {},
+          images: prop.property_images?.general_photos?.exterior || [],
+          created_at: prop.created_at,
+          offers_available: prop.loan_available || false,
+          status: prop.construction_status || 'under_construction',
+          project_name: prop.project_name,
+          rera_number: prop.rera_number
+        }))
+      ];
 
       // Apply search filter
       if (searchQuery) {
         allProperties = allProperties.filter(property => 
           property.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          property.society_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          property.project_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          property.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           property.seller_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           property.owner_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          property.developer_name?.toLowerCase().includes(searchQuery.toLowerCase())
+          property.developer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          property.project_name?.toLowerCase().includes(searchQuery.toLowerCase())
         );
       }
 
@@ -289,14 +255,16 @@ export default function PropertiesListingPage() {
           return selectedFilters.possession.some(possession => {
             switch (possession) {
               case 'ready': return property.project_status === 'ready_to_move';
-              case '1year': return property.project_status === 'under_construction';
-              case '2year': return property.project_status === 'under_construction';
-              case '3year': return property.project_status === 'under_construction';
+              case 'under_construction': return property.project_status === 'under_construction';
+              case 'planning': return property.project_status === 'planning';
+              case 'completed': return property.project_status === 'completed';
               default: return true;
             }
           });
+        } else {
+          // For resale and rental properties, they are always ready to move
+          return selectedFilters.possession.includes('ready');
         }
-        return true;
       });
     }
 
@@ -306,16 +274,46 @@ export default function PropertiesListingPage() {
         if (selectedFilters.listedBy.includes('developer')) {
           return property.type === 'new_project';
         }
+        if (selectedFilters.listedBy.includes('individual')) {
+          return property.type === 'resale' || property.type === 'rental';
+        }
+        if (selectedFilters.listedBy.includes('agent')) {
+          return property.type === 'resale' || property.type === 'rental';
+        }
         return true;
       });
+    }
+
+    // Furnishing type filter (using ageOfProperty field for now)
+    if (selectedFilters.ageOfProperty.length > 0) {
+      filtered = filtered.filter(property => 
+        selectedFilters.ageOfProperty.includes(property.furnishing_type)
+      );
     }
 
     // Amenities filter
     if (selectedFilters.amenities.length > 0) {
       filtered = filtered.filter(property => 
-        selectedFilters.amenities.some(amenity => 
-          property.amenities?.includes(amenity)
-        )
+        selectedFilters.amenities.some(amenity => {
+          // Check if amenity exists in the amenities object
+          if (property.amenities && typeof property.amenities === 'object') {
+            // Check in basic_amenities
+            if (property.amenities.basic_amenities?.[amenity]) return true;
+            // Check in luxury_amenities
+            if (property.amenities.luxury_amenities?.[amenity]) return true;
+            // Check in infrastructure
+            if (property.amenities.infrastructure?.[amenity]) return true;
+            // Check in services
+            if (property.amenities.services?.[amenity]) return true;
+            // Check in commercial_amenities
+            if (property.amenities.commercial_amenities?.[amenity]) return true;
+            // Check in project_specific
+            if (property.amenities.project_specific?.[amenity]) return true;
+            // Check in custom_amenities
+            if (property.amenities.custom_amenities?.[amenity]) return true;
+          }
+          return false;
+        })
       );
     }
 
@@ -444,9 +442,9 @@ export default function PropertiesListingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Sticky Search and Filter Header */}
-      <div className="bg-white shadow-sm border-b sticky top-0 left-0 right-0 z-10">
+      <div className="bg-white shadow-sm border-b sticky top-0 left-0 right-0 z-10 flex-shrink-0">
         <div className="w-full px-6 py-4">
           {/* Main Search and Filter Row */}
           <div className="flex items-center gap-2">
@@ -468,10 +466,19 @@ export default function PropertiesListingPage() {
               />
             </div>
 
-            {/* Filters Button */}
+            {/* Mobile Filter Toggle Button */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="lg:hidden flex items-center space-x-1 px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+            >
+              <FunnelIcon className="w-4 h-4 text-gray-500" />
+              <span className="text-sm font-medium text-gray-700">Filters</span>
+            </button>
+
+            {/* Desktop Filters Button */}
             <button
               onClick={() => setIsFilterModalOpen(true)}
-              className="flex items-center space-x-1 px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+              className="hidden lg:flex items-center space-x-1 px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
             >
               <FunnelIcon className="w-4 h-4 text-gray-500" />
               <span className="text-sm font-medium text-gray-700">Filters</span>
@@ -541,12 +548,18 @@ export default function PropertiesListingPage() {
         </div>
       </div>
 
-                        
-
-                  {/* Main Content - Layout with Sidebar */}
-                  <div className="flex">
-                    {/* Left Sidebar - Filters */}
-                    <div className={`lg:w-80 lg:block ${showFilters ? 'block' : 'hidden'} bg-white border-r border-gray-200`}>
+      {/* Main Content - Layout with Fixed Sidebar */}
+      <div className="flex-1 relative">
+        {/* Mobile Overlay */}
+        {showFilters && (
+          <div 
+            className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-20"
+            onClick={() => setShowFilters(false)}
+          />
+        )}
+        
+        {/* Left Sidebar - Fixed Filters */}
+        <div className={`lg:w-80 lg:block ${showFilters ? 'block' : 'hidden'} bg-white border-r border-gray-200 flex-shrink-0 lg:fixed lg:top-[120px] lg:left-0 lg:h-[calc(100vh-120px)] lg:overflow-y-auto fixed top-0 left-0 h-full z-30 w-80 overflow-y-auto`}>
           <div className="p-6">
             {/* Mobile Close Button */}
             <div className="flex items-center justify-between mb-6 lg:hidden">
@@ -613,11 +626,12 @@ export default function PropertiesListingPage() {
               </div>
               <div className="space-y-2">
                 {[
-                  { value: '1_rk_1_bhk', label: '1 BHK' },
+                  { value: '1_rk_1_bhk', label: '1 RK/1 BHK' },
                   { value: '2_bhk', label: '2 BHK' },
                   { value: '3_bhk', label: '3 BHK' },
                   { value: '4_bhk', label: '4 BHK' },
-                  { value: '5_bhk', label: '4+ BHK' }
+                  { value: '5_bhk', label: '5 BHK' },
+                  { value: '5_plus_bhk', label: '5+ BHK' }
                 ].map((option) => (
                   <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
                     <input
@@ -638,9 +652,27 @@ export default function PropertiesListingPage() {
                 <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
                   <BuildingOfficeIcon className="w-4 h-4 text-orange-500" />
                 </div>
-                <h4 className="font-semibold text-gray-900">Purchase Type</h4>
+                <h4 className="font-semibold text-gray-900">Property Type</h4>
               </div>
               <div className="space-y-2">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedFilters.propertyType.includes('resale')}
+                    onChange={() => handleCheckboxChange('propertyType', 'resale')}
+                    className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+                  />
+                  <span className="text-sm text-gray-700">Resale Properties</span>
+                </label>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedFilters.propertyType.includes('rental')}
+                    onChange={() => handleCheckboxChange('propertyType', 'rental')}
+                    className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+                  />
+                  <span className="text-sm text-gray-700">Rental Properties</span>
+                </label>
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -664,10 +696,9 @@ export default function PropertiesListingPage() {
               <div className="space-y-2">
                 {[
                   { value: 'ready', label: 'Ready to Move' },
-                  { value: '1year', label: 'In 1 Year' },
-                  { value: '2year', label: 'In 2 Years' },
-                  { value: '3year', label: 'In 3 Years' },
-                  { value: 'after3year', label: 'After 3 Years' }
+                  { value: 'under_construction', label: 'Under Construction' },
+                  { value: 'planning', label: 'Planning Phase' },
+                  { value: 'completed', label: 'Completed' }
                 ].map((option) => (
                   <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
                     <input
@@ -700,23 +731,40 @@ export default function PropertiesListingPage() {
                   />
                   <span className="text-sm text-gray-700">Developer</span>
                 </label>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedFilters.listedBy.includes('individual')}
+                    onChange={() => handleCheckboxChange('listedBy', 'individual')}
+                    className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+                  />
+                  <span className="text-sm text-gray-700">Individual Owner</span>
+                </label>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedFilters.listedBy.includes('agent')}
+                    onChange={() => handleCheckboxChange('listedBy', 'agent')}
+                    className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+                  />
+                  <span className="text-sm text-gray-700">Real Estate Agent</span>
+                </label>
               </div>
             </div>
 
-            {/* Age Of Property */}
+            {/* Furnishing Type */}
             <div className="mb-6">
               <div className="flex items-center space-x-2 mb-3">
                 <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
                   <ClockIcon className="w-4 h-4 text-orange-500" />
                 </div>
-                <h4 className="font-semibold text-gray-900">Age Of Property</h4>
+                <h4 className="font-semibold text-gray-900">Furnishing Type</h4>
               </div>
               <div className="space-y-2">
                 {[
-                  { value: 'less-than-1', label: 'Less than a Year' },
-                  { value: 'less-than-2', label: 'Less than 2 Years' },
-                  { value: 'less-than-3', label: 'Less than 3 Years' },
-                  { value: 'less-than-4', label: 'Less than 4 Years' }
+                  { value: 'fully_furnished', label: 'Fully Furnished' },
+                  { value: 'semi_furnished', label: 'Semi Furnished' },
+                  { value: 'un_furnished', label: 'Unfurnished' }
                 ].map((option) => (
                   <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
                     <input
@@ -741,11 +789,16 @@ export default function PropertiesListingPage() {
               </div>
               <div className="space-y-2">
                 {[
-                  { value: 'parking', label: 'Parking' },
-                  { value: 'swimming-pool', label: 'Swimming Pool' },
+                  { value: 'power_backup', label: 'Power Backup' },
                   { value: 'lift', label: 'Lift' },
-                  { value: 'gated-community', label: 'Gated Community' },
-                  { value: 'gas-pipeline', label: 'Gas Pipeline' }
+                  { value: 'security', label: 'Security' },
+                  { value: 'swimming_pool', label: 'Swimming Pool' },
+                  { value: 'club_house', label: 'Club House' },
+                  { value: 'gym', label: 'Gym' },
+                  { value: 'park', label: 'Park' },
+                  { value: 'gas_pipeline', label: 'Gas Pipeline' },
+                  { value: 'cctv_surveillance', label: 'CCTV Surveillance' },
+                  { value: 'visitor_parking', label: 'Visitor Parking' }
                 ].map((option) => (
                   <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
                     <input
@@ -788,7 +841,7 @@ export default function PropertiesListingPage() {
         </div>
 
         {/* Right Content - Properties Grid */}
-        <div className="flex-1">
+        <div className="flex-1 overflow-y-auto bg-gray-50 lg:ml-80">
           <div className="p-6">
                          {/* Results Header */}
              <div className="flex items-center justify-between mb-6">
@@ -802,7 +855,7 @@ export default function PropertiesListingPage() {
 
             {/* Properties Grid */}
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {Array.from({ length: 8 }).map((_, index) => (
                   <PropertyCardSkeleton key={index} />
                 ))}
@@ -840,7 +893,7 @@ export default function PropertiesListingPage() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {properties.map((property) => (
                   <PropertyCard key={property.id} property={property} />
                 ))}

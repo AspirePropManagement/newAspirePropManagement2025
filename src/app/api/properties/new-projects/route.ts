@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 
     // If userId is provided, filter by that user's properties
     if (userId) {
-      query = query.eq('user_id', userId);
+      query = query.eq('created_by', userId);
     }
 
     const { data, error } = await query;

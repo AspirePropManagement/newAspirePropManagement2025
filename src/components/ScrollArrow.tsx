@@ -57,7 +57,7 @@ export const ScrollArrow: React.FC = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-8 right-8 z-50">
+    <div className="fixed bottom-24 right-6 z-40">
       <button
         onClick={handleScrollClick}
         className="group relative w-12 h-12 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-gray-200"

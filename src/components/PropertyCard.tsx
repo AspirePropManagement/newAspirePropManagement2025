@@ -71,18 +71,56 @@ export function PropertyCard({ property }: PropertyCardProps) {
    * Gets property images for carousel
    */
   const getPropertyImages = () => {
-    // Use images from property data if available
-    if (property.images && property.images.length > 0) {
-      return property.images;
+    const images: string[] = [];
+    
+    // First, try to use the direct images array
+    if (property.images && Array.isArray(property.images) && property.images.length > 0) {
+      return property.images.filter(img => img && img.trim() !== '');
     }
-    if (property.property_images?.general_photos?.exterior?.[0]) {
-      return property.property_images.general_photos.exterior;
+    
+    // Then try to extract images from the property_images JSONB structure
+    if (property.property_images && typeof property.property_images === 'object') {
+      // Check general_photos
+      if (property.property_images.general_photos) {
+        if (property.property_images.general_photos.exterior && Array.isArray(property.property_images.general_photos.exterior)) {
+          images.push(...property.property_images.general_photos.exterior.filter(img => img && img.trim() !== ''));
+        }
+        if (property.property_images.general_photos.interior && Array.isArray(property.property_images.general_photos.interior)) {
+          images.push(...property.property_images.general_photos.interior.filter(img => img && img.trim() !== ''));
+        }
+        if (property.property_images.general_photos.bedrooms && Array.isArray(property.property_images.general_photos.bedrooms)) {
+          images.push(...property.property_images.general_photos.bedrooms.filter(img => img && img.trim() !== ''));
+        }
+        if (property.property_images.general_photos.kitchen && Array.isArray(property.property_images.general_photos.kitchen)) {
+          images.push(...property.property_images.general_photos.kitchen.filter(img => img && img.trim() !== ''));
+        }
+        if (property.property_images.general_photos.bathrooms && Array.isArray(property.property_images.general_photos.bathrooms)) {
+          images.push(...property.property_images.general_photos.bathrooms.filter(img => img && img.trim() !== ''));
+        }
+        if (property.property_images.general_photos.amenities && Array.isArray(property.property_images.general_photos.amenities)) {
+          images.push(...property.property_images.general_photos.amenities.filter(img => img && img.trim() !== ''));
+        }
+      }
+      
+      // Check floor_plans
+      if (property.property_images.floor_plans) {
+        if (property.property_images.floor_plans.floor_plan && Array.isArray(property.property_images.floor_plans.floor_plan)) {
+          images.push(...property.property_images.floor_plans.floor_plan.filter(img => img && img.trim() !== ''));
+        }
+        if (property.property_images.floor_plans.site_plan && Array.isArray(property.property_images.floor_plans.site_plan)) {
+          images.push(...property.property_images.floor_plans.site_plan.filter(img => img && img.trim() !== ''));
+        }
+        if (property.property_images.floor_plans.blueprint && Array.isArray(property.property_images.floor_plans.blueprint)) {
+          images.push(...property.property_images.floor_plans.blueprint.filter(img => img && img.trim() !== ''));
+        }
+        if (property.property_images.floor_plans.elevation && Array.isArray(property.property_images.floor_plans.elevation)) {
+          images.push(...property.property_images.floor_plans.elevation.filter(img => img && img.trim() !== ''));
+        }
+      }
     }
-    if (property.property_images?.general_photos?.interior?.[0]) {
-      return property.property_images.general_photos.interior;
-    }
-    // Return default placeholder images
-    return ['/api/placeholder/400/300'];
+    
+    // Return images if we found any, otherwise return empty array
+    return images.length > 0 ? images : [];
   };
 
   /**
@@ -90,13 +128,13 @@ export function PropertyCard({ property }: PropertyCardProps) {
    */
   const getPropertyTitle = () => {
     if (property.type === 'resale') {
-      return property.society_name || 'Resale Property';
+      return property.title || property.society_name || 'Resale Property';
     } else if (property.type === 'rental') {
-      return property.society_name || 'Rental Property';
+      return property.title || property.society_name || 'Rental Property';
     } else if (property.type === 'new_project') {
-      return property.project_name || 'New Project';
+      return property.title || property.project_name || 'New Project';
     }
-    return 'Property';
+    return property.title || 'Property';
   };
 
   /**
@@ -168,7 +206,8 @@ export function PropertyCard({ property }: PropertyCardProps) {
   const images = getPropertyImages();
 
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+    <Link href={`/properties/${property.type}/${property.id}`} className="block">
+      <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer">
       {/* Property Image */}
       <div className="relative h-48 bg-gray-200">
         {images.length > 0 ? (
@@ -182,23 +221,34 @@ export function PropertyCard({ property }: PropertyCardProps) {
             }}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-200">
-            <HomeIcon className="w-12 h-12 text-gray-400" />
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200">
+            <HomeIcon className="w-12 h-12 text-gray-400 mb-2" />
+            <span className="text-sm text-gray-500">No Image Available</span>
           </div>
         )}
 
         {/* Image Navigation */}
         {images.length > 1 && (
-          <div className="absolute inset-0 flex items-center justify-between p-2 opacity-0 hover:opacity-100 transition-opacity">
+          <div className="absolute inset-0 flex items-center justify-between p-2 opacity-0 hover:opacity-100 transition-opacity duration-300">
             <button
-              onClick={() => setImageIndex(prev => prev === 0 ? images.length - 1 : prev - 1)}
-              className="w-8 h-8 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setImageIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
+              }}
+              className="w-8 h-8 bg-black bg-opacity-60 text-white rounded-full flex items-center justify-center hover:bg-opacity-80 transition-all duration-200 shadow-lg"
+              title="Previous image"
             >
               ‹
             </button>
             <button
-              onClick={() => setImageIndex(prev => (prev + 1) % images.length)}
-              className="w-8 h-8 bg-black bg-opacity-50 text-white rounded-full flex items-center justify-center hover:bg-opacity-70"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setImageIndex(prev => (prev + 1) % images.length);
+              }}
+              className="w-8 h-8 bg-black bg-opacity-60 text-white rounded-full flex items-center justify-center hover:bg-opacity-80 transition-all duration-200 shadow-lg"
+              title="Next image"
             >
               ›
             </button>
@@ -231,14 +281,21 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
         {/* Image Dots */}
         {images.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1">
+          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1 bg-black bg-opacity-30 rounded-full px-2 py-1">
             {images.map((_: any, index: number) => (
               <button
                 key={index}
-                onClick={() => setImageIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === imageIndex ? 'bg-white' : 'bg-white bg-opacity-50'
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setImageIndex(index);
+                }}
+                className={`w-2 h-2 rounded-full transition-all duration-200 hover:scale-125 ${
+                  index === imageIndex 
+                    ? 'bg-white shadow-md' 
+                    : 'bg-white bg-opacity-60 hover:bg-opacity-80'
                 }`}
+                title={`View image ${index + 1}`}
               />
             ))}
           </div>
@@ -305,15 +362,25 @@ export function PropertyCard({ property }: PropertyCardProps) {
         <div className="flex space-x-2">
           <Link 
             href={`/properties/${property.type}/${property.id}`}
+            onClick={(e) => e.stopPropagation()}
             className="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-center py-2 px-4 rounded-lg font-medium transition-colors"
           >
             View Details
           </Link>
-          <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              // You can add quick view functionality here
+            }}
+            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            title="Quick View"
+          >
             <EyeIcon className="w-5 h-5 text-gray-600" />
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </Link>
   );
 }

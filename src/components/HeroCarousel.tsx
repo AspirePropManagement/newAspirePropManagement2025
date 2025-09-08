@@ -7,6 +7,62 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
 /**
+ * TypewriterText component for animated text display
+ * Creates a typewriter effect by gradually revealing characters
+ */
+interface TypewriterTextProps {
+  text: string;
+  className?: string;
+  delay?: number;
+  speed?: number;
+  resetTrigger?: number;
+}
+
+const TypewriterText: React.FC<TypewriterTextProps> = ({ 
+  text, 
+  className = '', 
+  delay = 0, 
+  speed = 50,
+  resetTrigger = 0
+}) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Reset animation when resetTrigger changes (image changes)
+  useEffect(() => {
+    setDisplayedText('');
+    setCurrentIndex(0);
+  }, [resetTrigger]);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, speed);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text, speed]);
+
+  useEffect(() => {
+    if (delay > 0) {
+      const timeout = setTimeout(() => {
+        setCurrentIndex(0);
+        setDisplayedText('');
+      }, delay);
+      return () => clearTimeout(timeout);
+    }
+  }, [delay]);
+
+  return (
+    <span className={className}>
+      {displayedText}
+      <span className="animate-pulse">|</span>
+    </span>
+  );
+};
+
+/**
  * Hero Carousel component for the landing page
  * Displays uploaded images in a rotating carousel format with mouse animation and filter card
  */
@@ -115,30 +171,29 @@ export const HeroCarousel: React.FC = () => {
             
             {/* Image Overlay with Content */}
             <div 
-              className="absolute inset-0 flex items-center justify-center"
+              className="absolute inset-0 flex items-center"
               style={{
-                background: 'linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6))'
+                background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3))'
               }}
             >
-              <div className="text-center text-white px-6 max-w-4xl">
-                <h1 className="text-5xl font-bold mb-4">
-                  {image.title || "Discover Your Next Journey"}
-                </h1>
-                {image.description && (
-                  <p className="text-xl mb-8 text-gray-200">
-                    {image.description}
-                  </p>
-                )}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link href="/properties">
-                    <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-200 hover:scale-105 shadow-lg">
-                      Book Now
-                    </button>
-                  </Link>
-                  <button className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-200 hover:scale-105">
-                    Learn More
-                  </button>
+              <div className="text-left text-white px-8 max-w-2xl ml-16 md:ml-20 lg:ml-24">
+                <div className="mb-6">
+                  <TypewriterText 
+                    text={image.title || "Discover Your Next Journey"}
+                    className="text-5xl font-bold block"
+                    resetTrigger={currentIndex}
+                  />
                 </div>
+                {image.description && (
+                  <div>
+                    <TypewriterText 
+                      text={image.description}
+                      className="text-xl text-gray-200 block"
+                      delay={1000}
+                      resetTrigger={currentIndex}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>

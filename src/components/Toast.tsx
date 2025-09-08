@@ -1,84 +1,83 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import React, { useEffect } from 'react';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 interface ToastProps {
-  message: string
-  type: 'success' | 'error' | 'info' | 'warning'
-  duration?: number
-  onClose: () => void
+  message: string;
+  type?: 'success' | 'error' | 'info';
+  isVisible: boolean;
+  onClose: () => void;
+  duration?: number;
+  isNewest?: boolean;
 }
 
-export function Toast({ message, type, duration = 5000, onClose }: ToastProps) {
-  const [isVisible, setIsVisible] = useState(true)
-
+/**
+ * Toast notification component for user feedback
+ * Shows success, error, or info messages with auto-dismiss
+ */
+export function Toast({ 
+  message, 
+  type = 'success', 
+  isVisible, 
+  onClose, 
+  duration = 3000,
+  isNewest = true
+}: ToastProps) {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(false)
-      setTimeout(onClose, 300) // Wait for fade out animation
-    }, duration)
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, duration);
 
-    return () => clearTimeout(timer)
-  }, [duration, onClose])
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, duration, onClose]);
+
+  if (!isVisible) return null;
 
   const getToastStyles = () => {
-    const baseStyles = "fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform"
-    
     switch (type) {
       case 'success':
-        return `${baseStyles} bg-green-500 text-white`
+        return 'bg-green-500 text-white';
       case 'error':
-        return `${baseStyles} bg-red-500 text-white`
-      case 'warning':
-        return `${baseStyles} bg-yellow-500 text-white`
+        return 'bg-red-500 text-white';
       case 'info':
-        return `${baseStyles} bg-blue-500 text-white`
+        return 'bg-blue-500 text-white';
       default:
-        return `${baseStyles} bg-gray-500 text-white`
+        return 'bg-gray-500 text-white';
     }
-  }
+  };
 
   const getIcon = () => {
     switch (type) {
       case 'success':
-        return '✅'
+        return <CheckIcon className="w-5 h-5" />;
       case 'error':
-        return '❌'
-      case 'warning':
-        return '⚠️'
-      case 'info':
-        return 'ℹ️'
+        return <XMarkIcon className="w-5 h-5" />;
       default:
-        return '💬'
+        return null;
     }
-  }
-
-  if (!isVisible) {
-    return (
-      <div className={`${getToastStyles()} opacity-0 scale-95`}>
-        <div className="flex items-center space-x-2">
-          <span className="text-lg">{getIcon()}</span>
-          <span className="font-medium">{message}</span>
-        </div>
-      </div>
-    )
-  }
+  };
 
   return (
-    <div className={`${getToastStyles()} opacity-100 scale-100`}>
-      <div className="flex items-center space-x-2">
-        <span className="text-lg">{getIcon()}</span>
-        <span className="font-medium">{message}</span>
+    <div className={`transform transition-all duration-300 ease-out ${isNewest ? 'animate-slide-up' : 'animate-slide-down'}`}>
+      <div className={`${getToastStyles()} px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2 min-w-[200px] max-w-[400px]`}>
+        {getIcon() && (
+          <div className="flex-shrink-0">
+            {getIcon()}
+          </div>
+        )}
+        <div className="flex-1 text-sm font-medium">
+          {message}
+        </div>
         <button
-          onClick={() => {
-            setIsVisible(false)
-            setTimeout(onClose, 300)
-          }}
-          className="ml-4 text-white hover:text-gray-200 transition-colors"
+          onClick={onClose}
+          className="flex-shrink-0 ml-2 hover:opacity-75 transition-opacity"
         >
-          ✕
+          <XMarkIcon className="w-4 h-4" />
         </button>
       </div>
     </div>
-  )
+  );
 }

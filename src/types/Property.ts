@@ -3,20 +3,57 @@
  * Implements the Single Responsibility Principle by only defining property data structure
  */
 export interface PropertyImages {
+  // General Property Photos
   general_photos?: {
     exterior?: string[];
     interior?: string[];
     bedrooms?: string[];
     kitchen?: string[];
     bathrooms?: string[];
+    living_dining?: string[];
+    balcony?: string[];
     amenities?: string[];
   };
+  
+  // Floor Plans and Layouts
   floor_plans?: {
     floor_plan?: string[];
     site_plan?: string[];
+    master_plan?: string[];
     blueprint?: string[];
     elevation?: string[];
-    legal_docs?: string[];
+    layout_2d?: string[];
+    layout_3d?: string[];
+  };
+  
+  // Project Specific Images (for New Projects)
+  project_images?: {
+    club_house?: string[];
+    swimming_pool?: string[];
+    gym?: string[];
+    children_play_area?: string[];
+    park?: string[];
+    security_gate?: string[];
+    reception_lounge?: string[];
+    banquet_hall?: string[];
+    retail_area?: string[];
+    parking_area?: string[];
+  };
+  
+  // Legal and Documentation
+  legal_docs?: {
+    rera_certificate?: string[];
+    approval_documents?: string[];
+    legal_documents?: string[];
+    brochures?: string[];
+  };
+  
+  // Virtual Tours and Videos
+  virtual_content?: {
+    virtual_tour?: string[];
+    video_walkthrough?: string[];
+    drone_footage?: string[];
+    promotional_videos?: string[];
   };
 }
 
