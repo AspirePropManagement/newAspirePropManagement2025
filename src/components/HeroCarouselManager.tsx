@@ -314,10 +314,6 @@ export const HeroCarouselManager: React.FC = () => {
           <div className="p-6 text-center text-gray-500">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <div>Loading images...</div>
-            <div className="text-xs text-gray-400 mt-2">This may take a few moments</div>
-            <div className="mt-4 text-sm text-gray-500">
-              If loading takes too long, check your database connection
-            </div>
           </div>
         ) : images.length === 0 ? (
           <div className="p-6 text-center text-gray-500">

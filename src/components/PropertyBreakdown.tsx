@@ -1,5 +1,6 @@
 import React from 'react'
 import { DashboardStats as DashboardStatsType } from '@/lib/dashboardService'
+import { PropertyBreakdownSkeleton } from './skeletons'
 
 interface PropertyBreakdownProps {
   stats: DashboardStatsType | null
@@ -12,19 +13,7 @@ interface PropertyBreakdownProps {
  */
 export default function PropertyBreakdown({ stats, isLoading }: PropertyBreakdownProps) {
   if (isLoading) {
-    return (
-      <div className="bg-white p-4 lg:p-6 rounded-lg shadow-md border border-gray-200">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Property Breakdown</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[...Array(3)].map((_, index) => (
-            <div key={index} className="animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
-              <div className="h-8 bg-gray-200 rounded w-16"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    )
+    return <PropertyBreakdownSkeleton />
   }
 
   if (!stats) {

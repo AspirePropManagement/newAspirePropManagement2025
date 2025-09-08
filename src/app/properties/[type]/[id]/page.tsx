@@ -26,6 +26,12 @@ import { ShareButtonDropdown } from '@/components/ShareButtonDropdown';
 import { ShareModal } from '@/components/ShareModal';
 import { useToast } from '@/hooks/useToast';
 import { ToastContainer } from '@/components/ToastContainer';
+import { 
+  PropertyDetailsSkeleton, 
+  PropertyImageGallerySkeleton,
+  PropertyAmenitiesSkeleton,
+  PropertyContactCardSkeleton
+} from '@/components/skeletons';
 
 interface PropertyDetail {
   id: string;
@@ -407,11 +413,7 @@ export default function PropertyDetailPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    );
+    return <PropertyDetailsSkeleton />;
   }
 
   if (error || !property) {

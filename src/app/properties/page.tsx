@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { PropertyForm } from '@/components/PropertyForm';
+import { PropertyFormSkeleton } from '@/components/skeletons';
 import { 
   HomeIcon, 
   KeyIcon, 

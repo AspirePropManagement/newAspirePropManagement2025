@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { PropertyCard } from '@/components/PropertyCard';
 import { PropertyCardSkeleton } from '@/components/PropertyCardSkeleton';
+import { FilterModalSkeleton } from '@/components/skeletons';
 import FilterModal from '@/components/FilterModal';
 import { 
   MagnifyingGlassIcon, 

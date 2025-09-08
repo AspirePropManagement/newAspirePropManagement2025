@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { PropertyImageManager, PropertyImageManagerRef } from './PropertyImageManager';
 import PropertyAmenitiesManager from './PropertyAmenitiesManager';
+import { PropertyFormSkeleton } from './skeletons';
 import { PhotoIcon, DocumentIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { Slider } from '@/components/ui/slider';
@@ -863,6 +864,10 @@ export function PropertyForm({
       restoreImages();
     }
   }, [currentStep]);
+
+  if (isLoading) {
+    return <PropertyFormSkeleton />;
+  }
 
   return (
     <form onSubmit={handleFormSubmit} className="space-y-6">

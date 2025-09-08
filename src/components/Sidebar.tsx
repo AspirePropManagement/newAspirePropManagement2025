@@ -16,7 +16,8 @@ import {
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
   ListBulletIcon,
-  PhotoIcon
+  PhotoIcon,
+  DocumentTextIcon
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { HeroCarouselImage } from '../types/HeroCarousel';
+import { HeroCarouselSkeleton } from './skeletons';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
@@ -124,14 +125,7 @@ export const HeroCarousel: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="relative h-screen bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading carousel...</p>
-        </div>
-      </div>
-    );
+    return <HeroCarouselSkeleton />;
   }
 
   if (error || images.length === 0) {

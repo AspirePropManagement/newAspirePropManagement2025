@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { RecentActivity as RecentActivityType } from '@/lib/dashboardService'
+import { RecentActivitySkeleton } from './skeletons'
 
 interface RecentActivityProps {
   activities: RecentActivityType[]
@@ -15,23 +16,7 @@ export default function RecentActivity({ activities, isLoading }: RecentActivity
   const [isExpanded, setIsExpanded] = useState(false)
 
   if (isLoading) {
-    return (
-      <div className="bg-white p-4 lg:p-6 rounded-lg shadow-md border border-gray-200">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Activity</h2>
-        <div className="space-y-4">
-          {[...Array(5)].map((_, index) => (
-            <div key={index} className="flex items-center space-x-3 animate-pulse">
-              <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-              <div className="flex-1">
-                <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-48"></div>
-              </div>
-              <div className="h-3 bg-gray-200 rounded w-20"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    )
+    return <RecentActivitySkeleton />
   }
 
   if (!activities || activities.length === 0) {
