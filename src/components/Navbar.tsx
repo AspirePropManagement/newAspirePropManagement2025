@@ -155,10 +155,13 @@ export default function Navbar() {
              <Link href="/services" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
                Services
              </Link>
+             <Link href="/contact" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
+               Enquiry
+             </Link>
              <div className="flex items-center space-x-2">
-               <a href="#" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
+               <Link href="/post-property" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
                  Post Property
-               </a>
+               </Link>
                <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                  FREE
                </span>
@@ -390,7 +393,17 @@ export default function Navbar() {
                 </svg>
                 Services
               </Link>
-             <div className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+             <Link href="/contact" className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+               <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+               </svg>
+               Enquiry
+             </Link>
+             <Link 
+               href="/post-property" 
+               className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium"
+               onClick={closeMobileMenu}
+             >
                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                </svg>
@@ -398,7 +411,7 @@ export default function Navbar() {
                <span className="ml-auto bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                  FREE
                </span>
-             </div>
+             </Link>
            </nav>
 
                      {/* Mobile Contact Info */}

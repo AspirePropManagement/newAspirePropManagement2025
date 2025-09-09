@@ -6,7 +6,6 @@ import {
   HomeIcon, 
   CurrencyRupeeIcon,
   HeartIcon,
-  EyeIcon,
   StarIcon
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
@@ -75,7 +74,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
     
     // First, try to use the direct images array
     if (property.images && Array.isArray(property.images) && property.images.length > 0) {
-      return property.images.filter(img => img && img.trim() !== '');
+      return property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
     }
     
     // Then try to extract images from the property_images JSONB structure
@@ -83,38 +82,38 @@ export function PropertyCard({ property }: PropertyCardProps) {
       // Check general_photos
       if (property.property_images.general_photos) {
         if (property.property_images.general_photos.exterior && Array.isArray(property.property_images.general_photos.exterior)) {
-          images.push(...property.property_images.general_photos.exterior.filter(img => img && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.exterior.filter(img => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.general_photos.interior && Array.isArray(property.property_images.general_photos.interior)) {
-          images.push(...property.property_images.general_photos.interior.filter(img => img && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.interior.filter(img => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.general_photos.bedrooms && Array.isArray(property.property_images.general_photos.bedrooms)) {
-          images.push(...property.property_images.general_photos.bedrooms.filter(img => img && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.bedrooms.filter(img => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.general_photos.kitchen && Array.isArray(property.property_images.general_photos.kitchen)) {
-          images.push(...property.property_images.general_photos.kitchen.filter(img => img && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.kitchen.filter(img => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.general_photos.bathrooms && Array.isArray(property.property_images.general_photos.bathrooms)) {
-          images.push(...property.property_images.general_photos.bathrooms.filter(img => img && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.bathrooms.filter(img => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.general_photos.amenities && Array.isArray(property.property_images.general_photos.amenities)) {
-          images.push(...property.property_images.general_photos.amenities.filter(img => img && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.amenities.filter(img => img && typeof img === 'string' && img.trim() !== ''));
         }
       }
       
       // Check floor_plans
       if (property.property_images.floor_plans) {
         if (property.property_images.floor_plans.floor_plan && Array.isArray(property.property_images.floor_plans.floor_plan)) {
-          images.push(...property.property_images.floor_plans.floor_plan.filter(img => img && img.trim() !== ''));
+          images.push(...property.property_images.floor_plans.floor_plan.filter(img => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.floor_plans.site_plan && Array.isArray(property.property_images.floor_plans.site_plan)) {
-          images.push(...property.property_images.floor_plans.site_plan.filter(img => img && img.trim() !== ''));
+          images.push(...property.property_images.floor_plans.site_plan.filter(img => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.floor_plans.blueprint && Array.isArray(property.property_images.floor_plans.blueprint)) {
-          images.push(...property.property_images.floor_plans.blueprint.filter(img => img && img.trim() !== ''));
+          images.push(...property.property_images.floor_plans.blueprint.filter(img => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.floor_plans.elevation && Array.isArray(property.property_images.floor_plans.elevation)) {
-          images.push(...property.property_images.floor_plans.elevation.filter(img => img && img.trim() !== ''));
+          images.push(...property.property_images.floor_plans.elevation.filter(img => img && typeof img === 'string' && img.trim() !== ''));
         }
       }
     }
@@ -367,17 +366,6 @@ export function PropertyCard({ property }: PropertyCardProps) {
           >
             View Details
           </Link>
-          <button 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              // You can add quick view functionality here
-            }}
-            className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            title="Quick View"
-          >
-            <EyeIcon className="w-5 h-5 text-gray-600" />
-          </button>
         </div>
       </div>
       </div>

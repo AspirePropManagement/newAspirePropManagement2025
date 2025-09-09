@@ -59,18 +59,12 @@ export default function ServicesPage() {
             <p className="text-xl md:text-2xl text-orange-100 mb-8 leading-relaxed">
               Comprehensive solutions to maximize your property investment potential
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Link 
                 href="/properties-listing"
                 className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
               >
                 Browse Properties
-              </Link>
-              <Link 
-                href="/contact"
-                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors duration-300"
-              >
-                Get Free Consultation
               </Link>
             </div>
           </div>
@@ -145,33 +139,6 @@ export default function ServicesPage() {
         </div>
       </div>
 
-      {/* CTA Section */}
-      <div className="bg-orange-500 py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center text-white">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Get Started?
-            </h2>
-            <p className="text-xl text-orange-100 mb-8">
-              Contact our expert team today for a free consultation and discover how we can help you achieve your real estate goals.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                href="/contact"
-                className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
-              >
-                Schedule Consultation
-              </Link>
-              <a 
-                href="tel:+918080190190"
-                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors duration-300"
-              >
-                Call +91 8080 190190
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }

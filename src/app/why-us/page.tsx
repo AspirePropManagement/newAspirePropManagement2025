@@ -165,18 +165,12 @@ export default function WhyUsPage() {
               We're not just another property platform. We're your trusted partner in real estate success, 
               combining technology, expertise, and personalized service to deliver exceptional results.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Link 
                 href="/properties-listing"
                 className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300"
               >
                 Browse Properties
-              </Link>
-              <Link 
-                href="/contact"
-                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors duration-300"
-              >
-                Get Free Consultation
               </Link>
             </div>
           </div>

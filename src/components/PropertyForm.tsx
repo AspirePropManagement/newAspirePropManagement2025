@@ -9,6 +9,10 @@ import Image from 'next/image';
 import { Slider } from '@/components/ui/slider';
 import { PropertyAmenities } from '@/types/PropertyAmenities';
 
+// Common input styling
+const inputClass = "w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-lg";
+const selectClass = "w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-lg bg-white";
+
 // Price Range Slider Component using shadcn/ui
 const PriceRangeSlider = ({ 
   value, 
@@ -86,7 +90,7 @@ const PriceRangeSlider = ({
           min={min}
           max={max}
           step={step}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={selectClass}
           placeholder={placeholder}
           required
         />
@@ -106,6 +110,8 @@ interface PropertyFormProps {
   onSubmit: (formData: any) => void;
   onCancel: () => void;
   isLoading: boolean;
+  onNext?: () => void;
+  onPrevious?: () => void;
 }
 
 export function PropertyForm({ 
@@ -113,7 +119,9 @@ export function PropertyForm({
   currentStep, 
   onSubmit, 
   onCancel, 
-  isLoading 
+  isLoading,
+  onNext,
+  onPrevious
 }: PropertyFormProps) {
   const [formData, setFormData] = useState({
     // Basic Information (Step 1)
@@ -280,7 +288,7 @@ export function PropertyForm({
   };
 
   const renderBasicInformation = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           {propertyType === 'rental' ? 'Owner Name' : 'Seller Name'} *
@@ -289,7 +297,7 @@ export function PropertyForm({
           type="text"
           value={formData.sellerName}
           onChange={(e) => handleInputChange('sellerName', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
           placeholder={`Enter ${propertyType === 'rental' ? 'owner' : 'seller'} name`}
           required
         />
@@ -303,7 +311,7 @@ export function PropertyForm({
           type="email"
           value={formData.sellerEmail}
           onChange={(e) => handleInputChange('sellerEmail', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
           placeholder="Enter email address"
           required
         />
@@ -321,7 +329,7 @@ export function PropertyForm({
             const value = e.target.value.replace(/\D/g, '').slice(0, 10);
             handleInputChange('contactNumber', value);
           }}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
           placeholder="Enter 10-digit contact number"
           maxLength={10}
           pattern="[0-9]{10}"
@@ -356,7 +364,7 @@ export function PropertyForm({
             const value = e.target.value.replace(/\D/g, '').slice(0, 10);
             handleInputChange('alternateNumber', value);
           }}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
           placeholder="Enter 10-digit alternate number (optional)"
           maxLength={10}
           pattern="[0-9]{10}"
@@ -385,7 +393,7 @@ export function PropertyForm({
         <select
           value={formData.bhkType}
           onChange={(e) => handleInputChange('bhkType', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={selectClass}
           required
         >
           <option value="">Select BHK Type</option>
@@ -405,7 +413,7 @@ export function PropertyForm({
         <select
           value={formData.propertyType}
           onChange={(e) => handleInputChange('propertyType', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={selectClass}
           required
         >
           <option value="">Select Property Type</option>
@@ -423,7 +431,7 @@ export function PropertyForm({
           type="text"
           value={formData.location}
           onChange={(e) => handleInputChange('location', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
           placeholder="Enter property location"
           required
         />
@@ -460,7 +468,7 @@ export function PropertyForm({
   );
 
   const renderPropertyDetails = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Society Name
@@ -469,7 +477,7 @@ export function PropertyForm({
           type="text"
           value={formData.societyName}
           onChange={(e) => handleInputChange('societyName', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
           placeholder="Enter society name"
         />
       </div>
@@ -482,7 +490,7 @@ export function PropertyForm({
           type="text"
           value={formData.flatNo}
           onChange={(e) => handleInputChange('flatNo', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
           placeholder="Enter flat/unit number"
         />
       </div>
@@ -495,7 +503,7 @@ export function PropertyForm({
           type="text"
           value={formData.wingNo}
           onChange={(e) => handleInputChange('wingNo', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
           placeholder="Enter wing number"
         />
       </div>
@@ -508,7 +516,7 @@ export function PropertyForm({
           type="text"
           value={formData.floorNo}
           onChange={(e) => handleInputChange('floorNo', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
           placeholder="Enter floor number"
         />
       </div>
@@ -520,7 +528,7 @@ export function PropertyForm({
         <select
           value={formData.facing}
           onChange={(e) => handleInputChange('facing', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={selectClass}
         >
           <option value="">Select Facing</option>
           <option value="north">North</option>
@@ -541,7 +549,7 @@ export function PropertyForm({
         <select
           value={formData.parkingType}
           onChange={(e) => handleInputChange('parkingType', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={selectClass}
         >
           <option value="">Select Parking Type</option>
           <option value="covered_parking">Covered Parking</option>
@@ -557,7 +565,7 @@ export function PropertyForm({
         <select
           value={formData.furnishingType}
           onChange={(e) => handleInputChange('furnishingType', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={selectClass}
           required
         >
           <option value="">Select Furnishing Type</option>
@@ -575,7 +583,7 @@ export function PropertyForm({
           type="number"
           value={formData.squareFeet}
           onChange={(e) => handleInputChange('squareFeet', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={selectClass}
           placeholder="Enter square feet"
         />
       </div>
@@ -588,7 +596,7 @@ export function PropertyForm({
           type="number"
           value={formData.carpetArea}
           onChange={(e) => handleInputChange('carpetArea', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={selectClass}
           placeholder="Enter carpet area"
         />
       </div>
@@ -603,7 +611,7 @@ export function PropertyForm({
               type="number"
               value={formData.depositAmount}
               onChange={(e) => handleInputChange('depositAmount', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={selectClass}
               placeholder="Enter deposit amount"
             />
           </div>
@@ -650,7 +658,7 @@ export function PropertyForm({
           value={formData.notes}
           onChange={(e) => handleInputChange('notes', e.target.value)}
           rows={4}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={selectClass}
           placeholder="Additional details about the property..."
         />
       </div>
@@ -870,29 +878,90 @@ export function PropertyForm({
   }
 
   return (
-    <form onSubmit={handleFormSubmit} className="space-y-6">
-      {renderStepContent()}
-      
-      {/* Submit button for step 5 */}
-      {currentStep === 5 && (
-        <div className="flex justify-end pt-6 border-t border-gray-200">
-          <button
-            type="submit"
-            disabled={isLoading}
-            onClick={() => console.log('Submit button clicked!')}
-            className="px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white inline mr-2"></div>
-                Submitting...
-              </>
-            ) : (
-              'Submit Property'
-            )}
-          </button>
+    <div className="max-w-6xl mx-auto">
+      {/* Step Navigation */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            {[1, 2, 3, 4, 5].map((step) => (
+              <div key={step} className="flex items-center">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
+                  currentStep >= step 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-gray-200 text-gray-600'
+                }`}>
+                  {step}
+                </div>
+                {step < 5 && (
+                  <div className={`w-16 h-1 mx-2 ${
+                    currentStep > step ? 'bg-blue-600' : 'bg-gray-200'
+                  }`} />
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="text-sm text-gray-600">
+            Step {currentStep} of 5
+          </div>
         </div>
-      )}
+        <div className="mt-4">
+          <div className="text-sm font-medium text-gray-700">
+            {currentStep === 1 && 'Basic Information'}
+            {currentStep === 2 && 'Property Details'}
+            {currentStep === 3 && 'Images & Documents'}
+            {currentStep === 4 && 'Amenities'}
+            {currentStep === 5 && 'Review & Submit'}
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={handleFormSubmit} className="space-y-8">
+        {renderStepContent()}
+      
+      {/* Navigation and Submit buttons */}
+      <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+        {currentStep > 1 && (
+          <button
+            type="button"
+            onClick={onPrevious}
+            className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+          >
+            ← Previous
+          </button>
+        )}
+        
+        {currentStep < 5 && (
+          <div className="ml-auto">
+            <button
+              type="button"
+              onClick={onNext}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              Next →
+            </button>
+          </div>
+        )}
+        
+        {currentStep === 5 && (
+          <div className="ml-auto">
+            <button
+              type="submit"
+              disabled={isLoading}
+              onClick={() => console.log('Submit button clicked!')}
+              className="px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white inline mr-2"></div>
+                  Submitting...
+                </>
+              ) : (
+                'Submit Property'
+              )}
+            </button>
+          </div>
+        )}
+      </div>
       
       {/* Debug info */}
       {currentStep === 5 && (
@@ -900,6 +969,7 @@ export function PropertyForm({
           Debug: Step {currentStep}, Form has {Object.keys(formData).length} fields
         </div>
       )}
-    </form>
+      </form>
+    </div>
   );
 }
