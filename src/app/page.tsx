@@ -6,10 +6,16 @@ import Link from 'next/link';
 import { HeroCarousel } from '@/components/HeroCarousel';
 import { FilterCard } from '@/components/FilterCard';
 import { ScrollArrow } from '@/components/ScrollArrow';
+import { NewProjectsCarousel } from '@/components/NewProjectsCarousel';
+import { useNewProjects } from '@/hooks/useNewProjects';
+import { RentalPropertiesCarousel } from '@/components/RentalPropertiesCarousel';
+import { useRentalProperties } from '@/hooks/useRentalProperties';
 
 
 export default function HomePage() {
   const { loading } = useAuth();
+  const { projects: newProjects, loading: projectsLoading } = useNewProjects();
+  const { properties: rentalProperties, loading: rentalLoading } = useRentalProperties();
 
   // Show loading state
   if (loading) {
@@ -132,6 +138,12 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* New Projects Section */}
+      <NewProjectsCarousel projects={newProjects} />
+
+      {/* Rental Properties Section */}
+      <RentalPropertiesCarousel properties={rentalProperties} />
 
       {/* Scroll Arrow */}
       <ScrollArrow />

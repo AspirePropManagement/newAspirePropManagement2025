@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { PropertyCard } from '@/components/PropertyCard';
 import { PropertyCardSkeleton } from '@/components/PropertyCardSkeleton';
@@ -27,6 +28,7 @@ import {
  * Similar to PropertyPistol's property search interface
  */
 export default function PropertiesListingPage() {
+  const searchParams = useSearchParams();
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,6 +51,22 @@ export default function PropertiesListingPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage] = useState(12);
+
+  // Initialize filters from URL parameters
+  useEffect(() => {
+    const type = searchParams.get('type');
+    const location = searchParams.get('location');
+    const budget = searchParams.get('budget');
+    
+    if (type || location || budget) {
+      setSelectedFilters(prev => ({
+        ...prev,
+        propertyType: type ? [type] : prev.propertyType,
+        location: location || prev.location,
+        budget: budget ? [budget] : prev.budget
+      }));
+    }
+  }, [searchParams]);
 
   // Fetch properties on component mount
   useEffect(() => {
@@ -442,6 +460,52 @@ export default function PropertiesListingPage() {
     }
   };
 
+  /**
+   * Generates dynamic heading based on applied filters
+   */
+  const generateDynamicHeading = () => {
+    const location = selectedFilters.location || 'Pune';
+    const propertyTypes = selectedFilters.propertyType;
+    const searchQueryText = searchQuery;
+    
+    let baseHeading = `Real Estate ${location}`;
+    let subHeading = '';
+    
+    // Determine property type text
+    if (propertyTypes.length === 1) {
+      switch (propertyTypes[0]) {
+        case 'resale':
+          subHeading = 'Property to buy in';
+          break;
+        case 'rental':
+          subHeading = 'Property to rent in';
+          break;
+        case 'new_project':
+          subHeading = 'New Projects in';
+          break;
+        default:
+          subHeading = 'Property in';
+      }
+    } else if (propertyTypes.length > 1) {
+      subHeading = 'Properties in';
+    } else {
+      subHeading = 'Property in';
+    }
+    
+    // Add search query if present
+    if (searchQueryText) {
+      baseHeading = `Real Estate ${location} - ${searchQueryText}`;
+      subHeading = `Property search results in`;
+    }
+    
+    return {
+      mainHeading: `${baseHeading} - ${subHeading} ${location}`,
+      subHeading: `Showing ${properties.length} properties`
+    };
+  };
+
+  const { mainHeading, subHeading } = generateDynamicHeading();
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Sticky Search and Filter Header */}
@@ -452,7 +516,7 @@ export default function PropertiesListingPage() {
             {/* Location Selector */}
             <button className="flex items-center space-x-1 px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
               <MapPinIcon className="w-4 h-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">Pune</span>
+              <span className="text-sm font-medium text-gray-700">{selectedFilters.location || 'Pune'}</span>
             </button>
 
             {/* Search Input Field */}
@@ -541,9 +605,13 @@ export default function PropertiesListingPage() {
             <nav className="text-xs text-gray-500">
               <span>Home</span>
               <span className="mx-1">/</span>
-              <span>Pune</span>
+              <span>{selectedFilters.location || 'Pune'}</span>
               <span className="mx-1">/</span>
-              <span>Real Estate Pune</span>
+              <span>{selectedFilters.propertyType.length === 1 ? 
+                (selectedFilters.propertyType[0] === 'resale' ? 'Resale Properties' :
+                 selectedFilters.propertyType[0] === 'rental' ? 'Rental Properties' :
+                 selectedFilters.propertyType[0] === 'new_project' ? 'New Projects' : 'Properties') :
+                'Properties'}</span>
             </nav>
           </div>
         </div>
@@ -847,9 +915,9 @@ export default function PropertiesListingPage() {
                          {/* Results Header */}
              <div className="flex items-center justify-between mb-6">
                <div>
-                 <h1 className="text-2xl font-bold text-gray-900">Real Estate Pune - Property to buy in Pune</h1>
+                 <h1 className="text-2xl font-bold text-gray-900">{mainHeading}</h1>
                  <p className="text-gray-600 mt-1">
-                   Showing 1-{properties.length} of 1000 properties
+                   {subHeading}
                  </p>
                </div>
              </div>
