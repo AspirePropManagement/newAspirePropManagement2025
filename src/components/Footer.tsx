@@ -13,6 +13,7 @@ import {
   HeartIcon
 } from '@heroicons/react/24/outline'
 import { footerConfig } from '@/config/footerConfig'
+import { useAuth } from '@/hooks/useAuth'
 
 /**
  * Footer component for the application
@@ -20,14 +21,15 @@ import { footerConfig } from '@/config/footerConfig'
  */
 export function Footer() {
   const currentYear = new Date().getFullYear()
+  const { isAuthenticated } = useAuth()
 
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className={`grid grid-cols-1 md:grid-cols-2 ${isAuthenticated ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-8 text-center md:text-left`}>
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <div className="flex items-center space-x-3 mb-6">
+            <div className="flex items-center justify-center md:justify-start space-x-3 mb-6">
               <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
                 <HomeIcon className="w-7 h-7 text-white" />
               </div>
@@ -44,7 +46,7 @@ export function Footer() {
             </p>
             
             {/* Social Media Links */}
-            <div className="flex space-x-4">
+            <div className="flex justify-center md:justify-start space-x-4">
               <a 
                 href="#" 
                 className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-orange-500 transition-all duration-300 transform hover:scale-110"
@@ -84,27 +86,29 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-semibold mb-6 text-orange-500 flex items-center">
-              <ChartBarIcon className="w-5 h-5 mr-2" />
-              Quick Links
-            </h4>
-            <ul className="space-y-3">
-              {footerConfig.links.quick.map((link, index) => (
-                <li key={index}>
-                  <Link href={link.href} className="text-gray-300 hover:text-orange-500 transition-colors flex items-center group">
-                    <HomeIcon className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Quick Links - Only show for authenticated users */}
+          {isAuthenticated && (
+            <div>
+              <h4 className="text-lg font-semibold mb-6 text-orange-500 flex items-center justify-center md:justify-start">
+                <ChartBarIcon className="w-5 h-5 mr-2" />
+                Quick Links
+              </h4>
+              <ul className="space-y-3">
+                {footerConfig.links.quick.map((link, index) => (
+                  <li key={index}>
+                    <Link href={link.href} className="text-gray-300 hover:text-orange-500 transition-colors flex items-center group">
+                      <HomeIcon className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Services */}
           <div>
-            <h4 className="text-lg font-semibold mb-6 text-orange-500 flex items-center">
+            <h4 className="text-lg font-semibold mb-6 text-orange-500 flex items-center justify-center md:justify-start">
               <BuildingOfficeIcon className="w-5 h-5 mr-2" />
               Services
             </h4>
@@ -121,12 +125,12 @@ export function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-lg font-semibold mb-6 text-orange-500 flex items-center">
+            <h4 className="text-lg font-semibold mb-6 text-orange-500 flex items-center justify-center md:justify-start">
               <PhoneIcon className="w-5 h-5 mr-2" />
               Contact Us
             </h4>
             <div className="space-y-4">
-              <div className="flex items-start space-x-3">
+              <div className="flex items-start justify-center md:justify-start space-x-3">
                 <EnvelopeIcon className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-gray-300 text-sm">Email</p>
@@ -135,7 +139,7 @@ export function Footer() {
                   </a>
                 </div>
               </div>
-              <div className="flex items-start space-x-3">
+              <div className="flex items-start justify-center md:justify-start space-x-3">
                 <PhoneIcon className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-gray-300 text-sm">Phone</p>
@@ -144,7 +148,7 @@ export function Footer() {
                   </a>
                 </div>
               </div>
-              <div className="flex items-start space-x-3">
+              <div className="flex items-start justify-center md:justify-start space-x-3">
                 <MapPinIcon className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-gray-300 text-sm">Address</p>
@@ -157,27 +161,6 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Newsletter Signup */}
-        {footerConfig.newsletter.enabled && (
-          <div className="border-t border-gray-800 mt-12 pt-8">
-            <div className="max-w-2xl mx-auto text-center">
-              <h4 className="text-xl font-semibold mb-4 text-white">{footerConfig.newsletter.title}</h4>
-              <p className="text-gray-300 mb-6">
-                {footerConfig.newsletter.description}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder={footerConfig.newsletter.placeholder}
-                  className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                />
-                <button className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-105 font-medium">
-                  {footerConfig.newsletter.buttonText}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-8 pt-8">

@@ -10,6 +10,7 @@ import { NewProjectsCarousel } from '@/components/NewProjectsCarousel';
 import { useNewProjects } from '@/hooks/useNewProjects';
 import { RentalPropertiesCarousel } from '@/components/RentalPropertiesCarousel';
 import { useRentalProperties } from '@/hooks/useRentalProperties';
+import { EnquiryForm } from '@/components/EnquiryForm';
 
 
 export default function HomePage() {
@@ -144,6 +145,13 @@ export default function HomePage() {
 
       {/* Rental Properties Section */}
       <RentalPropertiesCarousel properties={rentalProperties} />
+
+      {/* Enquiry Form Section */}
+      <div className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <EnquiryForm />
+        </div>
+      </div>
 
       {/* Scroll Arrow */}
       <ScrollArrow />

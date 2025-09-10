@@ -109,7 +109,7 @@ export const PropertyValuation: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="w-full px-6">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -121,7 +121,7 @@ export const PropertyValuation: React.FC = () => {
         <p className="text-gray-600">Get instant property valuation and market price estimates for your property</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Input Form */}
         <div className="bg-white rounded-xl shadow-lg p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Property Details</h2>

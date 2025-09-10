@@ -6,30 +6,27 @@
  */
 export function HeroCarouselSkeleton() {
   return (
-    <div className="relative w-full h-64 md:h-80 lg:h-96 overflow-hidden">
+    <div className="relative w-full h-screen overflow-hidden bg-gray-900">
       {/* Main Carousel Image */}
-      <div className="skeleton w-full h-full"></div>
+      <div className="skeleton w-full h-full animate-pulse bg-gradient-to-br from-gray-700 to-gray-800"></div>
       
       {/* Overlay Content */}
-      <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl space-y-4">
+      <div 
+        className="absolute inset-0 flex items-center"
+        style={{
+          background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3))'
+        }}
+      >
+        <div className="text-left text-white px-8 max-w-2xl ml-16 md:ml-20 lg:ml-24">
+          <div className="space-y-4">
             {/* Main Heading */}
-            <div className="skeleton h-8 md:h-12 w-3/4"></div>
-            
-            {/* Subheading */}
-            <div className="skeleton h-4 md:h-6 w-1/2"></div>
-            
-            {/* Description */}
-            <div className="space-y-2">
-              <div className="skeleton h-4 w-full"></div>
-              <div className="skeleton h-4 w-2/3"></div>
+            <div className="mb-6">
+              <div className="skeleton h-12 md:h-16 w-3/4 bg-white bg-opacity-20 animate-pulse"></div>
             </div>
             
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <div className="skeleton h-10 w-32"></div>
-              <div className="skeleton h-10 w-28"></div>
+            {/* Description */}
+            <div>
+              <div className="skeleton h-6 md:h-8 w-2/3 bg-white bg-opacity-20 animate-pulse"></div>
             </div>
           </div>
         </div>
@@ -37,19 +34,19 @@ export function HeroCarouselSkeleton() {
       
       {/* Navigation Arrows */}
       <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-        <div className="skeleton h-10 w-10 rounded-full"></div>
+        <div className="skeleton h-12 w-12 rounded-full bg-white bg-opacity-20 animate-pulse"></div>
       </div>
       <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-        <div className="skeleton h-10 w-10 rounded-full"></div>
+        <div className="skeleton h-12 w-12 rounded-full bg-white bg-opacity-20 animate-pulse"></div>
       </div>
       
       {/* Dots Indicator */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
         {[1, 2, 3, 4].map((index) => (
           <div 
             key={index} 
-            className={`skeleton h-2 w-2 rounded-full ${
-              index === 0 ? 'bg-white' : ''
+            className={`skeleton h-3 w-3 rounded-full bg-white animate-pulse ${
+              index === 0 ? 'bg-opacity-100' : 'bg-opacity-40'
             }`}
           ></div>
         ))}
@@ -63,21 +60,25 @@ export function HeroCarouselSkeleton() {
  */
 export function HeroCarouselSlideSkeleton() {
   return (
-    <div className="relative w-full h-64 md:h-80 lg:h-96">
+    <div className="relative w-full h-screen bg-gray-900">
       {/* Background Image */}
-      <div className="skeleton w-full h-full"></div>
+      <div className="skeleton w-full h-full animate-pulse bg-gradient-to-br from-gray-700 to-gray-800"></div>
       
       {/* Content Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent flex items-center">
-        <div className="container mx-auto px-4">
-          <div className="max-w-xl space-y-4">
-            <div className="skeleton h-8 w-3/4"></div>
-            <div className="skeleton h-4 w-1/2"></div>
-            <div className="space-y-2">
-              <div className="skeleton h-4 w-full"></div>
-              <div className="skeleton h-4 w-2/3"></div>
+      <div 
+        className="absolute inset-0 flex items-center"
+        style={{
+          background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3))'
+        }}
+      >
+        <div className="text-left text-white px-8 max-w-2xl ml-16 md:ml-20 lg:ml-24">
+          <div className="space-y-4">
+            <div className="mb-6">
+              <div className="skeleton h-12 md:h-16 w-3/4 bg-white bg-opacity-20 animate-pulse"></div>
             </div>
-            <div className="skeleton h-10 w-32"></div>
+            <div>
+              <div className="skeleton h-6 md:h-8 w-2/3 bg-white bg-opacity-20 animate-pulse"></div>
+            </div>
           </div>
         </div>
       </div>
