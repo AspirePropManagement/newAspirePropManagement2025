@@ -30,7 +30,7 @@ export async function middleware(req: NextRequest) {
         set(name: string, value: string, options: any) {
           req.cookies.set({
             name,
-            value,
+            value: '',
             ...options,
           })
           response = NextResponse.next({
@@ -40,14 +40,14 @@ export async function middleware(req: NextRequest) {
           })
           response.cookies.set({
             name,
-            value,
+            value: '',
             ...options,
           })
         },
         remove(name: string, options: any) {
           req.cookies.set({
             name,
-            value,
+            value: '',
             ...options,
           })
           response = NextResponse.next({
@@ -57,7 +57,7 @@ export async function middleware(req: NextRequest) {
           })
           response.cookies.set({
             name,
-            value,
+            value: '',
             ...options,
           })
         },

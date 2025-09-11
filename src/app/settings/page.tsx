@@ -410,6 +410,7 @@ export default function SettingsPage() {
         <Toast
           message={message.text}
           type={message.type}
+          isVisible={true}
           onClose={() => setMessage(null)}
         />
       )}

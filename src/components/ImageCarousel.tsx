@@ -2,6 +2,7 @@
 /* eslint-disable react/no-unescaped-entities */
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 /**
  * Image carousel component for displaying hero images
@@ -96,10 +97,11 @@ export function ImageCarousel() {
               index === currentIndex ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <img
+            <Image
               src={image.src}
               alt={image.alt}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
             />
             {/* Overlay */}
             <div className="absolute inset-0 bg-black bg-opacity-40"></div>

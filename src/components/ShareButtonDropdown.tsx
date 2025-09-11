@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useShare } from '@/hooks/useShare';
 import { useToast } from '@/hooks/useToast';
-import { generatePropertyShareUrl, generateSocialShareUrls, trackShareEvent, truncateUrl } from '@/utils/shareUtils';
+import { generatePropertyShareUrl, generateSocialShareUrls, trackShareEvent, truncateUrl, ShareableProperty } from '@/utils/shareUtils';
 import { 
   ShareIcon, 
   ClipboardDocumentIcon, 
@@ -56,10 +56,10 @@ export function ShareButtonDropdown({
 
   // Generate URLs
   const shareUrl = property.id && property.type 
-    ? generatePropertyShareUrl(property)
+    ? generatePropertyShareUrl(property as ShareableProperty)
     : (typeof window !== 'undefined' ? window.location.href : '');
   
-  const socialUrls = generateSocialShareUrls(property, shareUrl);
+  const socialUrls = generateSocialShareUrls(property as ShareableProperty, shareUrl);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -85,7 +85,7 @@ export function ShareButtonDropdown({
 
   const handleSocialShare = (url: string, platform: string) => {
     if (property.id && property.type) {
-      trackShareEvent(property, platform, shareUrl);
+      trackShareEvent(property as ShareableProperty, platform, shareUrl);
     }
     window.open(url, '_blank', 'width=600,height=400');
     showSuccess(`Opening ${platform}...`);

@@ -79,7 +79,7 @@ export default function ServicesPage() {
               Professional Real Estate Solutions
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              We provide end-to-end real estate services designed to help you succeed in today's competitive market. 
+              We provide end-to-end real estate services designed to help you succeed in today&apos;s competitive market. 
               Our expert team combines market knowledge with cutting-edge technology to deliver exceptional results.
             </p>
           </div>

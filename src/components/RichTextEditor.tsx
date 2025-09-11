@@ -13,18 +13,13 @@ import {
   BoldIcon, 
   ItalicIcon, 
   UnderlineIcon, 
-  CodeIcon,
+  CodeBracketIcon,
   ListBulletIcon,
-  ListNumberedIcon,
   LinkIcon,
   PhotoIcon,
-  CodeBracketIcon,
-  QuoteIcon,
+  ChatBubbleLeftRightIcon,
   MinusIcon,
-  AlignLeftIcon,
-  AlignCenterIcon,
-  AlignRightIcon,
-  AlignJustifyIcon,
+  Bars3Icon,
   ArrowUturnLeftIcon,
   ArrowUturnRightIcon
 } from '@heroicons/react/24/outline';
@@ -172,7 +167,7 @@ export default function RichTextEditor({
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('code') ? 'bg-gray-300' : ''}`}
               title="Inline Code"
             >
-              <CodeIcon className="h-4 w-4" />
+              <CodeBracketIcon className="h-4 w-4" />
             </button>
           </div>
 
@@ -215,7 +210,7 @@ export default function RichTextEditor({
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('orderedList') ? 'bg-gray-300' : ''}`}
               title="Numbered List"
             >
-              <ListNumberedIcon className="h-4 w-4" />
+              <ListBulletIcon className="h-4 w-4" />
             </button>
           </div>
 
@@ -226,28 +221,28 @@ export default function RichTextEditor({
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive({ textAlign: 'left' }) ? 'bg-gray-300' : ''}`}
               title="Align Left"
             >
-              <AlignLeftIcon className="h-4 w-4" />
+              <Bars3Icon className="h-4 w-4" />
             </button>
             <button
               onClick={() => editor.chain().focus().setTextAlign('center').run()}
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive({ textAlign: 'center' }) ? 'bg-gray-300' : ''}`}
               title="Align Center"
             >
-              <AlignCenterIcon className="h-4 w-4" />
+              <Bars3Icon className="h-4 w-4" />
             </button>
             <button
               onClick={() => editor.chain().focus().setTextAlign('right').run()}
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive({ textAlign: 'right' }) ? 'bg-gray-300' : ''}`}
               title="Align Right"
             >
-              <AlignRightIcon className="h-4 w-4" />
+              <Bars3Icon className="h-4 w-4" />
             </button>
             <button
               onClick={() => editor.chain().focus().setTextAlign('justify').run()}
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-300' : ''}`}
               title="Justify"
             >
-              <AlignJustifyIcon className="h-4 w-4" />
+              <Bars3Icon className="h-4 w-4" />
             </button>
           </div>
 
@@ -258,7 +253,7 @@ export default function RichTextEditor({
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('blockquote') ? 'bg-gray-300' : ''}`}
               title="Quote"
             >
-              <QuoteIcon className="h-4 w-4" />
+              <ChatBubbleLeftRightIcon className="h-4 w-4" />
             </button>
             <button
               onClick={() => editor.chain().focus().toggleCodeBlock().run()}

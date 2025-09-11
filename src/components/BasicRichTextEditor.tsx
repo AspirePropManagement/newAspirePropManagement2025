@@ -8,12 +8,11 @@ import Link from '@tiptap/extension-link';
 import { 
   BoldIcon, 
   ItalicIcon, 
-  CodeIcon,
+  CodeBracketIcon,
   ListBulletIcon,
-  ListNumberedIcon,
   LinkIcon,
   PhotoIcon,
-  QuoteIcon,
+  ChatBubbleLeftRightIcon,
   MinusIcon,
   ArrowUturnLeftIcon,
   ArrowUturnRightIcon
@@ -144,7 +143,7 @@ export default function BasicRichTextEditor({
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('code') ? 'bg-gray-300' : ''}`}
               title="Inline Code"
             >
-              <CodeIcon className="h-4 w-4" />
+              <CodeBracketIcon className="h-4 w-4" />
             </button>
           </div>
 
@@ -187,7 +186,7 @@ export default function BasicRichTextEditor({
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('orderedList') ? 'bg-gray-300' : ''}`}
               title="Numbered List"
             >
-              <ListNumberedIcon className="h-4 w-4" />
+              <ListBulletIcon className="h-4 w-4" />
             </button>
           </div>
 
@@ -198,14 +197,14 @@ export default function BasicRichTextEditor({
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('blockquote') ? 'bg-gray-300' : ''}`}
               title="Quote"
             >
-              <QuoteIcon className="h-4 w-4" />
+              <ChatBubbleLeftRightIcon className="h-4 w-4" />
             </button>
             <button
               onClick={() => editor.chain().focus().toggleCodeBlock().run()}
               className={`p-2 rounded hover:bg-gray-200 ${editor.isActive('codeBlock') ? 'bg-gray-300' : ''}`}
               title="Code Block"
             >
-              <CodeIcon className="h-4 w-4" />
+              <CodeBracketIcon className="h-4 w-4" />
             </button>
             <button
               onClick={() => editor.chain().focus().setHorizontalRule().run()}

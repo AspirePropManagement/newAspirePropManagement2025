@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useUserManagement } from '@/hooks/useUserManagement';
 import { UserTableRow } from '@/components/UserTableRow';
 import { UserTableHeader } from '@/components/UserTableHeader';
@@ -51,7 +51,7 @@ export default function AdminBuyersPage() {
   const totalPages = Math.ceil(filteredUsers.length / pageSize);
 
   // Reset to first page when filters change
-  useMemo(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, statusFilter]);
 

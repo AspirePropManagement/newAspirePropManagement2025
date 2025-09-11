@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
@@ -209,10 +210,11 @@ export function NewProjectsCarousel({ projects }: NewProjectsCarouselProps) {
                         >
                           {/* Project Image */}
                           <div className="relative h-48 overflow-hidden">
-                            <img
+                            <Image
                               src={getProjectImage(project)}
                               alt={project.project_name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src = '/placeholder-property.svg';

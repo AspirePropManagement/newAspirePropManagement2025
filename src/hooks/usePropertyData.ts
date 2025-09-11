@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Property } from '@/types/Property'
+import { Property, ResaleProperty } from '@/types/Property'
 import { DashboardStatsData } from '@/types/DashboardStats'
 
 /**
@@ -41,11 +41,13 @@ export function usePropertyData() {
             negotiable: true,
             possession_status: 'ready_to_move',
             age_of_property: '5 years',
-            floor_no: 5,
+            floor_no: '5',
             total_floors: 10,
             facing: 'north',
             parking: 'covered',
             furnished_status: 'semi_furnished',
+            furnishing_type: 'semi_furnished',
+            asking_price: 500000,
             visit_details: 'Available for viewing',
             has_amenities: true,
             status: 'available',
@@ -57,10 +59,10 @@ export function usePropertyData() {
 
         const mockStats: DashboardStatsData = {
           totalProperties: mockProperties.length,
-          occupiedUnits: mockProperties.filter(p => p.status === 'occupied').length,
-          vacantUnits: mockProperties.filter(p => p.status === 'vacant').length,
+          occupiedUnits: mockProperties.filter(p => (p as any).status === 'occupied').length,
+          vacantUnits: mockProperties.filter(p => (p as any).status === 'vacant').length,
           monthlyRevenue: 0, // No monthly rent in resale properties
-          occupancyRate: (mockProperties.filter(p => p.status === 'occupied').length / mockProperties.length) * 100,
+          occupancyRate: (mockProperties.filter(p => (p as any).status === 'occupied').length / mockProperties.length) * 100,
           averageRent: 0 // No monthly rent in resale properties
         }
 

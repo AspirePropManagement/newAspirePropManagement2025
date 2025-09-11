@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useShare } from '@/hooks/useShare';
-import { generatePropertyShareUrl, generateSocialShareUrls, trackShareEvent } from '@/utils/shareUtils';
+import { generatePropertyShareUrl, generateSocialShareUrls, trackShareEvent, ShareableProperty } from '@/utils/shareUtils';
 import { 
   ShareIcon, 
   ClipboardDocumentIcon, 
@@ -41,13 +41,13 @@ export function ShareModal({ isOpen, onClose, property }: ShareModalProps) {
 
   // Generate the property URL using utility function
   const propertyUrl = property.id && property.type 
-    ? generatePropertyShareUrl(property)
+    ? generatePropertyShareUrl(property as ShareableProperty)
     : (typeof window !== 'undefined' ? window.location.href : '');
   
   const shareText = `Check out this ${property.bhkType || property.propertyType || 'property'} in ${property.location}. ${property.carpetArea ? `Carpet Area: ${property.carpetArea} sq ft. ` : ''}Price: ₹${property.price.toLocaleString('en-IN')}`;
   
   // Generate social share URLs using utility function
-  const socialShareUrls = generateSocialShareUrls(property, propertyUrl);
+  const socialShareUrls = generateSocialShareUrls(property as ShareableProperty, propertyUrl);
   
   const socialLinks = [
     {
@@ -103,7 +103,7 @@ export function ShareModal({ isOpen, onClose, property }: ShareModalProps) {
   const handleSocialShare = (url: string, platform: string) => {
     // Track the social share event
     if (property.id && property.type) {
-      trackShareEvent(property, platform, propertyUrl);
+      trackShareEvent(property as ShareableProperty, platform, propertyUrl);
     }
     
     window.open(url, '_blank', 'width=600,height=400');
@@ -145,7 +145,7 @@ export function ShareModal({ isOpen, onClose, property }: ShareModalProps) {
             Share via Device
           </button>
           <p className="text-xs text-gray-500 mt-2 text-center">
-            Use your device's native sharing options
+            Use your device&apos;s native sharing options
           </p>
         </div>
 

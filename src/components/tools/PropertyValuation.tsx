@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 /**
  * Property Valuation component for estimating property market value
@@ -17,14 +17,14 @@ export const PropertyValuation: React.FC = () => {
   const [pricePerSqFt, setPricePerSqFt] = useState<number>(0);
 
   // Base prices per sq ft for different locations (sample data)
-  const locationPrices = {
+  const locationPrices = useMemo(() => ({
     'hinjawadi': 8500,
     'koregaon-park': 12000,
     'kharadi': 7500,
     'baner': 9000,
     'wakad': 8000,
     'pune': 7000,
-  };
+  }), []);
 
   // Calculate property value when inputs change
   useEffect(() => {
@@ -75,7 +75,7 @@ export const PropertyValuation: React.FC = () => {
       setEstimatedValue(0);
       setPricePerSqFt(0);
     }
-  }, [propertyType, location, area, age, floor, furnishing, amenities]);
+  }, [propertyType, location, area, age, floor, furnishing, amenities, locationPrices]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {

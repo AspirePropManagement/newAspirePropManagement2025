@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { supabase } from '../lib/supabase';
 import { HeroCarouselImage } from '../types/HeroCarousel';
 import { HeroCarouselSkeleton } from './skeletons';
@@ -157,10 +158,12 @@ export const HeroCarousel: React.FC = () => {
               index === currentIndex ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <img
+            <Image
               src={image.image_data}
               alt={image.alt_text || image.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              priority={index === 0}
             />
             
             {/* Image Overlay with Content */}

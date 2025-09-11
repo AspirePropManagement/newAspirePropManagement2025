@@ -13,8 +13,11 @@ const openai = new OpenAI({
 })
 
 export async function POST(request: NextRequest) {
+  let message: string = '';
   try {
-    const { message, userId, userRole } = await request.json()
+    const requestData = await request.json()
+    message = requestData.message
+    const { userId, userRole } = requestData
 
     if (!message) {
       return NextResponse.json(

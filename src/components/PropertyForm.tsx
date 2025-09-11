@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { PropertyImageManager, PropertyImageManagerRef } from './PropertyImageManager';
 import PropertyAmenitiesManager from './PropertyAmenitiesManager';
 import { PropertyFormSkeleton } from './skeletons';
@@ -181,11 +181,11 @@ export function PropertyForm({
   };
 
   // Restore images when returning to step 3
-  const restoreImages = () => {
+  const restoreImages = useCallback(() => {
     if (imageManagerRef.current && Object.keys(savedImages).length > 0) {
       imageManagerRef.current.setImages(savedImages);
     }
-  };
+  }, [savedImages]);
 
   // Update propertyType when prop changes
   React.useEffect(() => {
@@ -871,7 +871,7 @@ export function PropertyForm({
     if (currentStep === 3) {
       restoreImages();
     }
-  }, [currentStep]);
+  }, [currentStep, restoreImages]);
 
   if (isLoading) {
     return <PropertyFormSkeleton />;

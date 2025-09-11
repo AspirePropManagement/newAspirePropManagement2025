@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import Image from 'next/image';
 import { useHeroCarousel } from '../hooks/useHeroCarousel';
 import { CreateHeroCarouselImage } from '../types/HeroCarousel';
 import { Plus, Eye, EyeOff, Trash2, GripVertical } from 'lucide-react';
@@ -281,6 +282,7 @@ export const HeroCarouselManager: React.FC = () => {
         <Toast
           message={error}
           type="error"
+          isVisible={true}
           onClose={clearError}
         />
       )}
@@ -290,6 +292,7 @@ export const HeroCarouselManager: React.FC = () => {
         <Toast
           message={successMessage}
           type="success"
+          isVisible={true}
           onClose={() => setSuccessMessage(null)}
         />
       )}
@@ -369,11 +372,14 @@ export const HeroCarouselManager: React.FC = () => {
 
                     {/* Image Preview */}
                     <div className="mb-4">
-                      <img
-                        src={image.image_data}
-                        alt={image.alt_text || image.title}
-                        className="w-full h-48 object-cover rounded-lg"
-                      />
+                      <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                        <Image
+                          src={image.image_data}
+                          alt={image.alt_text || image.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     </div>
 
                     {/* Image Info */}
@@ -539,11 +545,14 @@ export const HeroCarouselManager: React.FC = () => {
                 </p>
                 {formData.image_data && (
                   <div className="mt-2">
-                    <img
-                      src={formData.image_data}
-                      alt="Preview"
-                      className="w-32 h-24 object-cover rounded border"
-                    />
+                    <div className="relative w-32 h-24 rounded border overflow-hidden">
+                      <Image
+                        src={formData.image_data}
+                        alt="Preview"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
                     <p className="mt-1 text-xs text-gray-500">
                       File size: {formData.file_size ? formatFileSize(formData.file_size) : 'N/A'}
                     </p>

@@ -226,7 +226,7 @@ export default function PropertiesListingPage() {
     } finally {
       setLoading(false);
     }
-  }, [selectedFilters, sortBy]);
+  }, [selectedFilters, sortBy, itemsPerPage]);
 
   useEffect(() => {
     fetchProperties();

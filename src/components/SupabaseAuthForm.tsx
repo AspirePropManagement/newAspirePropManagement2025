@@ -54,32 +54,8 @@ export default function SupabaseAuthForm({ mode, onModeChange }: SupabaseAuthFor
     setToast(null)
   }
 
-  // Debounced email validation
-  const debouncedEmailCheck = useCallback(
-    (() => {
-      let timeoutId: NodeJS.Timeout
-      return (emailValue: string) => {
-        clearTimeout(timeoutId)
-        timeoutId = setTimeout(() => checkEmailExists(emailValue), 500)
-      }
-    })(),
-    []
-  )
-
-  // Debounced phone validation
-  const debouncedPhoneCheck = useCallback(
-    (() => {
-      let timeoutId: NodeJS.Timeout
-      return (phoneValue: string) => {
-        clearTimeout(timeoutId)
-        timeoutId = setTimeout(() => checkPhoneExists(phoneValue), 500)
-      }
-    })(),
-    []
-  )
-
   // Check if email exists
-  const checkEmailExists = async (emailValue: string) => {
+  const checkEmailExists = useCallback(async (emailValue: string) => {
     if (emailValue && emailValue.includes('@')) {
       setEmailValidating(true)
       try {
@@ -109,10 +85,10 @@ export default function SupabaseAuthForm({ mode, onModeChange }: SupabaseAuthFor
       setEmailError('')
       setEmailValidating(false)
     }
-  }
+  }, [])
 
   // Check if phone exists
-  const checkPhoneExists = async (phoneValue: string) => {
+  const checkPhoneExists = useCallback(async (phoneValue: string) => {
     if (phoneValue && phoneValue.length >= 10) {
       setPhoneValidating(true)
       try {
@@ -142,7 +118,19 @@ export default function SupabaseAuthForm({ mode, onModeChange }: SupabaseAuthFor
       setPhoneError('')
       setPhoneValidating(false)
     }
-  }
+  }, [])
+
+  // Debounced email validation
+  const debouncedEmailCheck = useCallback((emailValue: string) => {
+    const timeoutId = setTimeout(() => checkEmailExists(emailValue), 500)
+    return () => clearTimeout(timeoutId)
+  }, [checkEmailExists])
+
+  // Debounced phone validation
+  const debouncedPhoneCheck = useCallback((phoneValue: string) => {
+    const timeoutId = setTimeout(() => checkPhoneExists(phoneValue), 500)
+    return () => clearTimeout(timeoutId)
+  }, [checkPhoneExists])
 
   // Handle email change with debounced validation
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -383,7 +371,8 @@ export default function SupabaseAuthForm({ mode, onModeChange }: SupabaseAuthFor
       {toast && (
         <Toast
           message={toast.message}
-          type={toast.type}
+          type={toast.type === 'warning' ? 'error' : toast.type}
+          isVisible={true}
           onClose={hideToast}
         />
       )}

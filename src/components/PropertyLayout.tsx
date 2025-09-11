@@ -6,7 +6,6 @@ import { PropertyImageGallery } from './PropertyImageGallery';
 import { FloorPlanViewer } from './FloorPlanViewer';
 import { PropertyDetails } from './PropertyDetails';
 import { PropertyAmenities } from './PropertyAmenities';
-import { PropertySpecifications } from './PropertySpecifications';
 import { VirtualTourSection } from './VirtualTourSection';
 import { ShareButton } from './ShareButton';
 import { ShareButtonDropdown } from './ShareButtonDropdown';

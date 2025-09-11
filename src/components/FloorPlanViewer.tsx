@@ -22,7 +22,7 @@ export function FloorPlanViewer({ images, className = '' }: FloorPlanViewerProps
 
   // Get all available floor plan images
   const getFloorPlanImages = () => {
-    const plans = [];
+    const plans: any[] = [];
     
     if (images.floor_plans) {
       Object.entries(images.floor_plans).forEach(([key, urls]) => {
@@ -136,7 +136,7 @@ export function FloorPlanViewer({ images, className = '' }: FloorPlanViewerProps
           <div className="space-y-4">
             {/* Image Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {currentPlan.images.map((imageUrl, index) => (
+              {currentPlan.images.map((imageUrl: string, index: number) => (
                 <div
                   key={index}
                   className="relative group cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { generatePropertyShareUrl, generateShareText, trackShareEvent } from '@/utils/shareUtils';
+import { generatePropertyShareUrl, generateShareText, trackShareEvent, ShareableProperty } from '@/utils/shareUtils';
 
 interface ShareData {
   title: string;
@@ -57,7 +57,7 @@ export const useShare = () => {
     } catch (error) {
       console.error('Error sharing:', error);
       // If sharing was cancelled by user, don't show error
-      if (error.name === 'AbortError') {
+      if (error instanceof Error && error.name === 'AbortError') {
         return false;
       }
       // Fallback to clipboard copy
@@ -79,19 +79,19 @@ export const useShare = () => {
     type?: string;
   }): Promise<boolean> => {
     // Generate the property URL using utility function
-    const propertyUrl = property.id && property.type 
-      ? generatePropertyShareUrl(property)
+    const propertyUrl = property.id && property.type
+      ? generatePropertyShareUrl(property as ShareableProperty)
       : window.location.href;
     
     const shareData: ShareData = {
       title: property.title,
-      text: generateShareText(property),
+      text: generateShareText(property as ShareableProperty),
       url: propertyUrl
     };
     
     // Track the share event
     if (property.id && property.type) {
-      trackShareEvent(property, 'native_share', propertyUrl);
+      trackShareEvent(property as ShareableProperty, 'native_share', propertyUrl);
     }
     
     return await share(shareData);

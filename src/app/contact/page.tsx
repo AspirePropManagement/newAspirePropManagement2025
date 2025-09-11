@@ -90,7 +90,7 @@ export default function ContactPage() {
               Enquiry
             </h1>
             <p className="text-xl md:text-2xl text-orange-100 mb-8 leading-relaxed">
-              Get in touch with our expert team. We're here to help you with all your real estate needs.
+              Get in touch with our expert team. We&apos;re here to help you with all your real estate needs.
             </p>
           </div>
         </div>
@@ -137,7 +137,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Email</h3>
                     <p className="text-gray-600 mb-1">info@aspireprop.com</p>
-                    <p className="text-sm text-gray-500">We'll respond within 24 hours</p>
+                    <p className="text-sm text-gray-500">We&apos;ll respond within 24 hours</p>
                   </div>
                 </div>
 
@@ -180,7 +180,7 @@ export default function ContactPage() {
                 Get in Touch
               </h2>
               <p className="text-gray-600 mb-6">
-                Whether you have a general question or are looking for a specific property, we're here to help. 
+                Whether you have a general question or are looking for a specific property, we&apos;re here to help. 
                 Fill out the form below and our team will get back to you within 24 hours.
               </p>
               
@@ -270,7 +270,7 @@ export default function ContactPage() {
                 <div className="border-t border-gray-200 pt-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Details (Optional)</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    If you're looking for a specific property, please fill out these details to help us assist you better.
+                    If you&apos;re looking for a specific property, please fill out these details to help us assist you better.
                   </p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -429,7 +429,7 @@ export default function ContactPage() {
                           Message Sent Successfully!
                         </h3>
                         <div className="mt-2 text-sm text-green-700">
-                          <p>Thank you for contacting us. We'll get back to you within 24 hours with a personalized response.</p>
+                          <p>Thank you for contacting us. We&apos;ll get back to you within 24 hours with a personalized response.</p>
                         </div>
                       </div>
                     </div>
@@ -484,7 +484,7 @@ export default function ContactPage() {
                   Do I need to fill out all the property details?
                 </h3>
                 <p className="text-gray-600">
-                  No, the property details section is optional. If you're just asking a general question, you only need to fill out the basic contact information and message. Property details help us provide more targeted assistance for property-related inquiries.
+                  No, the property details section is optional. If you&apos;re just asking a general question, you only need to fill out the basic contact information and message. Property details help us provide more targeted assistance for property-related inquiries.
                 </p>
               </div>
 
@@ -502,7 +502,7 @@ export default function ContactPage() {
                   Can I schedule a site visit or property tour?
                 </h3>
                 <p className="text-gray-600">
-                  Absolutely! Select "Site Visit Request" or "Virtual Tour Request" as your subject and provide your property preferences. We'll coordinate with you to arrange the best time for your visit.
+                  Absolutely! Select &quot;Site Visit Request&quot; or &quot;Virtual Tour Request&quot; as your subject and provide your property preferences. We&apos;ll coordinate with you to arrange the best time for your visit.
                 </p>
               </div>
             </div>

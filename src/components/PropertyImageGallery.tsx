@@ -19,7 +19,7 @@ export function PropertyImageGallery({ images, className = '' }: PropertyImageGa
 
   // Get all available image categories
   const getImageCategories = () => {
-    const categories = [];
+    const categories: any[] = [];
     
     if (images.general_photos) {
       Object.keys(images.general_photos).forEach(key => {

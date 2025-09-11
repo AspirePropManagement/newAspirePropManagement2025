@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import Image from 'next/image';
 import { 
   MapPinIcon, 
   HomeIcon, 
@@ -74,7 +75,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
     
     // First, try to use the direct images array
     if (property.images && Array.isArray(property.images) && property.images.length > 0) {
-      return property.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
+      return property.images.filter((img: any) => img && typeof img === 'string' && img.trim() !== '');
     }
     
     // Then try to extract images from the property_images JSONB structure
@@ -82,38 +83,38 @@ export function PropertyCard({ property }: PropertyCardProps) {
       // Check general_photos
       if (property.property_images.general_photos) {
         if (property.property_images.general_photos.exterior && Array.isArray(property.property_images.general_photos.exterior)) {
-          images.push(...property.property_images.general_photos.exterior.filter(img => img && typeof img === 'string' && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.exterior.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.general_photos.interior && Array.isArray(property.property_images.general_photos.interior)) {
-          images.push(...property.property_images.general_photos.interior.filter(img => img && typeof img === 'string' && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.interior.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.general_photos.bedrooms && Array.isArray(property.property_images.general_photos.bedrooms)) {
-          images.push(...property.property_images.general_photos.bedrooms.filter(img => img && typeof img === 'string' && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.bedrooms.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.general_photos.kitchen && Array.isArray(property.property_images.general_photos.kitchen)) {
-          images.push(...property.property_images.general_photos.kitchen.filter(img => img && typeof img === 'string' && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.kitchen.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.general_photos.bathrooms && Array.isArray(property.property_images.general_photos.bathrooms)) {
-          images.push(...property.property_images.general_photos.bathrooms.filter(img => img && typeof img === 'string' && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.bathrooms.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.general_photos.amenities && Array.isArray(property.property_images.general_photos.amenities)) {
-          images.push(...property.property_images.general_photos.amenities.filter(img => img && typeof img === 'string' && img.trim() !== ''));
+          images.push(...property.property_images.general_photos.amenities.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
         }
       }
       
       // Check floor_plans
       if (property.property_images.floor_plans) {
         if (property.property_images.floor_plans.floor_plan && Array.isArray(property.property_images.floor_plans.floor_plan)) {
-          images.push(...property.property_images.floor_plans.floor_plan.filter(img => img && typeof img === 'string' && img.trim() !== ''));
+          images.push(...property.property_images.floor_plans.floor_plan.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.floor_plans.site_plan && Array.isArray(property.property_images.floor_plans.site_plan)) {
-          images.push(...property.property_images.floor_plans.site_plan.filter(img => img && typeof img === 'string' && img.trim() !== ''));
+          images.push(...property.property_images.floor_plans.site_plan.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.floor_plans.blueprint && Array.isArray(property.property_images.floor_plans.blueprint)) {
-          images.push(...property.property_images.floor_plans.blueprint.filter(img => img && typeof img === 'string' && img.trim() !== ''));
+          images.push(...property.property_images.floor_plans.blueprint.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
         }
         if (property.property_images.floor_plans.elevation && Array.isArray(property.property_images.floor_plans.elevation)) {
-          images.push(...property.property_images.floor_plans.elevation.filter(img => img && typeof img === 'string' && img.trim() !== ''));
+          images.push(...property.property_images.floor_plans.elevation.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
         }
       }
     }
@@ -210,10 +211,11 @@ export function PropertyCard({ property }: PropertyCardProps) {
       {/* Property Image */}
       <div className="relative h-48 bg-gray-200">
         {images.length > 0 ? (
-          <img
+          <Image
             src={images[imageIndex]}
             alt={getPropertyTitle()}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.src = '/api/placeholder/400/300';

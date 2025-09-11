@@ -208,8 +208,8 @@ export const EMICalculator: React.FC = () => {
       <div className="mt-4 bg-blue-50 rounded-lg p-4">
         <h3 className="text-sm font-semibold text-blue-900 mb-2">How This Works</h3>
         <div className="text-xs text-blue-800 space-y-1">
-          <p>• <strong>Monthly Payment:</strong> What you'll pay every month to the bank</p>
-          <p>• <strong>Total Payment:</strong> Total amount you'll pay over the entire loan period</p>
+          <p>• <strong>Monthly Payment:</strong> What you&apos;ll pay every month to the bank</p>
+          <p>• <strong>Total Payment:</strong> Total amount you&apos;ll pay over the entire loan period</p>
           <p>• <strong>Interest Amount:</strong> Extra money you pay to the bank for borrowing</p>
           <p>• <strong>Loan Amount:</strong> Actual money you receive from the bank</p>
         </div>

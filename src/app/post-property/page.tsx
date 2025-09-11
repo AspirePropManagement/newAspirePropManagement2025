@@ -343,7 +343,7 @@ export default function PostPropertyPage() {
           ) : (
             <div className="p-8">
               <PropertyForm
-                propertyType={activeTab}
+                propertyType={activeTab as 'resale' | 'rental' | 'new_project'}
                 currentStep={currentStep}
                 onSubmit={handleSubmit}
                 onCancel={handleCancel}

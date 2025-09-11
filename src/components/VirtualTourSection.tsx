@@ -19,7 +19,7 @@ export function VirtualTourSection({ images, className = '' }: VirtualTourSectio
 
   // Get all virtual content
   const getVirtualContent = () => {
-    const content = [];
+    const content: any[] = [];
     
     if (images.virtual_content) {
       Object.entries(images.virtual_content).forEach(([key, urls]) => {
@@ -89,7 +89,7 @@ export function VirtualTourSection({ images, className = '' }: VirtualTourSectio
               <h3 className="text-lg font-semibold text-gray-900 mb-4">{content.name}</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {content.urls.map((url, index) => (
+                {content.urls.map((url: string, index: number) => (
                   <div key={index} className="relative group cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
                     <div className="aspect-video relative bg-gray-100">
                       <Image

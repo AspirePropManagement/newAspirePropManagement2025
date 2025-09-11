@@ -162,7 +162,7 @@ export default function WhyUsPage() {
               Why Choose Aspire Property Management?
             </h1>
             <p className="text-xl md:text-2xl text-orange-100 mb-8 leading-relaxed">
-              We're not just another property platform. We're your trusted partner in real estate success, 
+              We&apos;re not just another property platform. We&apos;re your trusted partner in real estate success, 
               combining technology, expertise, and personalized service to deliver exceptional results.
             </p>
             <div className="flex justify-center">
@@ -208,7 +208,7 @@ export default function WhyUsPage() {
                 What Makes Us Different
               </h2>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                We've built our platform around your needs, combining cutting-edge technology with 
+                We&apos;ve built our platform around your needs, combining cutting-edge technology with 
                 personalized service to deliver an unmatched real estate experience.
               </p>
             </div>
@@ -231,7 +231,7 @@ export default function WhyUsPage() {
                 What Our Customers Say
               </h2>
               <p className="text-lg text-gray-600">
-                Real stories from real customers who've achieved their real estate goals with us
+                Real stories from real customers who&apos;ve achieved their real estate goals with us
               </p>
             </div>
 
@@ -245,7 +245,7 @@ export default function WhyUsPage() {
                       </svg>
                     ))}
                   </div>
-                  <p className="text-gray-700 mb-4 italic">"{testimonial.content}"</p>
+                  <p className="text-gray-700 mb-4 italic">&ldquo;{testimonial.content}&rdquo;</p>
                   <div>
                     <div className="font-semibold text-gray-900">{testimonial.name}</div>
                     <div className="text-sm text-gray-600">{testimonial.role}</div>
@@ -265,7 +265,7 @@ export default function WhyUsPage() {
               Ready to Experience the Difference?
             </h2>
             <p className="text-xl text-orange-100 mb-8">
-              Join thousands of satisfied customers who've found their perfect property with Aspire Property Management. 
+              Join thousands of satisfied customers who&apos;ve found their perfect property with Aspire Property Management. 
               Start your real estate journey today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

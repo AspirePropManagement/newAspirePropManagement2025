@@ -146,14 +146,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error sending email:', error);
     console.error('Error details:', {
-      message: error.message,
-      code: error.code,
-      response: error.response
+      message: error instanceof Error ? error.message : 'Unknown error',
+      code: (error as any)?.code,
+      response: (error as any)?.response
     });
     return NextResponse.json(
       { 
         error: 'Failed to send email',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
       },
       { status: 500 }
     );
