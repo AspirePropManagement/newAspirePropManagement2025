@@ -7,7 +7,7 @@ import { env, isSupabaseConfigured } from './env'
  */
 
 // Only create the client if we have the required environment variables
-export const supabaseServer = isSupabaseConfigured() ? createClient(env.supabaseUrl, env.supabaseServiceKey || env.supabaseAnonKey, {
+export const supabaseServer = isSupabaseConfigured() ? createClient(env.supabaseUrl, env.supabaseAnonKey, {
   db: {
     schema: 'public'
   },

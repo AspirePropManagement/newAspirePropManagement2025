@@ -7,7 +7,6 @@ export const env = {
   // Supabase Configuration
   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '',
   supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
-  supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
   
   // OpenAI Configuration
   openaiKey: process.env.OPENAI_KEY || '',

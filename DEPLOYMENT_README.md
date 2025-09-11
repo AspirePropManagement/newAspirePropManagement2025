@@ -12,7 +12,6 @@ The application requires several environment variables to function properly. The
 |----------|-------------|---------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL | `https://your-project.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anonymous key | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Your Supabase service role key | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
 | `OPENAI_KEY` | Your OpenAI API key | `sk-...` |
 
 ### Optional Environment Variables
