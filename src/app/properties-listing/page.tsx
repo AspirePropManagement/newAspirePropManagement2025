@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { PropertyCard } from '@/components/PropertyCard';
@@ -16,11 +16,11 @@ import {
 } from '@heroicons/react/24/outline';
 
 /**
- * Properties Listing Page
+ * Properties Listing Page Content Component
  * Displays all properties with advanced filtering and search capabilities
  * Similar to PropertyPistol's property search interface
  */
-export default function PropertiesListingPage() {
+function PropertiesListingContent() {
   const searchParams = useSearchParams();
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -770,5 +770,24 @@ export default function PropertiesListingPage() {
       </div>
 
     </div>
+  );
+}
+
+/**
+ * Properties Listing Page with Suspense Boundary
+ * Wraps the content component to handle useSearchParams properly
+ */
+export default function PropertiesListingPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading properties...</p>
+        </div>
+      </div>
+    }>
+      <PropertiesListingContent />
+    </Suspense>
   );
 }
