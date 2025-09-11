@@ -20,9 +20,6 @@ export const env = {
   smtpPass: process.env.SMTP_PASS || '',
   adminEmail: process.env.ADMIN_EMAIL || '',
   
-  // NextAuth Configuration
-  nextAuthSecret: process.env.NEXTAUTH_SECRET || '',
-  nextAuthUrl: process.env.NEXTAUTH_URL || 'http://localhost:3000',
   
   // Database Configuration
   databaseUrl: process.env.DATABASE_URL || '',

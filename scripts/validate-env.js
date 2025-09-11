@@ -18,8 +18,6 @@ const optionalEnvVars = [
   'SMTP_USER',
   'SMTP_PASS',
   'ADMIN_EMAIL',
-  'NEXTAUTH_SECRET',
-  'NEXTAUTH_URL',
   'DATABASE_URL'
 ]
 

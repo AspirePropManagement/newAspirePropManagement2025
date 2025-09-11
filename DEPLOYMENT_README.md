@@ -24,8 +24,6 @@ The application requires several environment variables to function properly. The
 | `SMTP_USER` | SMTP username | - |
 | `SMTP_PASS` | SMTP password | - |
 | `ADMIN_EMAIL` | Admin email address | - |
-| `NEXTAUTH_SECRET` | NextAuth secret key | - |
-| `NEXTAUTH_URL` | NextAuth URL | `http://localhost:3000` |
 | `DATABASE_URL` | Database connection string | - |
 
 ## Vercel Deployment Steps
