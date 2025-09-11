@@ -47,6 +47,10 @@ export interface RecentActivity {
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
   try {
+    if (!supabase) {
+      throw new Error('Database connection not available')
+    }
+
     // Fetch user counts by role
     const { data: users, error: usersError } = await supabase
       .from('users')
@@ -194,6 +198,10 @@ async function getRecentActivity(
  */
 export async function getPropertyAnalytics() {
   try {
+    if (!supabase) {
+      throw new Error('Database connection not available')
+    }
+
     // Get resale properties analytics
     const { data: resaleProperties, error: resaleError } = await supabase
       .from('resale_properties')

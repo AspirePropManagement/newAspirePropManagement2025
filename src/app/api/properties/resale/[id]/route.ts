@@ -15,6 +15,13 @@ export async function GET(
       );
     }
 
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
+
     // Fetch the property from the database
     const { data, error } = await supabase
       .from('resale_properties')
@@ -65,6 +72,13 @@ export async function PUT(
       );
     }
 
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
+
     // Filter out any undefined or null values
     const cleanBody = Object.fromEntries(
       Object.entries(body).filter(([key, value]) => value !== null && value !== undefined)
@@ -110,6 +124,13 @@ export async function DELETE(
       return NextResponse.json(
         { error: 'Property ID is required' },
         { status: 400 }
+      );
+    }
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
       );
     }
 

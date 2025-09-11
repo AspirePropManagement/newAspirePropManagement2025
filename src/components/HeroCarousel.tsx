@@ -93,6 +93,13 @@ export const HeroCarousel: React.FC = () => {
   const fetchCarouselImages = async () => {
     try {
       setLoading(true);
+      
+      if (!supabase) {
+        setError('Database connection not available');
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('hero_carousel_images')
         .select('*')

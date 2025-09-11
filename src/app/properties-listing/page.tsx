@@ -71,6 +71,12 @@ export default function PropertiesListingPage() {
       setLoading(true);
       setError(null);
 
+      if (!supabase) {
+        setError('Database connection not available');
+        setLoading(false);
+        return;
+      }
+
       let allProperties: any[] = [];
 
       // Fetch from resale_properties table

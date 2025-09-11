@@ -42,6 +42,11 @@ export function useSupabaseAuth() {
    */
   const fetchUserRole = useCallback(async (userId: string): Promise<UserRole> => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not available')
+        return null
+      }
+
       const { data: userData, error } = await supabase
         .from('users')
         .select('role')
@@ -65,6 +70,11 @@ export function useSupabaseAuth() {
    */
   const fetchUserProfile = useCallback(async (userId: string) => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not available')
+        return null
+      }
+
       const { data: userData, error } = await supabase
         .from('users')
         .select('*')
@@ -88,6 +98,12 @@ export function useSupabaseAuth() {
    */
   const signIn = useCallback(async (email: string, password: string) => {
     try {
+      if (!supabase) {
+        const error = new Error('Database connection not available')
+        setAuthState(prev => ({ ...prev, loading: false, error: error as AuthError }))
+        return { data: null, error: error as AuthError }
+      }
+
       setAuthState(prev => ({ ...prev, loading: true, error: null }))
 
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -132,6 +148,12 @@ export function useSupabaseAuth() {
    */
   const signUp = useCallback(async (email: string, password: string, userData: any) => {
     try {
+      if (!supabase) {
+        const error = new Error('Database connection not available')
+        setAuthState(prev => ({ ...prev, loading: false, error: error as AuthError }))
+        return { data: null, error: error as AuthError }
+      }
+
       setAuthState(prev => ({ ...prev, loading: true, error: null }))
 
       const { data, error } = await supabase.auth.signUp({
@@ -161,6 +183,11 @@ export function useSupabaseAuth() {
    */
   const signOut = useCallback(async () => {
     try {
+      if (!supabase) {
+        console.error('Supabase client not available')
+        return
+      }
+
       const { error } = await supabase.auth.signOut()
       if (error) throw error
 
@@ -186,6 +213,10 @@ export function useSupabaseAuth() {
     if (!role) return { error: new Error('Invalid role') }
 
     try {
+      if (!supabase) {
+        return { error: new Error('Database connection not available') }
+      }
+
       const { data, error } = await supabase
         .from('users')
         .update({ role })
@@ -260,6 +291,12 @@ export function useSupabaseAuth() {
   useEffect(() => {
     const getInitialSession = async () => {
       try {
+        if (!supabase) {
+          console.error('Supabase client not available')
+          setAuthState(prev => ({ ...prev, loading: false }))
+          return
+        }
+
         const { data: { session } } = await supabase.auth.getSession()
         
         if (session?.user) {
@@ -290,6 +327,10 @@ export function useSupabaseAuth() {
     getInitialSession()
 
     // Listen for auth changes
+    if (!supabase) {
+      return
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {

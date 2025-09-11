@@ -36,6 +36,11 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
 
   useEffect(() => {
     const getSession = async () => {
+      if (!supabase) {
+        setLoading(false)
+        return
+      }
+
       const { data: { session } } = await supabase.auth.getSession()
       setSession(session)
       setUser(session?.user ?? null)
@@ -82,6 +87,10 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
 
   const signUp = async (email: string, password: string, firstName: string, lastName: string, phone: string, role: string) => {
     try {
+      if (!supabase) {
+        return { error: { message: 'Database connection not available' } }
+      }
+
       // First, check if email already exists
       const { data: existingEmail, error: emailCheckError } = await supabase
         .from('users')
@@ -141,6 +150,15 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
       // Clear user session data
       // Session clearing handled by AuthService
       
+      if (!supabase) {
+        setUser(null)
+        setSession(null)
+        if (typeof window !== 'undefined') {
+          window.location.href = '/'
+        }
+        return
+      }
+
       // Sign out from Supabase Auth
       const { error } = await supabase.auth.signOut()
       if (error) {
@@ -160,6 +178,10 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
   }
 
   const resetPassword = async (email: string) => {
+    if (!supabase) {
+      return { error: { message: 'Database connection not available' } }
+    }
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/reset-password`,
     })

@@ -45,6 +45,12 @@ export function useSupabaseUser(): UserProfile {
         setLoading(true)
         setError(null)
 
+        if (!supabase) {
+          setError('Database connection not available')
+          setLoading(false)
+          return
+        }
+
         // Fetch user profile from the simplified users table
         const { data: userData, error: userError } = await supabase
           .from('users')

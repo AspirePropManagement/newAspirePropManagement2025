@@ -10,6 +10,10 @@ export class HeroCarouselService {
    */
   static async getAllImages(): Promise<HeroCarouselImage[]> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+
       const { data, error } = await supabase
         .from('hero_carousel_images')
         .select('*')
@@ -28,6 +32,10 @@ export class HeroCarouselService {
    */
   static async getActiveImages(): Promise<HeroCarouselImage[]> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+
       const { data, error } = await supabase
         .from('hero_carousel_images')
         .select('*')
@@ -47,6 +55,10 @@ export class HeroCarouselService {
    */
   static async createImage(imageData: CreateHeroCarouselImage): Promise<HeroCarouselImage> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+
       // Add timeout to prevent statement timeout
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Upload timeout - image too large')), 30000); // 30 seconds
@@ -73,6 +85,10 @@ export class HeroCarouselService {
    */
   static async updateImage(id: string, updates: UpdateHeroCarouselImage): Promise<HeroCarouselImage> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+
       const { data, error } = await supabase
         .from('hero_carousel_images')
         .update(updates)
@@ -93,6 +109,10 @@ export class HeroCarouselService {
    */
   static async deleteImage(id: string): Promise<void> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+
       const { error } = await supabase
         .from('hero_carousel_images')
         .delete()
@@ -110,6 +130,10 @@ export class HeroCarouselService {
    */
   static async toggleImageStatus(id: string, isActive: boolean): Promise<HeroCarouselImage> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+
       const { data, error } = await supabase
         .from('hero_carousel_images')
         .update({ is_active: isActive })
@@ -130,6 +154,10 @@ export class HeroCarouselService {
    */
   static async reorderImages(orderedIds: string[]): Promise<void> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+
       const updates = orderedIds.map((id, index) => ({
         id,
         display_order: index

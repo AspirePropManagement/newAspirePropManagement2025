@@ -53,6 +53,10 @@ export function useSupabaseRoleAssignment() {
       setLoading(true)
       setError(null)
 
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+
       const { data, error: roleError } = await supabase
         .rpc('update_user_role', {
           target_user_id: userId,
@@ -86,6 +90,10 @@ export function useSupabaseRoleAssignment() {
       setLoading(true)
       setError(null)
 
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+
       const { data, error } = await supabase
         .from('users')
         .insert([userData])
@@ -112,6 +120,10 @@ export function useSupabaseRoleAssignment() {
       setLoading(true)
       setError(null)
 
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
+
       const { data, error } = await supabase
         .rpc('get_all_users_with_roles')
 
@@ -134,6 +146,10 @@ export function useSupabaseRoleAssignment() {
     try {
       setLoading(true)
       setError(null)
+
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
 
       const { data, error } = await supabase
         .rpc('check_user_permission', {
@@ -160,6 +176,10 @@ export function useSupabaseRoleAssignment() {
     try {
       setLoading(true)
       setError(null)
+
+      if (!supabase) {
+        throw new Error('Database connection not available')
+      }
 
       const { data, error } = await supabase
         .rpc('get_user_role', {

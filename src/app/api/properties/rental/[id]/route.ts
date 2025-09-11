@@ -15,6 +15,13 @@ export async function GET(
       );
     }
 
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
+
     // Fetch the property from the database
     const { data, error } = await supabase
       .from('rental_properties')
@@ -62,6 +69,13 @@ export async function PUT(
       );
     }
 
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
+      );
+    }
+
     // Update the property in the database
     const { error } = await supabase
       .from('rental_properties')
@@ -100,6 +114,13 @@ export async function DELETE(
       return NextResponse.json(
         { error: 'Property ID is required' },
         { status: 400 }
+      );
+    }
+
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Database connection not available' },
+        { status: 500 }
       );
     }
 
