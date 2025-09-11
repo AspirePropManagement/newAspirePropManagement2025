@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { supabaseServer } from '@/lib/supabase-server'
+import { env, isOpenAIConfigured } from '@/lib/env'
 
 /**
  * API route for handling chatbot conversations with OpenAI
@@ -8,9 +9,9 @@ import { supabaseServer } from '@/lib/supabase-server'
  * Enhanced with user authentication and database access
  */
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_KEY,
-})
+const openai = isOpenAIConfigured() ? new OpenAI({
+  apiKey: env.openaiKey,
+}) : null
 
 export async function POST(request: NextRequest) {
   let message: string = '';
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!process.env.OPENAI_KEY) {
+    if (!openai) {
       return NextResponse.json(
         { error: 'OpenAI API key not configured' },
         { status: 500 }
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
 
     // Get user-specific data if logged in
     let userData = null
-    if (userId) {
+    if (userId && supabaseServer) {
       console.log('Fetching user data for:', { userId, userRole })
       userData = await getUserData(userId, userRole)
       console.log('User data fetched:', userData)
@@ -163,6 +164,18 @@ async function getUserData(userId: string, userRole: string) {
   try {
     console.log('getUserData called with:', { userId, userRole })
     const userData: any = { userId, userRole, hasData: false }
+
+    // Check if Supabase client is available
+    if (!supabaseServer) {
+      console.log('Supabase client not available')
+      return {
+        userId,
+        userRole,
+        error: 'Database connection not available',
+        hasData: false,
+        dataUnavailable: true
+      }
+    }
 
     // Get user's properties based on role
     if (userRole === 'AGENT') {

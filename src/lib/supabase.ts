@@ -1,9 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
+import { env, isSupabaseConfigured } from './env'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+// Only create the client if we have the required environment variables
+export const supabase = isSupabaseConfigured() ? createClient(env.supabaseUrl, env.supabaseAnonKey, {
   db: {
     schema: 'public'
   },
@@ -17,7 +16,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     detectSessionInUrl: true
   }
-})
+}) : null
 
 export type Database = {
   public: {
