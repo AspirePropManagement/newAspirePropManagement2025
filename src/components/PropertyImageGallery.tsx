@@ -116,7 +116,7 @@ export function PropertyImageGallery({ images, className = '' }: PropertyImageGa
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={() => {
-                          setImageErrors(prev => new Set([...prev, index]));
+                          setImageErrors(prev => new Set([...Array.from(prev), index]));
                         }}
                         // For base64 images, we don't need to configure domains
                         unoptimized={isBase64Image(imageUrl)}
