@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useUserManagement } from '@/hooks/useUserManagement';
 import { InlinePreloader } from '@/components/Preloader';
 import DashboardLayout from '@/components/DashboardLayout';
+import DashboardPropertyForm from '@/components/DashboardPropertyForm';
 import Link from 'next/link';
 
 /**
@@ -11,6 +12,7 @@ import Link from 'next/link';
  */
 export default function AdminDashboardPage() {
   const { users: allUsers, loading, error } = useUserManagement();
+  const [showPropertyForm, setShowPropertyForm] = useState(false);
 
   const getUsersByRole = (role: string) => {
     return allUsers.filter(user => user.role === role);
@@ -34,7 +36,7 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <DashboardLayout>
+      <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
@@ -48,7 +50,7 @@ export default function AdminDashboardPage() {
 
   if (error) {
     return (
-      <DashboardLayout>
+      <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center py-12">
             <div className="text-red-600 text-6xl mb-4">⚠️</div>
@@ -67,7 +69,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
@@ -212,6 +214,16 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
+      
+      {/* Dashboard Property Form Modal */}
+      <DashboardPropertyForm
+        isOpen={showPropertyForm}
+        onClose={() => setShowPropertyForm(false)}
+        onSuccess={() => {
+          setShowPropertyForm(false);
+          // Optionally refresh data here if needed
+        }}
+      />
     </DashboardLayout>
   );
 }

@@ -17,7 +17,8 @@ import {
   ArrowRightOnRectangleIcon,
   ListBulletIcon,
   PhotoIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  PlusIcon
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -25,9 +26,10 @@ interface SidebarProps {
   onToggle: () => void;
   userRole: string;
   isMobile?: boolean;
+  onPropertyListingClick?: () => void;
 }
 
-export default function Sidebar({ collapsed, onToggle, userRole, isMobile = false }: SidebarProps) {
+export default function Sidebar({ collapsed, onToggle, userRole, isMobile = false, onPropertyListingClick }: SidebarProps) {
   const pathname = usePathname();
   const { signOut } = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -64,36 +66,40 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
         return [
           {
             name: 'Property Listing',
-            href: '/properties',
+            href: '#',
             icon: ListBulletIcon,
-            description: 'View and manage all properties'
+            description: 'Post and manage properties',
+            onClick: onPropertyListingClick
           }
         ];
       case 'AGENT':
         return [
           {
             name: 'Property Listing',
-            href: '/properties',
+            href: '#',
             icon: ListBulletIcon,
-            description: 'View and manage all properties'
+            description: 'Post and manage properties',
+            onClick: onPropertyListingClick
           }
         ];
       case 'BUILDER':
         return [
           {
             name: 'Property Listing',
-            href: '/properties',
+            href: '#',
             icon: ListBulletIcon,
-            description: 'View and manage all properties'
+            description: 'Post and manage properties',
+            onClick: onPropertyListingClick
           }
         ];
       case 'BUYER':
         return [
           {
             name: 'Property Listing',
-            href: '/properties',
+            href: '#',
             icon: ListBulletIcon,
-            description: 'Browse and search all properties'
+            description: 'Post and browse properties',
+            onClick: onPropertyListingClick
           }
         ];
       default:
@@ -171,6 +177,23 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
   };
 
   const RoleSpecificMenuItem = ({ item }: { item: any }) => {
+    if (item.onClick) {
+      return (
+        <button
+          onClick={item.onClick}
+          className={`w-full flex items-start px-4 py-3 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-100 hover:text-gray-900`}
+        >
+          <item.icon className={`h-5 w-5 mt-0.5 ${(isMobile || !collapsed) ? 'mr-3' : 'mx-auto'}`} />
+          {(isMobile || !collapsed) && (
+            <div className="flex-1 text-left">
+              <div className="font-medium">{item.name}</div>
+              <div className="text-xs text-gray-500 mt-1">{item.description}</div>
+            </div>
+          )}
+        </button>
+      );
+    }
+    
     return (
       <Link
         href={item.href}

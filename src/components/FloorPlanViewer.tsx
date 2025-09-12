@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { PropertyImages } from '@/types/Property';
 import Image from 'next/image';
+import { getImageSrc, isBase64Image } from '@/utils/imageUtils';
 
 interface FloorPlanViewerProps {
   images: PropertyImages;
@@ -144,10 +145,11 @@ export function FloorPlanViewer({ images, className = '' }: FloorPlanViewerProps
                 >
                   <div className="aspect-[4/3] relative">
                     <Image
-                      src={imageUrl}
+                      src={getImageSrc(imageUrl)}
                       alt={`${currentPlan.name} ${index + 1}`}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      unoptimized={isBase64Image(imageUrl)}
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity" />
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -185,11 +187,12 @@ export function FloorPlanViewer({ images, className = '' }: FloorPlanViewerProps
                     }}
                   >
                     <Image
-                      src={currentPlan.images[0]}
+                      src={getImageSrc(currentPlan.images[0])}
                       alt={`${currentPlan.name} - Interactive View`}
                       width={800}
                       height={600}
                       className="max-w-full max-h-full object-contain"
+                      unoptimized={isBase64Image(currentPlan.images[0])}
                     />
                   </div>
                 )}
@@ -223,11 +226,12 @@ export function FloorPlanViewer({ images, className = '' }: FloorPlanViewerProps
             </button>
             <div className="relative">
               <Image
-                src={currentPlan.images[0]}
+                src={getImageSrc(currentPlan.images[0])}
                 alt={`${currentPlan.name} - Full Size`}
                 width={1200}
                 height={800}
                 className="max-w-full max-h-[80vh] object-contain rounded-lg"
+                unoptimized={isBase64Image(currentPlan.images[0])}
               />
             </div>
           </div>

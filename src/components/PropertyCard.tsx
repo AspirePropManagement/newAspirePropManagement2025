@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import { extractPropertyImages, getImageSrc, isBase64Image, isImageUrl } from '@/utils/imageUtils';
 
 interface PropertyCardProps {
   property: any;
@@ -23,6 +24,7 @@ interface PropertyCardProps {
 export function PropertyCard({ property }: PropertyCardProps) {
   const [isFavorite, setIsFavorite] = React.useState(false);
   const [imageIndex, setImageIndex] = React.useState(0);
+  const [imageError, setImageError] = React.useState(false);
 
   // Check if property is in favorites on component mount
   React.useEffect(() => {
@@ -69,58 +71,10 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
   /**
    * Gets property images for carousel
+   * Now supports both URL and base64 images
    */
   const getPropertyImages = () => {
-    const images: string[] = [];
-    
-    // First, try to use the direct images array
-    if (property.images && Array.isArray(property.images) && property.images.length > 0) {
-      return property.images.filter((img: any) => img && typeof img === 'string' && img.trim() !== '');
-    }
-    
-    // Then try to extract images from the property_images JSONB structure
-    if (property.property_images && typeof property.property_images === 'object') {
-      // Check general_photos
-      if (property.property_images.general_photos) {
-        if (property.property_images.general_photos.exterior && Array.isArray(property.property_images.general_photos.exterior)) {
-          images.push(...property.property_images.general_photos.exterior.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
-        }
-        if (property.property_images.general_photos.interior && Array.isArray(property.property_images.general_photos.interior)) {
-          images.push(...property.property_images.general_photos.interior.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
-        }
-        if (property.property_images.general_photos.bedrooms && Array.isArray(property.property_images.general_photos.bedrooms)) {
-          images.push(...property.property_images.general_photos.bedrooms.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
-        }
-        if (property.property_images.general_photos.kitchen && Array.isArray(property.property_images.general_photos.kitchen)) {
-          images.push(...property.property_images.general_photos.kitchen.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
-        }
-        if (property.property_images.general_photos.bathrooms && Array.isArray(property.property_images.general_photos.bathrooms)) {
-          images.push(...property.property_images.general_photos.bathrooms.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
-        }
-        if (property.property_images.general_photos.amenities && Array.isArray(property.property_images.general_photos.amenities)) {
-          images.push(...property.property_images.general_photos.amenities.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
-        }
-      }
-      
-      // Check floor_plans
-      if (property.property_images.floor_plans) {
-        if (property.property_images.floor_plans.floor_plan && Array.isArray(property.property_images.floor_plans.floor_plan)) {
-          images.push(...property.property_images.floor_plans.floor_plan.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
-        }
-        if (property.property_images.floor_plans.site_plan && Array.isArray(property.property_images.floor_plans.site_plan)) {
-          images.push(...property.property_images.floor_plans.site_plan.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
-        }
-        if (property.property_images.floor_plans.blueprint && Array.isArray(property.property_images.floor_plans.blueprint)) {
-          images.push(...property.property_images.floor_plans.blueprint.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
-        }
-        if (property.property_images.floor_plans.elevation && Array.isArray(property.property_images.floor_plans.elevation)) {
-          images.push(...property.property_images.floor_plans.elevation.filter((img: any) => img && typeof img === 'string' && img.trim() !== ''));
-        }
-      }
-    }
-    
-    // Return images if we found any, otherwise return empty array
-    return images.length > 0 ? images : [];
+    return extractPropertyImages(property);
   };
 
   /**
@@ -210,16 +164,17 @@ export function PropertyCard({ property }: PropertyCardProps) {
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer">
       {/* Property Image */}
       <div className="relative h-48 bg-gray-200">
-        {images.length > 0 ? (
+        {images.length > 0 && !imageError ? (
           <Image
-            src={images[imageIndex]}
+            src={getImageSrc(images[imageIndex])}
             alt={getPropertyTitle()}
             fill
             className="object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = '/api/placeholder/400/300';
+            onError={() => {
+              setImageError(true);
             }}
+            // For base64 images, we don't need to configure domains
+            unoptimized={isBase64Image(images[imageIndex])}
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200">
@@ -235,6 +190,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                setImageError(false);
                 setImageIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
               }}
               className="w-8 h-8 bg-black bg-opacity-60 text-white rounded-full flex items-center justify-center hover:bg-opacity-80 transition-all duration-200 shadow-lg"
@@ -246,6 +202,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                setImageError(false);
                 setImageIndex(prev => (prev + 1) % images.length);
               }}
               className="w-8 h-8 bg-black bg-opacity-60 text-white rounded-full flex items-center justify-center hover:bg-opacity-80 transition-all duration-200 shadow-lg"
@@ -289,6 +246,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
+                  setImageError(false);
                   setImageIndex(index);
                 }}
                 className={`w-2 h-2 rounded-full transition-all duration-200 hover:scale-125 ${

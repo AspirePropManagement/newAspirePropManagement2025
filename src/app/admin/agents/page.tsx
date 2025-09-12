@@ -8,6 +8,7 @@ import { UserEditModal } from '@/components/UserEditModal';
 import { InlinePreloader } from '@/components/Preloader';
 import { Pagination } from '@/components/Pagination';
 import DashboardLayout from '@/components/DashboardLayout';
+import DashboardPropertyForm from '@/components/DashboardPropertyForm';
 import { User } from '@/types/User';
 import { UserUpdateData } from '@/types/User';
 
@@ -22,6 +23,7 @@ export default function AdminAgentsPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
+  const [showPropertyForm, setShowPropertyForm] = useState(false);
 
   // Filter users based on search and status
   const filteredUsers = useMemo(() => {
@@ -115,7 +117,7 @@ export default function AdminAgentsPage() {
 
   if (loading) {
     return (
-      <DashboardLayout>
+      <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Agent Management</h1>
@@ -129,7 +131,7 @@ export default function AdminAgentsPage() {
 
   if (error) {
     return (
-      <DashboardLayout>
+      <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center py-12">
             <div className="text-red-600 text-6xl mb-4">⚠️</div>
@@ -148,7 +150,7 @@ export default function AdminAgentsPage() {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
       <div className="max-w-7xl mx-auto">
         <UserTableHeader
           title="Agent Management"
@@ -226,6 +228,15 @@ export default function AdminAgentsPage() {
         isOpen={isEditModalOpen}
         onClose={closeEditModal}
         onSave={handleSaveEdit}
+      />
+      
+      {/* Dashboard Property Form Modal */}
+      <DashboardPropertyForm
+        isOpen={showPropertyForm}
+        onClose={() => setShowPropertyForm(false)}
+        onSuccess={() => {
+          setShowPropertyForm(false);
+        }}
       />
     </DashboardLayout>
   );

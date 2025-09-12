@@ -1,59 +1,66 @@
 /**
+ * Image source type that can be either a URL or base64 data
+ * Supports both external URLs and embedded base64 images
+ */
+export type ImageSource = string;
+
+/**
  * Property entity representing a real estate property
  * Implements the Single Responsibility Principle by only defining property data structure
+ * Now supports both URL and base64 image formats
  */
 export interface PropertyImages {
   // General Property Photos
   general_photos?: {
-    exterior?: string[];
-    interior?: string[];
-    bedrooms?: string[];
-    kitchen?: string[];
-    bathrooms?: string[];
-    living_dining?: string[];
-    balcony?: string[];
-    amenities?: string[];
+    exterior?: ImageSource[];
+    interior?: ImageSource[];
+    bedrooms?: ImageSource[];
+    kitchen?: ImageSource[];
+    bathrooms?: ImageSource[];
+    living_dining?: ImageSource[];
+    balcony?: ImageSource[];
+    amenities?: ImageSource[];
   };
   
   // Floor Plans and Layouts
   floor_plans?: {
-    floor_plan?: string[];
-    site_plan?: string[];
-    master_plan?: string[];
-    blueprint?: string[];
-    elevation?: string[];
-    layout_2d?: string[];
-    layout_3d?: string[];
+    floor_plan?: ImageSource[];
+    site_plan?: ImageSource[];
+    master_plan?: ImageSource[];
+    blueprint?: ImageSource[];
+    elevation?: ImageSource[];
+    layout_2d?: ImageSource[];
+    layout_3d?: ImageSource[];
   };
   
   // Project Specific Images (for New Projects)
   project_images?: {
-    club_house?: string[];
-    swimming_pool?: string[];
-    gym?: string[];
-    children_play_area?: string[];
-    park?: string[];
-    security_gate?: string[];
-    reception_lounge?: string[];
-    banquet_hall?: string[];
-    retail_area?: string[];
-    parking_area?: string[];
+    club_house?: ImageSource[];
+    swimming_pool?: ImageSource[];
+    gym?: ImageSource[];
+    children_play_area?: ImageSource[];
+    park?: ImageSource[];
+    security_gate?: ImageSource[];
+    reception_lounge?: ImageSource[];
+    banquet_hall?: ImageSource[];
+    retail_area?: ImageSource[];
+    parking_area?: ImageSource[];
   };
   
   // Legal and Documentation
   legal_docs?: {
-    rera_certificate?: string[];
-    approval_documents?: string[];
-    legal_documents?: string[];
-    brochures?: string[];
+    rera_certificate?: ImageSource[];
+    approval_documents?: ImageSource[];
+    legal_documents?: ImageSource[];
+    brochures?: ImageSource[];
   };
   
   // Virtual Tours and Videos
   virtual_content?: {
-    virtual_tour?: string[];
-    video_walkthrough?: string[];
-    drone_footage?: string[];
-    promotional_videos?: string[];
+    virtual_tour?: ImageSource[];
+    video_walkthrough?: ImageSource[];
+    drone_footage?: ImageSource[];
+    promotional_videos?: ImageSource[];
   };
 }
 
