@@ -17,6 +17,15 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  
+  // Role-specific fields
+  const [agentFirmName, setAgentFirmName] = useState('');
+  const [agentReraId, setAgentReraId] = useState('');
+  const [ownerPropertiesCount, setOwnerPropertiesCount] = useState('');
+  const [ownerPrimaryLocation, setOwnerPrimaryLocation] = useState('');
+  const [builderCompanyName, setBuilderCompanyName] = useState('');
+  const [builderReraId, setBuilderReraId] = useState('');
+  const [builderYearsExperience, setBuilderYearsExperience] = useState('');
   const router = useRouter();
   const { login, register } = useAuth();
 
@@ -29,6 +38,14 @@ export default function AuthPage() {
     setRole('BUYER');
     setError('');
     setSuccess('');
+    // Reset role-specific fields
+    setAgentFirmName('');
+    setAgentReraId('');
+    setOwnerPropertiesCount('');
+    setOwnerPrimaryLocation('');
+    setBuilderCompanyName('');
+    setBuilderReraId('');
+    setBuilderYearsExperience('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -52,14 +69,35 @@ export default function AuthPage() {
         }
       } else {
         // Sign up
-        const result = await register({
+        const signupData: any = {
           email,
           password,
           first_name: firstName,
           last_name: lastName,
           phone: phone,
           role: role
-        });
+        };
+
+        // Add role-specific data
+        if (role === 'AGENT') {
+          signupData.agent_profile = {
+            firm_name: agentFirmName,
+            rera_id: agentReraId
+          };
+        } else if (role === 'OWNER') {
+          signupData.owner_profile = {
+            properties_count: parseInt(ownerPropertiesCount) || 0,
+            primary_location: ownerPrimaryLocation
+          };
+        } else if (role === 'BUILDER') {
+          signupData.builder_profile = {
+            company_name: builderCompanyName,
+            rera_id: builderReraId,
+            years_of_experience: parseInt(builderYearsExperience) || 0
+          };
+        }
+
+        const result = await register(signupData);
         
         if (result.success) {
           setSuccess('Account created successfully! Redirecting to dashboard...');
@@ -79,7 +117,7 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-6 sm:space-y-8">
+      <div className="max-w-2xl w-full space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
@@ -93,10 +131,110 @@ export default function AuthPage() {
         {/* Auth Form Card */}
         <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-            {/* Email Field */}
+            {/* Role Selection - Only for signup and at the top */}
+            {!isLogin && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Select Your Role <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setRole('BUYER')}
+                    className={`p-3 rounded-lg border-2 text-left transition-all ${
+                      role === 'BUYER'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    <div className="font-medium">🏠 Buyer</div>
+                    <div className="text-xs text-gray-500">Looking to buy properties</div>
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={() => setRole('AGENT')}
+                    className={`p-3 rounded-lg border-2 text-left transition-all ${
+                      role === 'AGENT'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    <div className="font-medium">👔 Agent</div>
+                    <div className="text-xs text-gray-500">Real estate agent</div>
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={() => setRole('BUILDER')}
+                    className={`p-3 rounded-lg border-2 text-left transition-all ${
+                      role === 'BUILDER'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    <div className="font-medium">🏗️ Builder</div>
+                    <div className="text-xs text-gray-500">Property developer</div>
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={() => setRole('OWNER')}
+                    className={`p-3 rounded-lg border-2 text-left transition-all ${
+                      role === 'OWNER'
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    <div className="font-medium">🏡 Owner</div>
+                    <div className="text-xs text-gray-500">Property owner</div>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* First Name and Last Name - First row for signup */}
+            {!isLogin && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                    First Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    autoComplete="given-name"
+                    required={!isLogin}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                    placeholder="First name"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Last Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    autoComplete="family-name"
+                    required={!isLogin}
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                    placeholder="Last name"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Email Field - Below first name and last name for signup */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                Email Address <span className="text-red-500">*</span>
               </label>
               <input
                 id="email"
@@ -114,46 +252,10 @@ export default function AuthPage() {
             {/* Additional fields for signup */}
             {!isLogin && (
               <>
-                {/* First Name and Last Name */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name
-                    </label>
-                    <input
-                      id="firstName"
-                      name="firstName"
-                      type="text"
-                      autoComplete="given-name"
-                      required={!isLogin}
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
-                      placeholder="First name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name
-                    </label>
-                    <input
-                      id="lastName"
-                      name="lastName"
-                      type="text"
-                      autoComplete="family-name"
-                      required={!isLogin}
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
-                      placeholder="Last name"
-                    />
-                  </div>
-                </div>
-
                 {/* Phone Number */}
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number
+                    Phone Number <span className="text-red-500">*</span>
                   </label>
                   <input
                     id="phone"
@@ -168,25 +270,129 @@ export default function AuthPage() {
                   />
                 </div>
 
-                {/* Role Selection */}
-                <div>
-                  <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
-                    Select Your Role
-                  </label>
-                  <select
-                    id="role"
-                    name="role"
-                    required={!isLogin}
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
-                  >
-                    <option value="BUYER">Buyer - Looking to buy properties</option>
-                    <option value="AGENT">Agent - Real estate agent</option>
-                    <option value="BUILDER">Builder - Property developer</option>
-                    <option value="ADMIN">Admin - System administrator</option>
-                  </select>
-                </div>
+                {/* Role-specific fields */}
+                {role === 'AGENT' && (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="agentFirmName" className="block text-sm font-medium text-gray-700 mb-2">
+                          Firm Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          id="agentFirmName"
+                          name="agentFirmName"
+                          type="text"
+                          required
+                          value={agentFirmName}
+                          onChange={(e) => setAgentFirmName(e.target.value)}
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          placeholder="Enter firm name"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="agentReraId" className="block text-sm font-medium text-gray-700 mb-2">
+                          RERA ID/Number
+                        </label>
+                        <input
+                          id="agentReraId"
+                          name="agentReraId"
+                          type="text"
+                          value={agentReraId}
+                          onChange={(e) => setAgentReraId(e.target.value)}
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          placeholder="Enter RERA ID/Number"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {role === 'OWNER' && (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="ownerPropertiesCount" className="block text-sm font-medium text-gray-700 mb-2">
+                          Number of Properties Owned
+                        </label>
+                        <input
+                          id="ownerPropertiesCount"
+                          name="ownerPropertiesCount"
+                          type="number"
+                          min="0"
+                          value={ownerPropertiesCount}
+                          onChange={(e) => setOwnerPropertiesCount(e.target.value)}
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          placeholder="Enter number of properties"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="ownerPrimaryLocation" className="block text-sm font-medium text-gray-700 mb-2">
+                          Primary Location of Properties
+                        </label>
+                        <input
+                          id="ownerPrimaryLocation"
+                          name="ownerPrimaryLocation"
+                          type="text"
+                          value={ownerPrimaryLocation}
+                          onChange={(e) => setOwnerPrimaryLocation(e.target.value)}
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          placeholder="Enter primary location"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {role === 'BUILDER' && (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="builderCompanyName" className="block text-sm font-medium text-gray-700 mb-2">
+                          Company Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          id="builderCompanyName"
+                          name="builderCompanyName"
+                          type="text"
+                          required
+                          value={builderCompanyName}
+                          onChange={(e) => setBuilderCompanyName(e.target.value)}
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          placeholder="Enter company name"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="builderReraId" className="block text-sm font-medium text-gray-700 mb-2">
+                          RERA ID/Number
+                        </label>
+                        <input
+                          id="builderReraId"
+                          name="builderReraId"
+                          type="text"
+                          value={builderReraId}
+                          onChange={(e) => setBuilderReraId(e.target.value)}
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          placeholder="Enter RERA ID/Number"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label htmlFor="builderYearsExperience" className="block text-sm font-medium text-gray-700 mb-2">
+                        Years of Experience
+                      </label>
+                      <input
+                        id="builderYearsExperience"
+                        name="builderYearsExperience"
+                        type="number"
+                        min="0"
+                        value={builderYearsExperience}
+                        onChange={(e) => setBuilderYearsExperience(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                        placeholder="Enter years of experience"
+                      />
+                    </div>
+                  </>
+                )}
               </>
             )}
 

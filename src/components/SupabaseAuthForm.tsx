@@ -327,6 +327,7 @@ export default function SupabaseAuthForm({ mode, onModeChange }: SupabaseAuthFor
                 <option value="BUYER">🏠 Buyer - Looking to purchase properties</option>
                 <option value="AGENT">👔 Real Estate Agent - Help clients buy and sell</option>
                 <option value="BUILDER">🏗️ Builder/Developer - Create and sell properties</option>
+                <option value="OWNER">🏡 Property Owner - Own and manage properties</option>
                 <option value="ADMIN">⚙️ Administrator - Manage platform operations</option>
               </select>
             </div>

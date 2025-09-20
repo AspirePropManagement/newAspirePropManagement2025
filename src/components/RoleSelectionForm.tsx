@@ -224,6 +224,45 @@ export default function RoleSelectionForm({ onRoleSelected, onBack, defaultRole 
           </div>
         )
 
+      case 'owner':
+        return (
+          <div className="space-y-4">
+            <FormInput
+              id="owner-full-name"
+              name="owner-full-name"
+              label="Full Name"
+              type="text"
+              value={formData.full_name || ''}
+              onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+              required
+            />
+            <FormInput
+              id="owner-phone"
+              name="owner-phone"
+              label="Phone"
+              type="tel"
+              value={formData.phone || ''}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            />
+            <FormInput
+              id="owner-properties-count"
+              name="owner-properties-count"
+              label="Number of Properties Owned"
+              type="text"
+              value={formData.properties_count || ''}
+              onChange={(e) => setFormData({ ...formData, properties_count: parseInt(e.target.value) })}
+            />
+            <FormInput
+              id="owner-primary-location"
+              name="owner-primary-location"
+              label="Primary Location of Properties"
+              type="text"
+              value={formData.primary_location || ''}
+              onChange={(e) => setFormData({ ...formData, primary_location: e.target.value })}
+            />
+          </div>
+        )
+
       default:
         return null
     }
@@ -260,6 +299,14 @@ export default function RoleSelectionForm({ onRoleSelected, onBack, defaultRole 
           >
             <div className="font-semibold text-lg">🏗️ Builder/Developer</div>
             <div className="text-sm text-gray-600">Create and sell new properties</div>
+          </button>
+
+          <button
+            onClick={() => handleRoleSelect('owner')}
+            className="w-full p-4 text-left border border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors"
+          >
+            <div className="font-semibold text-lg">🏡 Property Owner</div>
+            <div className="text-sm text-gray-600">Own and manage properties</div>
           </button>
 
           <button

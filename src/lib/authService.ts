@@ -12,7 +12,7 @@ export interface User {
   first_name?: string;
   last_name?: string;
   phone?: string;
-  role: 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER';
+  role: 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER' | 'OWNER';
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -23,13 +23,32 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface AgentProfile {
+  firm_name: string;
+  rera_id?: string;
+}
+
+export interface OwnerProfile {
+  properties_count: number;
+  primary_location?: string;
+}
+
+export interface BuilderProfile {
+  company_name: string;
+  rera_id?: string;
+  years_of_experience: number;
+}
+
 export interface RegisterData {
   email: string;
   password: string;
   first_name?: string;
   last_name?: string;
   phone?: string;
-  role?: 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER';
+  role?: 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER' | 'OWNER';
+  agent_profile?: AgentProfile;
+  owner_profile?: OwnerProfile;
+  builder_profile?: BuilderProfile;
 }
 
 /**
@@ -119,6 +138,49 @@ class AuthService {
       if (insertError) {
         console.error('Insert error:', insertError);
         return { success: false, error: 'Failed to create account' };
+      }
+
+      // Create role-specific profile if provided
+      if (data.role === 'AGENT' && data.agent_profile) {
+        const { error: agentError } = await supabase
+          .from('agent_profiles')
+          .insert({
+            user_id: newUser.id,
+            firm_name: data.agent_profile.firm_name,
+            rera_id: data.agent_profile.rera_id
+          });
+
+        if (agentError) {
+          console.error('Agent profile creation error:', agentError);
+          // Continue anyway as user is created
+        }
+      } else if (data.role === 'OWNER' && data.owner_profile) {
+        const { error: ownerError } = await supabase
+          .from('owner_profiles')
+          .insert({
+            user_id: newUser.id,
+            properties_count: data.owner_profile.properties_count,
+            primary_location: data.owner_profile.primary_location
+          });
+
+        if (ownerError) {
+          console.error('Owner profile creation error:', ownerError);
+          // Continue anyway as user is created
+        }
+      } else if (data.role === 'BUILDER' && data.builder_profile) {
+        const { error: builderError } = await supabase
+          .from('builder_profiles')
+          .insert({
+            user_id: newUser.id,
+            company_name: data.builder_profile.company_name,
+            rera_id: data.builder_profile.rera_id,
+            years_of_experience: data.builder_profile.years_of_experience
+          });
+
+        if (builderError) {
+          console.error('Builder profile creation error:', builderError);
+          // Continue anyway as user is created
+        }
       }
 
       // Remove password_hash from user object

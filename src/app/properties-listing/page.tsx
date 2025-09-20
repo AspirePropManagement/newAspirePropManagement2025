@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { PropertyCard } from '@/components/PropertyCard';
 import { PropertyCardSkeleton } from '@/components/PropertyCardSkeleton';
+import GooglePlacesAutocomplete from '@/components/GooglePlacesAutocomplete';
 import { 
   Bars3Icon,
   XMarkIcon,
@@ -91,7 +92,8 @@ function PropertiesListingContent() {
           // Map filter values to database values
           const mappedBhkTypes = selectedFilters.bhkType.map(type => {
             switch(type) {
-              case '1': return '1_rk_1_bhk';
+              case '1_rk': return '1_rk';
+              case '1_bhk': return '1_bhk';
               case '2': return '2_bhk';
               case '3': return '3_bhk';
               case '4': return '4_bhk';
@@ -139,7 +141,8 @@ function PropertiesListingContent() {
           // Map filter values to database values
           const mappedBhkTypes = selectedFilters.bhkType.map(type => {
             switch(type) {
-              case '1': return '1_rk_1_bhk';
+              case '1_rk': return '1_rk';
+              case '1_bhk': return '1_bhk';
               case '2': return '2_bhk';
               case '3': return '3_bhk';
               case '4': return '4_bhk';
@@ -363,6 +366,24 @@ function PropertiesListingContent() {
               </button>
             </div>
 
+            {/* Location Search */}
+            <div>
+              <div className="flex items-center space-x-2 mb-3">
+                <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <h4 className="font-semibold text-gray-900 text-sm">Location</h4>
+              </div>
+              <GooglePlacesAutocomplete
+                value={selectedFilters.location}
+                onChange={(value) => handleFilterChange('location', value)}
+                placeholder="Search location (e.g., Pune, Maharashtra)"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+              />
+            </div>
+
             {/* Select your budget */}
             <div>
               <div className="flex items-center space-x-2 mb-3">
@@ -403,12 +424,13 @@ function PropertiesListingContent() {
               </div>
               <div className="space-y-2">
                 {[
-                  { value: '1', label: '1 RK/1 BHK' },
-                  { value: '2', label: '2 BHK' },
-                  { value: '3', label: '3 BHK' },
-                  { value: '4', label: '4 BHK' },
-                  { value: '5', label: '5 BHK' },
-                  { value: '5+', label: '5+ BHK' }
+                  { value: '1_rk', label: '1 RK' },
+                  { value: '1_bhk', label: '1 BHK' },
+                  { value: '2_bhk', label: '2 BHK' },
+                  { value: '3_bhk', label: '3 BHK' },
+                  { value: '4_bhk', label: '4 BHK' },
+                  { value: '5_bhk', label: '5 BHK' },
+                  { value: '5_plus_bhk', label: '5+ BHK' }
                 ].map((option) => (
                   <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
                     <input
@@ -560,6 +582,21 @@ function PropertiesListingContent() {
                 <p className="text-gray-600 mt-1">
                   {subHeading}
                 </p>
+              </div>
+            </div>
+
+            {/* Location Search Bar */}
+            <div className="mb-6">
+              <div className="max-w-md">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Search by Location
+                </label>
+                <GooglePlacesAutocomplete
+                  value={selectedFilters.location}
+                  onChange={(value) => handleFilterChange('location', value)}
+                  placeholder="Enter location (e.g., Pune, Maharashtra)"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                />
               </div>
             </div>
 

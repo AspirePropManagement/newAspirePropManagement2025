@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import GooglePlacesAutocomplete from './GooglePlacesAutocomplete';
 
 /**
  * FilterCard component for property search
@@ -46,19 +47,12 @@ export const FilterCard: React.FC = () => {
       {/* Location */}
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">Location</label>
-        <select 
+        <GooglePlacesAutocomplete
           value={filters.location}
-          onChange={(e) => handleFilterChange('location', e.target.value)}
+          onChange={(value) => handleFilterChange('location', value)}
+          placeholder="Search location (e.g., Pune, Maharashtra)"
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
-        >
-          <option value="">Select Location</option>
-          <option value="hinjawadi">Hinjawadi</option>
-          <option value="koregaon-park">Koregaon Park</option>
-          <option value="kharadi">Kharadi</option>
-          <option value="baner">Baner</option>
-          <option value="wakad">Wakad</option>
-          <option value="pune">Pune</option>
-        </select>
+        />
       </div>
 
       {/* Project Type */}
@@ -117,19 +111,12 @@ export const FilterCard: React.FC = () => {
       {/* Location */}
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">Location</label>
-        <select 
+        <GooglePlacesAutocomplete
           value={filters.location}
-          onChange={(e) => handleFilterChange('location', e.target.value)}
+          onChange={(value) => handleFilterChange('location', value)}
+          placeholder="Search location (e.g., Pune, Maharashtra)"
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
-        >
-          <option value="">Select Location</option>
-          <option value="hinjawadi">Hinjawadi</option>
-          <option value="koregaon-park">Koregaon Park</option>
-          <option value="kharadi">Kharadi</option>
-          <option value="baner">Baner</option>
-          <option value="wakad">Wakad</option>
-          <option value="pune">Pune</option>
-        </select>
+        />
       </div>
 
       {/* BHK Type */}
@@ -141,7 +128,8 @@ export const FilterCard: React.FC = () => {
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select BHK</option>
-          <option value="1_rk_1_bhk">1 RK / 1 BHK</option>
+          <option value="1_rk">1 RK</option>
+          <option value="1_bhk">1 BHK</option>
           <option value="2_bhk">2 BHK</option>
           <option value="3_bhk">3 BHK</option>
           <option value="4_bhk">4 BHK</option>
@@ -190,19 +178,12 @@ export const FilterCard: React.FC = () => {
       {/* Location */}
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">Location</label>
-        <select 
+        <GooglePlacesAutocomplete
           value={filters.location}
-          onChange={(e) => handleFilterChange('location', e.target.value)}
+          onChange={(value) => handleFilterChange('location', value)}
+          placeholder="Search location (e.g., Pune, Maharashtra)"
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
-        >
-          <option value="">Select Location</option>
-          <option value="hinjawadi">Hinjawadi</option>
-          <option value="koregaon-park">Koregaon Park</option>
-          <option value="kharadi">Kharadi</option>
-          <option value="baner">Baner</option>
-          <option value="wakad">Wakad</option>
-          <option value="pune">Pune</option>
-        </select>
+        />
       </div>
 
       {/* BHK Type */}
@@ -214,7 +195,8 @@ export const FilterCard: React.FC = () => {
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select BHK</option>
-          <option value="1_rk_1_bhk">1 RK / 1 BHK</option>
+          <option value="1_rk">1 RK</option>
+          <option value="1_bhk">1 BHK</option>
           <option value="2_bhk">2 BHK</option>
           <option value="3_bhk">3 BHK</option>
           <option value="4_bhk">4 BHK</option>

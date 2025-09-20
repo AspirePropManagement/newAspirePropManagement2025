@@ -117,7 +117,8 @@ export function PropertyCard({ property }: PropertyCardProps) {
    */
   const getBHKConfig = () => {
     const bhkMap: { [key: string]: string } = {
-      '1_rk_1_bhk': '1 RK/1 BHK',
+      '1_rk': '1 RK',
+      '1_bhk': '1 BHK',
       '2_bhk': '2 BHK',
       '3_bhk': '3 BHK',
       '4_bhk': '4 BHK',

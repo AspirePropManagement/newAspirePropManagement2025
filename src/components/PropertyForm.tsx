@@ -8,10 +8,107 @@ import { PhotoIcon, DocumentIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { Slider } from '@/components/ui/slider';
 import { PropertyAmenities } from '@/types/PropertyAmenities';
+import GooglePlacesAutocomplete from './GooglePlacesAutocomplete';
 
 // Common input styling
 const inputClass = "w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-lg";
 const selectClass = "w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-lg bg-white";
+
+// 12-Hour Time Picker Component
+const TimePicker12Hour = ({ 
+  value, 
+  onChange, 
+  placeholder = "Select time" 
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}) => {
+  const [hours, setHours] = React.useState('');
+  const [minutes, setMinutes] = React.useState('');
+  const [amPm, setAmPm] = React.useState('AM');
+
+  React.useEffect(() => {
+    if (value) {
+      const [h, m] = value.split(':');
+      const hour24 = parseInt(h);
+      const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
+      setHours(hour12.toString());
+      setMinutes(m || '00');
+      setAmPm(hour24 >= 12 ? 'PM' : 'AM');
+    }
+  }, [value]);
+
+  const handleHoursChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newHours = e.target.value;
+    setHours(newHours);
+    updateTime(newHours, minutes, amPm);
+  };
+
+  const handleMinutesChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newMinutes = e.target.value;
+    setMinutes(newMinutes);
+    updateTime(hours, newMinutes, amPm);
+  };
+
+  const handleAmPmChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newAmPm = e.target.value;
+    setAmPm(newAmPm);
+    updateTime(hours, minutes, newAmPm);
+  };
+
+  const updateTime = (h: string, m: string, ap: string) => {
+    if (h && m) {
+      let hour24 = parseInt(h);
+      if (ap === 'PM' && hour24 !== 12) {
+        hour24 += 12;
+      } else if (ap === 'AM' && hour24 === 12) {
+        hour24 = 0;
+      }
+      const time24 = `${hour24.toString().padStart(2, '0')}:${m}`;
+      onChange(time24);
+    }
+  };
+
+  return (
+    <div className="flex items-center space-x-2">
+      <select
+        value={hours}
+        onChange={handleHoursChange}
+        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+        <option value="">Hour</option>
+        {Array.from({ length: 12 }, (_, i) => i + 1).map(hour => (
+          <option key={hour} value={hour}>{hour}</option>
+        ))}
+      </select>
+      
+      <span className="text-gray-500">:</span>
+      
+      <select
+        value={minutes}
+        onChange={handleMinutesChange}
+        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+        <option value="">Min</option>
+        {Array.from({ length: 60 }, (_, i) => i).map(minute => (
+          <option key={minute} value={minute.toString().padStart(2, '0')}>
+            {minute.toString().padStart(2, '0')}
+          </option>
+        ))}
+      </select>
+      
+      <select
+        value={amPm}
+        onChange={handleAmPmChange}
+        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+      </select>
+    </div>
+  );
+};
 
 // Price Range Slider Component using shadcn/ui
 const PriceRangeSlider = ({ 
@@ -397,7 +494,8 @@ export function PropertyForm({
           required
         >
           <option value="">Select BHK Type</option>
-          <option value="1_rk_1_bhk">1 RK / 1 BHK</option>
+          <option value="1_rk">1 RK</option>
+          <option value="1_bhk">1 BHK</option>
           <option value="2_bhk">2 BHK</option>
           <option value="3_bhk">3 BHK</option>
           <option value="4_bhk">4 BHK</option>
@@ -427,12 +525,18 @@ export function PropertyForm({
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Location *
         </label>
-        <input
-          type="text"
+        <GooglePlacesAutocomplete
           value={formData.location}
-          onChange={(e) => handleInputChange('location', e.target.value)}
+          onChange={(value, place) => {
+            handleInputChange('location', value);
+            // Optionally store additional place data
+            if (place) {
+              console.log('Selected place:', place);
+              // You can store place_id, coordinates, etc. if needed
+            }
+          }}
+          placeholder="Enter property location (e.g., Pune, Maharashtra)"
           className={inputClass}
-          placeholder="Enter property location"
           required
         />
       </div>
@@ -467,7 +571,249 @@ export function PropertyForm({
     </div>
   );
 
-  const renderPropertyDetails = () => (
+  const renderPropertyDetails = () => {
+    if (propertyType === 'new_project') {
+      return renderNewProjectDetails();
+    } else if (propertyType === 'resale') {
+      return renderResaleDetails();
+    } else if (propertyType === 'rental') {
+      return renderRentalDetails();
+    }
+    return null;
+  };
+
+  const renderNewProjectDetails = () => (
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Project Name *
+        </label>
+        <input
+          type="text"
+          value={formData.projectName}
+          onChange={(e) => handleInputChange('projectName', e.target.value)}
+          className={inputClass}
+          placeholder="Enter project name"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Crafted By *
+        </label>
+        <input
+          type="text"
+          value={formData.craftedBy}
+          onChange={(e) => handleInputChange('craftedBy', e.target.value)}
+          className={inputClass}
+          placeholder="Enter developer/builder name"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Construction Type *
+        </label>
+        <select
+          value={formData.constructionType}
+          onChange={(e) => handleInputChange('constructionType', e.target.value)}
+          className={selectClass}
+          required
+        >
+          <option value="">Select Construction Type</option>
+          <option value="new_launching">New Launching</option>
+          <option value="under_construction">Under Construction</option>
+          <option value="ready_to_move">Ready to Move</option>
+          <option value="partial_ready_to_move">Partial Ready to Move</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Total Project Area Size
+        </label>
+        <input
+          type="text"
+          value={formData.totalProjectAreaSize}
+          onChange={(e) => handleInputChange('totalProjectAreaSize', e.target.value)}
+          className={inputClass}
+          placeholder="e.g., 10 acres, 50,000 sq ft"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Number of Towers
+        </label>
+        <input
+          type="number"
+          value={formData.towersCount}
+          onChange={(e) => handleInputChange('towersCount', e.target.value)}
+          className={inputClass}
+          placeholder="Enter number of towers"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Total Floors
+        </label>
+        <input
+          type="number"
+          value={formData.totalFloors}
+          onChange={(e) => handleInputChange('totalFloors', e.target.value)}
+          className={inputClass}
+          placeholder="Enter total floors"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Flats per Floor
+        </label>
+        <input
+          type="text"
+          value={formData.flatsPerFloor}
+          onChange={(e) => handleInputChange('flatsPerFloor', e.target.value)}
+          className={inputClass}
+          placeholder="e.g., 2, 4, 6"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          ROI
+        </label>
+        <input
+          type="text"
+          value={formData.roi}
+          onChange={(e) => handleInputChange('roi', e.target.value)}
+          className={inputClass}
+          placeholder="e.g., 12-15%"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Rental Yield
+        </label>
+        <input
+          type="number"
+          value={formData.rentalYield}
+          onChange={(e) => handleInputChange('rentalYield', e.target.value)}
+          className={inputClass}
+          placeholder="Enter rental yield percentage"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Marketed By
+        </label>
+        <input
+          type="text"
+          value={formData.marketedBy}
+          onChange={(e) => handleInputChange('marketedBy', e.target.value)}
+          className={inputClass}
+          placeholder="Enter marketing company name"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Listed By *
+        </label>
+        <select
+          value={formData.listedBy}
+          onChange={(e) => handleInputChange('listedBy', e.target.value)}
+          className={selectClass}
+          required
+        >
+          <option value="">Select Listed By</option>
+          <option value="builder">Builder</option>
+          <option value="agent">Agent</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Facing (As per Vastu Compliances)
+        </label>
+        <select
+          value={formData.facingVastu}
+          onChange={(e) => handleInputChange('facingVastu', e.target.value)}
+          className={selectClass}
+        >
+          <option value="">Select Facing</option>
+          <option value="north">North</option>
+          <option value="south">South</option>
+          <option value="east">East</option>
+          <option value="west">West</option>
+          <option value="northeast">North East</option>
+          <option value="northwest">North West</option>
+          <option value="southeast">South East</option>
+          <option value="southwest">South West</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Suggestion Date
+        </label>
+        <input
+          type="date"
+          value={formData.suggestionDate}
+          onChange={(e) => handleInputChange('suggestionDate', e.target.value)}
+          className={inputClass}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Suggestion Year
+        </label>
+        <input
+          type="number"
+          value={formData.suggestionYear}
+          onChange={(e) => handleInputChange('suggestionYear', e.target.value)}
+          className={inputClass}
+          placeholder="e.g., 2025"
+        />
+      </div>
+
+      {/* BHK Type Checkboxes for New Projects */}
+      <div className="col-span-2">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          Available BHK Types
+        </label>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {['1_rk', '1_bhk', '2_bhk', '3_bhk', '4_bhk', '5_bhk', '5_plus_bhk'].map((bhkType) => (
+            <label key={bhkType} className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.availableBhkTypes?.includes(bhkType) || false}
+                onChange={(e) => {
+                  const currentTypes = formData.availableBhkTypes || [];
+                  const newTypes = e.target.checked
+                    ? [...currentTypes, bhkType]
+                    : currentTypes.filter((type: string) => type !== bhkType);
+                  handleInputChange('availableBhkTypes', newTypes);
+                }}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <span className="text-sm text-gray-700">
+                {bhkType.replace('_', ' ').toUpperCase()}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderResaleDetails = () => (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -479,32 +825,6 @@ export function PropertyForm({
           onChange={(e) => handleInputChange('societyName', e.target.value)}
           className={inputClass}
           placeholder="Enter society name"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Flat/Unit Number
-        </label>
-        <input
-          type="text"
-          value={formData.flatNo}
-          onChange={(e) => handleInputChange('flatNo', e.target.value)}
-          className={inputClass}
-          placeholder="Enter flat/unit number"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Wing
-        </label>
-        <input
-          type="text"
-          value={formData.wingNo}
-          onChange={(e) => handleInputChange('wingNo', e.target.value)}
-          className={inputClass}
-          placeholder="Enter wing number"
         />
       </div>
 
@@ -544,22 +864,6 @@ export function PropertyForm({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Parking Type
-        </label>
-        <select
-          value={formData.parkingType}
-          onChange={(e) => handleInputChange('parkingType', e.target.value)}
-          className={selectClass}
-        >
-          <option value="">Select Parking Type</option>
-          <option value="covered_parking">Covered Parking</option>
-          <option value="open_parking">Open Parking</option>
-          <option value="shed_parking">Shed Parking</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
           Furnishing Type *
         </label>
         <select
@@ -573,6 +877,236 @@ export function PropertyForm({
           <option value="semi_furnished">Semi Furnished</option>
           <option value="un_furnished">Unfurnished</option>
         </select>
+      </div>
+
+      {/* New Resale Fields */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Ownership Type
+        </label>
+        <select
+          value={formData.ownershipType}
+          onChange={(e) => handleInputChange('ownershipType', e.target.value)}
+          className={selectClass}
+        >
+          <option value="">Select Ownership Type</option>
+          <option value="freehold">Freehold</option>
+          <option value="leasehold">Leasehold</option>
+          <option value="cooperative">Cooperative Society</option>
+          <option value="condominium">Condominium</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Loan on Property
+        </label>
+        <select
+          value={formData.loanOnProperty}
+          onChange={(e) => handleInputChange('loanOnProperty', e.target.value)}
+          className={selectClass}
+        >
+          <option value="">Select</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+
+      {formData.loanOnProperty === 'true' && (
+        <>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Loan Amount
+            </label>
+            <input
+              type="number"
+              value={formData.loanAmount}
+              onChange={(e) => handleInputChange('loanAmount', e.target.value)}
+              className={inputClass}
+              placeholder="Enter loan amount"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Bank Name
+            </label>
+            <input
+              type="text"
+              value={formData.bankName}
+              onChange={(e) => handleInputChange('bankName', e.target.value)}
+              className={inputClass}
+              placeholder="Enter bank name"
+            />
+          </div>
+        </>
+      )}
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Reason for Sale
+        </label>
+        <textarea
+          value={formData.reasonForSale}
+          onChange={(e) => handleInputChange('reasonForSale', e.target.value)}
+          className={inputClass}
+          placeholder="Enter reason for selling"
+          rows={3}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Flats per Floor
+        </label>
+        <input
+          type="text"
+          value={formData.flatsPerFloor}
+          onChange={(e) => handleInputChange('flatsPerFloor', e.target.value)}
+          className={inputClass}
+          placeholder="e.g., 2, 4, 6"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Society Area Size
+        </label>
+        <input
+          type="text"
+          value={formData.societyAreaSize}
+          onChange={(e) => handleInputChange('societyAreaSize', e.target.value)}
+          className={inputClass}
+          placeholder="e.g., 5 acres, 25,000 sq ft"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          RERA ID
+        </label>
+        <input
+          type="text"
+          value={formData.reraId}
+          onChange={(e) => handleInputChange('reraId', e.target.value)}
+          className={inputClass}
+          placeholder="Enter RERA ID"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Listed By *
+        </label>
+        <select
+          value={formData.listedBy}
+          onChange={(e) => handleInputChange('listedBy', e.target.value)}
+          className={selectClass}
+          required
+        >
+          <option value="">Select Listed By</option>
+          <option value="owner">Owner</option>
+          <option value="agent">Agent</option>
+        </select>
+      </div>
+
+      {/* Parking Vehicles Checkboxes */}
+      <div className="col-span-2">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          Parking Vehicles
+        </label>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {['car', 'two_wheeler', 'bicycle', 'other'].map((vehicle) => (
+            <label key={vehicle} className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.parkingVehicles?.includes(vehicle) || false}
+                onChange={(e) => {
+                  const currentVehicles = formData.parkingVehicles || [];
+                  const newVehicles = e.target.checked
+                    ? [...currentVehicles, vehicle]
+                    : currentVehicles.filter((v: string) => v !== vehicle);
+                  handleInputChange('parkingVehicles', newVehicles);
+                }}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <span className="text-sm text-gray-700 capitalize">
+                {vehicle.replace('_', ' ')}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Visit Details */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Visit Days (Weekend)
+        </label>
+        <input
+          type="text"
+          value={formData.visitDaysWeekend}
+          onChange={(e) => handleInputChange('visitDaysWeekend', e.target.value)}
+          className={inputClass}
+          placeholder="e.g., Saturday, Sunday"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Visit Timing (Weekend)
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">From</label>
+            <TimePicker12Hour
+              value={formData.visitTimingWeekendFrom}
+              onChange={(value) => handleInputChange('visitTimingWeekendFrom', value)}
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">To</label>
+            <TimePicker12Hour
+              value={formData.visitTimingWeekendTo}
+              onChange={(value) => handleInputChange('visitTimingWeekendTo', value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Visit Days (Weekdays)
+        </label>
+        <input
+          type="text"
+          value={formData.visitDaysWeekdays}
+          onChange={(e) => handleInputChange('visitDaysWeekdays', e.target.value)}
+          className={inputClass}
+          placeholder="e.g., Monday to Friday"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Visit Timing (Weekdays)
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">From</label>
+            <TimePicker12Hour
+              value={formData.visitTimingWeekdaysFrom}
+              onChange={(value) => handleInputChange('visitTimingWeekdaysFrom', value)}
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">To</label>
+            <TimePicker12Hour
+              value={formData.visitTimingWeekdaysTo}
+              onChange={(value) => handleInputChange('visitTimingWeekdaysTo', value)}
+            />
+          </div>
+        </div>
       </div>
 
       <div>
@@ -601,54 +1135,6 @@ export function PropertyForm({
         />
       </div>
 
-      {propertyType === 'rental' && (
-        <>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Deposit Amount
-            </label>
-            <input
-              type="number"
-              value={formData.depositAmount}
-              onChange={(e) => handleInputChange('depositAmount', e.target.value)}
-              className={selectClass}
-              placeholder="Enter deposit amount"
-            />
-          </div>
-
-          <div className="col-span-2">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.allowedForFamily}
-                  onChange={(e) => handleInputChange('allowedForFamily', e.target.checked)}
-                  className="mr-2"
-                />
-                <span className="text-sm text-gray-700">Allowed for Family</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.allowedForBachelor}
-                  onChange={(e) => handleInputChange('allowedForBachelor', e.target.checked)}
-                  className="mr-2"
-                />
-                <span className="text-sm text-gray-700">Allowed for Bachelor</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.petsAllowed}
-                  onChange={(e) => handleInputChange('petsAllowed', e.target.checked)}
-                  className="mr-2"
-                />
-                <span className="text-sm text-gray-700">Pets Allowed</span>
-              </label>
-            </div>
-          </div>
-        </>
-      )}
 
       <div className="col-span-2">
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -660,6 +1146,262 @@ export function PropertyForm({
           rows={4}
           className={selectClass}
           placeholder="Additional details about the property..."
+        />
+      </div>
+    </div>
+  );
+
+  const renderRentalDetails = () => (
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Society Name
+        </label>
+        <input
+          type="text"
+          value={formData.societyName}
+          onChange={(e) => handleInputChange('societyName', e.target.value)}
+          className={inputClass}
+          placeholder="Enter society name"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Floor Number
+        </label>
+        <input
+          type="text"
+          value={formData.floorNo}
+          onChange={(e) => handleInputChange('floorNo', e.target.value)}
+          className={inputClass}
+          placeholder="Enter floor number"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Furnishing Type *
+        </label>
+        <select
+          value={formData.furnishingType}
+          onChange={(e) => handleInputChange('furnishingType', e.target.value)}
+          className={selectClass}
+          required
+        >
+          <option value="">Select Furnishing Type</option>
+          <option value="fully_furnished">Fully Furnished</option>
+          <option value="semi_furnished">Semi Furnished</option>
+          <option value="un_furnished">Unfurnished</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Deposit Amount
+        </label>
+        <input
+          type="number"
+          value={formData.depositAmount}
+          onChange={(e) => handleInputChange('depositAmount', e.target.value)}
+          className={selectClass}
+          placeholder="Enter deposit amount"
+        />
+      </div>
+
+      {/* New Rental Fields */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Tenant Type *
+        </label>
+        <select
+          value={formData.tenantType}
+          onChange={(e) => handleInputChange('tenantType', e.target.value)}
+          className={selectClass}
+          required
+        >
+          <option value="">Select Tenant Type</option>
+          <option value="family">Family</option>
+          <option value="bachelor">Bachelor</option>
+          <option value="anyone">Anyone</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Listed By *
+        </label>
+        <select
+          value={formData.listedBy}
+          onChange={(e) => handleInputChange('listedBy', e.target.value)}
+          className={selectClass}
+          required
+        >
+          <option value="">Select Listed By</option>
+          <option value="owner">Owner</option>
+          <option value="agent">Agent</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Available From Date
+        </label>
+        <input
+          type="date"
+          value={formData.availableFromDate}
+          onChange={(e) => handleInputChange('availableFromDate', e.target.value)}
+          className={inputClass}
+        />
+      </div>
+
+      {/* Parking Vehicles Checkboxes */}
+      <div className="col-span-2">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          Parking Vehicles
+        </label>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {['car', 'two_wheeler', 'bicycle', 'other'].map((vehicle) => (
+            <label key={vehicle} className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.parkingVehicles?.includes(vehicle) || false}
+                onChange={(e) => {
+                  const currentVehicles = formData.parkingVehicles || [];
+                  const newVehicles = e.target.checked
+                    ? [...currentVehicles, vehicle]
+                    : currentVehicles.filter((v: string) => v !== vehicle);
+                  handleInputChange('parkingVehicles', newVehicles);
+                }}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <span className="text-sm text-gray-700 capitalize">
+                {vehicle.replace('_', ' ')}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Visit Details */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Visit Days (Weekend)
+        </label>
+        <input
+          type="text"
+          value={formData.visitDaysWeekend}
+          onChange={(e) => handleInputChange('visitDaysWeekend', e.target.value)}
+          className={inputClass}
+          placeholder="e.g., Saturday, Sunday"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Visit Timing (Weekend)
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">From</label>
+            <TimePicker12Hour
+              value={formData.visitTimingWeekendFrom}
+              onChange={(value) => handleInputChange('visitTimingWeekendFrom', value)}
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">To</label>
+            <TimePicker12Hour
+              value={formData.visitTimingWeekendTo}
+              onChange={(value) => handleInputChange('visitTimingWeekendTo', value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Visit Days (Weekdays)
+        </label>
+        <input
+          type="text"
+          value={formData.visitDaysWeekdays}
+          onChange={(e) => handleInputChange('visitDaysWeekdays', e.target.value)}
+          className={inputClass}
+          placeholder="e.g., Monday to Friday"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Visit Timing (Weekdays)
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">From</label>
+            <TimePicker12Hour
+              value={formData.visitTimingWeekdaysFrom}
+              onChange={(value) => handleInputChange('visitTimingWeekdaysFrom', value)}
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">To</label>
+            <TimePicker12Hour
+              value={formData.visitTimingWeekdaysTo}
+              onChange={(value) => handleInputChange('visitTimingWeekdaysTo', value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="col-span-2">
+        <label className="flex items-center space-x-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={formData.petsAllowed || false}
+            onChange={(e) => handleInputChange('petsAllowed', e.target.checked)}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          />
+          <span className="text-sm text-gray-700">Pets Allowed</span>
+        </label>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Square Feet
+        </label>
+        <input
+          type="number"
+          value={formData.squareFeet}
+          onChange={(e) => handleInputChange('squareFeet', e.target.value)}
+          className={selectClass}
+          placeholder="Enter square feet"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Carpet Area
+        </label>
+        <input
+          type="number"
+          value={formData.carpetArea}
+          onChange={(e) => handleInputChange('carpetArea', e.target.value)}
+          className={selectClass}
+          placeholder="Enter carpet area"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Notes
+        </label>
+        <textarea
+          value={formData.notes}
+          onChange={(e) => handleInputChange('notes', e.target.value)}
+          className={inputClass}
+          placeholder="Additional notes about the property"
+          rows={4}
         />
       </div>
     </div>

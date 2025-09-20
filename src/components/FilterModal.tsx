@@ -105,7 +105,8 @@ export default function FilterModal({ isOpen, onClose, selectedFilters, onFilter
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Configuration</h3>
             <div className="flex flex-wrap gap-2">
               {[
-                { value: '1_rk_1_bhk', label: '1 BHK' },
+                { value: '1_rk', label: '1 RK' },
+                { value: '1_bhk', label: '1 BHK' },
                 { value: '2_bhk', label: '2 BHK' },
                 { value: '3_bhk', label: '3 BHK' },
                 { value: '4_bhk', label: '4 BHK' },

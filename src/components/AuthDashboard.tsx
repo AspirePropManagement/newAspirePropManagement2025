@@ -121,6 +121,7 @@ export function AuthDashboard() {
           <option value="buyer">Buyer - Looking to buy properties</option>
           <option value="agent">Agent - Real estate agent or broker</option>
           <option value="builder">Builder - Property developer or builder</option>
+          <option value="owner">Owner - Property owner</option>
           <option value="admin">Admin - System administrator</option>
         </select>
       </div>

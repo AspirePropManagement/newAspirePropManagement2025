@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MapPinIcon, PhoneIcon, EnvelopeIcon, ClockIcon } from '@heroicons/react/24/outline';
+import GooglePlacesAutocomplete from '@/components/GooglePlacesAutocomplete';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -310,12 +311,13 @@ export default function ContactPage() {
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg bg-white"
                       >
                         <option value="">Select BHK Type</option>
-                        <option value="1-rk">1 RK</option>
-                        <option value="1-bhk">1 BHK</option>
-                        <option value="2-bhk">2 BHK</option>
-                        <option value="3-bhk">3 BHK</option>
-                        <option value="4-bhk">4 BHK</option>
-                        <option value="5-bhk">5 BHK</option>
+                        <option value="1_rk">1 RK</option>
+                        <option value="1_bhk">1 BHK</option>
+                        <option value="2_bhk">2 BHK</option>
+                        <option value="3_bhk">3 BHK</option>
+                        <option value="4_bhk">4 BHK</option>
+                        <option value="5_bhk">5 BHK</option>
+                        <option value="5_plus_bhk">5+ BHK</option>
                         <option value="penthouse">Penthouse</option>
                         <option value="duplex">Duplex</option>
                         <option value="other">Other</option>
@@ -350,14 +352,13 @@ export default function ContactPage() {
                       <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
                         Preferred Location
                       </label>
-                      <input
-                        type="text"
+                      <GooglePlacesAutocomplete
+                        value={formData.location}
+                        onChange={(value) => handleInputChange({ target: { name: 'location', value } })}
+                        placeholder="Enter preferred location (e.g., Pune, Maharashtra)"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg"
                         id="location"
                         name="location"
-                        value={formData.location}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg"
-                        placeholder="Enter preferred location"
                       />
                     </div>
                   </div>

@@ -108,6 +108,9 @@ export async function middleware(req: NextRequest) {
           case 'BUILDER':
             redirectPath = '/builder'
             break
+          case 'OWNER':
+            redirectPath = '/owner'
+            break
         }
         
         const redirectUrl = req.nextUrl.clone()
@@ -178,6 +181,21 @@ export async function middleware(req: NextRequest) {
         .single()
 
       if (!userData || !['ADMIN', 'AGENT', 'BUILDER'].includes(userData.role)) {
+        const redirectUrl = req.nextUrl.clone()
+        redirectUrl.pathname = '/dashboard'
+        return NextResponse.redirect(redirectUrl)
+      }
+    }
+
+    // Role-based access control for owner routes
+    if (pathname.startsWith('/owner')) {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', session.user.id)
+        .single()
+
+      if (!userData || !['ADMIN', 'AGENT', 'OWNER'].includes(userData.role)) {
         const redirectUrl = req.nextUrl.clone()
         redirectUrl.pathname = '/dashboard'
         return NextResponse.redirect(redirectUrl)

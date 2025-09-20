@@ -24,13 +24,55 @@ export default function PostPropertyPage() {
   
   // Property form states
   const [activeTab, setActiveTab] = useState('resale');
-  const [currentStep, setCurrentStep] = useState(1);
+  
+  // Separate step states for each property type tab
+  const [stepStates, setStepStates] = useState({
+    resale: 1,
+    rental: 1,
+    new_project: 1
+  });
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Get current step for active tab
+  const currentStep = stepStates[activeTab as keyof typeof stepStates];
   
   const router = useRouter();
   const { user, isAuthenticated, login, register } = useAuth();
+
+  const handleNext = () => {
+    if (currentStep < 5) {
+      setStepStates(prev => ({
+        ...prev,
+        [activeTab]: currentStep + 1
+      }));
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 1) {
+      setStepStates(prev => ({
+        ...prev,
+        [activeTab]: currentStep - 1
+      }));
+    }
+  };
+
+  const handleStepChange = (step: number) => {
+    setStepStates(prev => ({
+      ...prev,
+      [activeTab]: step
+    }));
+  };
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    // Reset error and success states when switching tabs
+    setSubmitError(null);
+    setSubmitSuccess(false);
+  };
 
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,21 +114,6 @@ export default function PostPropertyPage() {
     }
   };
 
-  const handleNext = () => {
-    if (currentStep < 5) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleStepChange = (step: number) => {
-    setCurrentStep(step);
-  };
 
   const handleSubmit = async (formData: PropertyFormData) => {
     if (!user) {
@@ -138,7 +165,11 @@ export default function PostPropertyPage() {
         
         // Reset form and show success message
         setTimeout(() => {
-          setCurrentStep(1);
+          setStepStates({
+            resale: 1,
+            rental: 1,
+            new_project: 1
+          });
           setSubmitSuccess(false);
         }, 2000);
       } else {
@@ -153,7 +184,11 @@ export default function PostPropertyPage() {
   };
 
   const handleCancel = () => {
-    setCurrentStep(1);
+    setStepStates({
+      resale: 1,
+      rental: 1,
+      new_project: 1
+    });
   };
 
   const getPropertyType = (tabId: string) => {
@@ -321,7 +356,7 @@ export default function PostPropertyPage() {
               ].map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabChange(tab.id)}
                   className={`${
                     activeTab === tab.id
                       ? 'border-blue-500 text-blue-600'

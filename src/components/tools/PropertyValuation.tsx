@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import GooglePlacesAutocomplete from '../GooglePlacesAutocomplete';
 
 /**
  * Property Valuation component for estimating property market value
@@ -150,19 +151,12 @@ export const PropertyValuation: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Location
               </label>
-              <select
+              <GooglePlacesAutocomplete
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                onChange={(value) => setLocation(value)}
+                placeholder="Search location (e.g., Pune, Maharashtra)"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-lg"
-              >
-                <option value="">Select Location</option>
-                <option value="hinjawadi">Hinjawadi</option>
-                <option value="koregaon-park">Koregaon Park</option>
-                <option value="kharadi">Kharadi</option>
-                <option value="baner">Baner</option>
-                <option value="wakad">Wakad</option>
-                <option value="pune">Pune</option>
-              </select>
+              />
             </div>
 
             {/* Area */}

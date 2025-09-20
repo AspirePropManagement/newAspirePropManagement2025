@@ -92,6 +92,130 @@ const AMENITY_CATEGORIES = {
       possession_available: 'Possession Available',
       ready_to_move: 'Ready to Move'
     }
+  },
+  furniture_amenities: {
+    title: 'Furniture & Appliances',
+    icon: '🪑',
+    items: {
+      // Living Room
+      sofa_set: 'Sofa Set',
+      coffee_table: 'Coffee Table',
+      tv_unit: 'TV Unit',
+      bookshelf: 'Bookshelf',
+      center_table: 'Center Table',
+      side_tables: 'Side Tables',
+      recliner_chair: 'Recliner Chair',
+      
+      // Bedroom
+      bed_with_mattress: 'Bed with Mattress',
+      wardrobe: 'Wardrobe',
+      dressing_table: 'Dressing Table',
+      study_table: 'Study Table',
+      bedside_tables: 'Bedside Tables',
+      chest_of_drawers: 'Chest of Drawers',
+      
+      // Dining Room
+      dining_table: 'Dining Table',
+      dining_chairs: 'Dining Chairs',
+      sideboard: 'Sideboard',
+      bar_cabinet: 'Bar Cabinet',
+      
+      // Kitchen & Appliances
+      modular_kitchen: 'Modular Kitchen',
+      refrigerator: 'Refrigerator',
+      washing_machine: 'Washing Machine',
+      microwave: 'Microwave',
+      gas_stove: 'Gas Stove',
+      water_purifier: 'Water Purifier',
+      mixer_grinder: 'Mixer Grinder',
+      toaster: 'Toaster',
+      dishwasher: 'Dishwasher',
+      
+      // Additional
+      office_desk: 'Office Desk',
+      computer_chair: 'Computer Chair',
+      shoe_rack: 'Shoe Rack',
+      mirror: 'Mirror',
+      curtains: 'Curtains',
+      carpet: 'Carpet',
+      air_conditioner: 'Air Conditioner',
+      ceiling_fan: 'Ceiling Fan',
+      table_fan: 'Table Fan',
+      geyser: 'Geyser',
+      water_heater: 'Water Heater'
+    }
+  },
+  nearby_facilities: {
+    title: 'Nearby Facilities',
+    icon: '📍',
+    items: {
+      // Healthcare
+      hospital: 'Hospital',
+      clinic: 'Clinic',
+      pharmacy: 'Pharmacy',
+      diagnostic_center: 'Diagnostic Center',
+      dental_clinic: 'Dental Clinic',
+      
+      // Education
+      school: 'School',
+      college: 'College',
+      university: 'University',
+      coaching_center: 'Coaching Center',
+      library: 'Library',
+      play_school: 'Play School',
+      
+      // Transportation
+      metro_station: 'Metro Station',
+      bus_stop: 'Bus Stop',
+      railway_station: 'Railway Station',
+      airport: 'Airport',
+      taxi_stand: 'Taxi Stand',
+      auto_rickshaw_stand: 'Auto Rickshaw Stand',
+      
+      // Shopping & Entertainment
+      shopping_mall: 'Shopping Mall',
+      supermarket: 'Supermarket',
+      local_market: 'Local Market',
+      cinema_hall: 'Cinema Hall',
+      multiplex: 'Multiplex',
+      restaurant: 'Restaurant',
+      cafe: 'Cafe',
+      food_court: 'Food Court',
+      
+      // Banking & Finance
+      bank: 'Bank',
+      atm: 'ATM',
+      post_office: 'Post Office',
+      insurance_office: 'Insurance Office',
+      
+      // Recreation & Sports
+      park: 'Park',
+      gym: 'Gym',
+      swimming_pool: 'Swimming Pool',
+      sports_club: 'Sports Club',
+      community_hall: 'Community Hall',
+      
+      // Essential Services
+      police_station: 'Police Station',
+      fire_station: 'Fire Station',
+      petrol_pump: 'Petrol Pump',
+      service_center: 'Service Center',
+      laundry: 'Laundry',
+      dry_cleaning: 'Dry Cleaning',
+      
+      // Religious Places
+      temple: 'Temple',
+      mosque: 'Mosque',
+      church: 'Church',
+      gurudwara: 'Gurudwara',
+      
+      // Other
+      beauty_parlor: 'Beauty Parlor',
+      salon: 'Salon',
+      spa: 'Spa',
+      pet_clinic: 'Pet Clinic',
+      veterinary_hospital: 'Veterinary Hospital'
+    }
   }
 };
 
@@ -146,7 +270,7 @@ export default function PropertyAmenitiesManager({
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {Object.entries(AMENITY_CATEGORIES).map(([categoryKey, category]) => {
           const categoryAmenities = amenities[categoryKey as keyof PropertyAmenities] || {};
           const selectedCount = getSelectedCount(categoryKey as keyof PropertyAmenities);
@@ -178,7 +302,11 @@ export default function PropertyAmenitiesManager({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-3">
+              <div className={`grid gap-3 ${
+                categoryKey === 'furniture_amenities' || categoryKey === 'nearby_facilities' 
+                  ? 'grid-cols-1 sm:grid-cols-2' 
+                  : 'grid-cols-1'
+              }`}>
                 {Object.entries(category.items).map(([itemKey, itemLabel]) => (
                   <div key={itemKey} className="flex items-center">
                     <input

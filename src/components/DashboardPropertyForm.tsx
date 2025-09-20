@@ -26,25 +26,51 @@ interface DashboardPropertyFormProps {
 export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: DashboardPropertyFormProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('resale');
-  const [currentStep, setCurrentStep] = useState(1);
+  
+  // Separate step states for each property type tab
+  const [stepStates, setStepStates] = useState({
+    resale: 1,
+    rental: 1,
+    new_project: 1
+  });
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  // Get current step for active tab
+  const currentStep = stepStates[activeTab as keyof typeof stepStates];
+
   const handleNext = () => {
     if (currentStep < 5) {
-      setCurrentStep(currentStep + 1);
+      setStepStates(prev => ({
+        ...prev,
+        [activeTab]: currentStep + 1
+      }));
     }
   };
 
   const handlePrevious = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setStepStates(prev => ({
+        ...prev,
+        [activeTab]: currentStep - 1
+      }));
     }
   };
 
   const handleStepChange = (step: number) => {
-    setCurrentStep(step);
+    setStepStates(prev => ({
+      ...prev,
+      [activeTab]: step
+    }));
+  };
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    // Reset error and success states when switching tabs
+    setSubmitError(null);
+    setSubmitSuccess(false);
   };
 
   const handleSubmit = async (formData: PropertyFormData) => {
@@ -97,7 +123,11 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
         
         // Reset form and show success message
         setTimeout(() => {
-          setCurrentStep(1);
+          setStepStates({
+            resale: 1,
+            rental: 1,
+            new_project: 1
+          });
           setSubmitSuccess(false);
           onSuccess?.();
         }, 2000);
@@ -113,7 +143,11 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
   };
 
   const handleCancel = () => {
-    setCurrentStep(1);
+    setStepStates({
+      resale: 1,
+      rental: 1,
+      new_project: 1
+    });
     setSubmitError(null);
     setSubmitSuccess(false);
     onClose();
@@ -161,7 +195,7 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabChange(tab.id)}
                 className={`${
                   activeTab === tab.id
                     ? 'border-orange-500 text-orange-600'

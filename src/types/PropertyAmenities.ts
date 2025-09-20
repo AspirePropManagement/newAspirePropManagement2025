@@ -67,6 +67,124 @@ export interface ProjectSpecificAmenities {
   ready_to_move?: boolean;
 }
 
+export interface FurnitureAmenities {
+  // Living Room Furniture
+  sofa_set?: boolean;
+  coffee_table?: boolean;
+  tv_unit?: boolean;
+  bookshelf?: boolean;
+  center_table?: boolean;
+  side_tables?: boolean;
+  recliner_chair?: boolean;
+  
+  // Bedroom Furniture
+  bed_with_mattress?: boolean;
+  wardrobe?: boolean;
+  dressing_table?: boolean;
+  study_table?: boolean;
+  bedside_tables?: boolean;
+  chest_of_drawers?: boolean;
+  
+  // Dining Room Furniture
+  dining_table?: boolean;
+  dining_chairs?: boolean;
+  sideboard?: boolean;
+  bar_cabinet?: boolean;
+  
+  // Kitchen Furniture & Appliances
+  modular_kitchen?: boolean;
+  refrigerator?: boolean;
+  washing_machine?: boolean;
+  microwave?: boolean;
+  gas_stove?: boolean;
+  water_purifier?: boolean;
+  mixer_grinder?: boolean;
+  toaster?: boolean;
+  dishwasher?: boolean;
+  
+  // Additional Furniture
+  office_desk?: boolean;
+  computer_chair?: boolean;
+  shoe_rack?: boolean;
+  mirror?: boolean;
+  curtains?: boolean;
+  carpet?: boolean;
+  air_conditioner?: boolean;
+  ceiling_fan?: boolean;
+  table_fan?: boolean;
+  geyser?: boolean;
+  water_heater?: boolean;
+}
+
+export interface NearbyFacilities {
+  // Healthcare
+  hospital?: boolean;
+  clinic?: boolean;
+  pharmacy?: boolean;
+  diagnostic_center?: boolean;
+  dental_clinic?: boolean;
+  
+  // Education
+  school?: boolean;
+  college?: boolean;
+  university?: boolean;
+  coaching_center?: boolean;
+  library?: boolean;
+  play_school?: boolean;
+  
+  // Transportation
+  metro_station?: boolean;
+  bus_stop?: boolean;
+  railway_station?: boolean;
+  airport?: boolean;
+  taxi_stand?: boolean;
+  auto_rickshaw_stand?: boolean;
+  
+  // Shopping & Entertainment
+  shopping_mall?: boolean;
+  supermarket?: boolean;
+  local_market?: boolean;
+  cinema_hall?: boolean;
+  multiplex?: boolean;
+  restaurant?: boolean;
+  cafe?: boolean;
+  food_court?: boolean;
+  
+  // Banking & Finance
+  bank?: boolean;
+  atm?: boolean;
+  post_office?: boolean;
+  insurance_office?: boolean;
+  
+  // Recreation & Sports
+  park?: boolean;
+  gym?: boolean;
+  swimming_pool?: boolean;
+  sports_club?: boolean;
+  community_hall?: boolean;
+  
+  // Essential Services
+  police_station?: boolean;
+  fire_station?: boolean;
+  petrol_pump?: boolean;
+  service_center?: boolean;
+  laundry?: boolean;
+  dry_cleaning?: boolean;
+  
+  // Religious Places
+  temple?: boolean;
+  mosque?: boolean;
+  church?: boolean;
+  gurudwara?: boolean;
+  
+  // Other
+  beauty_parlor?: boolean;
+  salon?: boolean;
+  spa?: boolean;
+  pet_clinic?: boolean;
+  veterinary_hospital?: boolean;
+}
+
 export interface PropertyAmenities {
   basic_amenities?: BasicAmenities;
   luxury_amenities?: LuxuryAmenities;
@@ -74,6 +192,8 @@ export interface PropertyAmenities {
   services?: ServiceAmenities;
   commercial_amenities?: CommercialAmenities;
   project_specific?: ProjectSpecificAmenities;
+  furniture_amenities?: FurnitureAmenities;
+  nearby_facilities?: NearbyFacilities;
   custom_amenities?: Record<string, boolean | string | number>;
 }
 

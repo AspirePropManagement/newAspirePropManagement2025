@@ -3,7 +3,7 @@
  * Implements Interface Segregation Principle by separating concerns into focused interfaces
  */
 
-export type UserRole = 'BUILDER' | 'AGENT' | 'ADMIN' | 'BUYER'
+export type UserRole = 'BUILDER' | 'AGENT' | 'ADMIN' | 'BUYER' | 'OWNER'
 
 export interface User {
   id: string
