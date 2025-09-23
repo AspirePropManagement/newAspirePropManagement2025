@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { CheckBadgeIcon } from '@heroicons/react/24/solid';
 
 interface NewProject {
   id: string;
@@ -220,6 +221,13 @@ export function NewProjectsCarousel({ projects }: NewProjectsCarouselProps) {
                                 target.src = '/placeholder-property.svg';
                               }}
                             />
+                          {/* Verified Badge */}
+                          <div className="absolute bottom-3 left-3">
+                            <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium flex items-center shadow">
+                              <CheckBadgeIcon className="w-3.5 h-3.5 mr-1 text-white" />
+                              100% Verified
+                            </span>
+                          </div>
                             {/* Status Badge */}
                             {project.status && (
                               <div className="absolute top-3 left-3">

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/lib/supabase';
 import { 
   UserIcon, 
   EnvelopeIcon, 
@@ -24,6 +25,26 @@ export default function ProfilePage() {
     email: user?.email || '',
     phone: user?.phone || ''
   });
+  const [agentData, setAgentData] = useState({ firm_name: '', rera_id: '' });
+  const [loadingAgentData, setLoadingAgentData] = useState(false);
+
+  // Load agent profile if applicable
+  React.useEffect(() => {
+    const loadAgent = async () => {
+      if (!user || userRole !== 'AGENT' || !supabase) return;
+      setLoadingAgentData(true);
+      const { data, error } = await supabase
+        .from('agent_profiles')
+        .select('firm_name, rera_id')
+        .eq('user_id', user.id)
+        .single();
+      if (!error && data) {
+        setAgentData({ firm_name: data.firm_name || '', rera_id: data.rera_id || '' });
+      }
+      setLoadingAgentData(false);
+    };
+    loadAgent();
+  }, [user, userRole]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -33,8 +54,33 @@ export default function ProfilePage() {
   };
 
   const handleSaveProfile = async () => {
-    // TODO: Implement profile update logic
-    console.log('Saving profile:', formData);
+    if (!user || !supabase) {
+      setIsEditing(false);
+      return;
+    }
+
+    // Update basic user profile
+    await supabase
+      .from('users')
+      .update({
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        phone: formData.phone,
+        email: formData.email
+      })
+      .eq('id', user.id);
+
+    // If agent, upsert agent profile details
+    if (userRole === 'AGENT') {
+      await supabase
+        .from('agent_profiles')
+        .upsert({
+          user_id: user.id,
+          firm_name: agentData.firm_name,
+          rera_id: agentData.rera_id
+        }, { onConflict: 'user_id' });
+    }
+
     setIsEditing(false);
   };
 
@@ -162,6 +208,42 @@ export default function ProfilePage() {
                       <p className="text-gray-900">{user.phone || 'Not provided'}</p>
                     )}
                   </div>
+
+                  {/* Agent specific fields */}
+                  {userRole === 'AGENT' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Firm Name
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={agentData.firm_name}
+                            onChange={(e) => setAgentData(prev => ({ ...prev, firm_name: e.target.value }))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        ) : (
+                          <p className="text-gray-900">{agentData.firm_name || 'Not provided'}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          RERA ID/Number
+                        </label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={agentData.rera_id}
+                            onChange={(e) => setAgentData(prev => ({ ...prev, rera_id: e.target.value }))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        ) : (
+                          <p className="text-gray-900">{agentData.rera_id || 'Not provided'}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {isEditing && (
                     <div className="flex space-x-3 pt-4">

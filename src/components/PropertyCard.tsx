@@ -9,7 +9,7 @@ import {
   HeartIcon,
   StarIcon
 } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
+import { HeartIcon as HeartIconSolid, CheckBadgeIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { extractPropertyImages, getImageSrc, isBase64Image, isImageUrl } from '@/utils/imageUtils';
 
@@ -218,6 +218,14 @@ export function PropertyCard({ property }: PropertyCardProps) {
         <div className="absolute top-3 left-3">
           <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
             {getPropertyTypeLabel()}
+          </span>
+        </div>
+
+        {/* Verified Badge */}
+        <div className="absolute bottom-3 left-3">
+          <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium flex items-center shadow">
+            <CheckBadgeIcon className="w-3.5 h-3.5 mr-1 text-white" />
+            100% Verified
           </span>
         </div>
 

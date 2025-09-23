@@ -8,7 +8,18 @@ import nodemailer from 'nodemailer';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { fullName, mobileNumber, email, whatsappUpdates, userType } = body;
+    const { 
+      fullName, 
+      mobileNumber, 
+      email, 
+      whatsappUpdates, 
+      userType,
+      propertyTitle,
+      propertyId,
+      propertyType,
+      propertyPrice,
+      propertyLocation
+    } = body;
 
     // Validate required fields
     if (!fullName || !mobileNumber || !email || !userType) {
@@ -45,6 +56,16 @@ export async function POST(request: NextRequest) {
       }
     });
 
+    // Prepare property details block
+    const safePropertyTitle = propertyTitle || 'Not provided';
+    const safePropertyId = propertyId || 'Not provided';
+    const safePropertyType = propertyType ? String(propertyType).replace('_', ' ').toUpperCase() : 'Not provided';
+    const safePropertyPrice = propertyPrice || 'Not provided';
+    const safePropertyLocation = propertyLocation || 'Not provided';
+    const propertyUrlPath = propertyType && propertyId 
+      ? `/properties/${propertyType}/${propertyId}`
+      : '';
+
     // Email content for admin notification
     const adminEmailContent = `
       <h2>New Consultation Request</h2>
@@ -54,6 +75,14 @@ export async function POST(request: NextRequest) {
       <p><strong>User Type:</strong> ${userType.charAt(0).toUpperCase() + userType.slice(1)}</p>
       <p><strong>WhatsApp Updates:</strong> ${whatsappUpdates ? 'Yes' : 'No'}</p>
       <p><strong>Submitted At:</strong> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
+      <hr style="margin:16px 0; border:none; border-top:1px solid #eee;" />
+      <h3>Property Details</h3>
+      <p><strong>Title:</strong> ${safePropertyTitle}</p>
+      <p><strong>Type:</strong> ${safePropertyType}</p>
+      <p><strong>Price:</strong> ${safePropertyPrice}</p>
+      <p><strong>Location:</strong> ${safePropertyLocation}</p>
+      <p><strong>ID:</strong> ${safePropertyId}</p>
+      ${propertyUrlPath ? `<p><strong>URL:</strong> ${propertyUrlPath}</p>` : ''}
     `;
 
     // Email content for user confirmation
@@ -82,6 +111,16 @@ export async function POST(request: NextRequest) {
             <p style="margin: 5px 0; color: #4b5563;"><strong>Email:</strong> ${email}</p>
             <p style="margin: 5px 0; color: #4b5563;"><strong>User Type:</strong> ${userType.charAt(0).toUpperCase() + userType.slice(1)}</p>
             ${whatsappUpdates ? '<p style="margin: 5px 0; color: #4b5563;"><strong>WhatsApp Updates:</strong> Enabled</p>' : ''}
+          </div>
+
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10b981;">
+            <h3 style="color: #1f2937; margin-bottom: 15px;">Property Details:</h3>
+            <p style="margin: 5px 0; color: #4b5563;"><strong>Title:</strong> ${safePropertyTitle}</p>
+            <p style="margin: 5px 0; color: #4b5563;"><strong>Type:</strong> ${safePropertyType}</p>
+            <p style="margin: 5px 0; color: #4b5563;"><strong>Price:</strong> ${safePropertyPrice}</p>
+            <p style="margin: 5px 0; color: #4b5563;"><strong>Location:</strong> ${safePropertyLocation}</p>
+            <p style="margin: 5px 0; color: #4b5563;"><strong>ID:</strong> ${safePropertyId}</p>
+            ${propertyUrlPath ? `<p style="margin: 5px 0; color: #4b5563;"><strong>URL:</strong> ${propertyUrlPath}</p>` : ''}
           </div>
           
           <p style="color: #4b5563; line-height: 1.6; margin-bottom: 20px;">

@@ -240,7 +240,7 @@ export const FilterCard: React.FC = () => {
   );
 
   return (
-    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-[95%] md:w-[90%] lg:w-[80%] max-w-5xl z-50">
+    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-[98%] md:w-[95%] lg:w-[90%] max-w-7xl z-50">
       <div 
         className="bg-white rounded-2xl shadow-2xl p-6 animate-slide-up"
         style={{

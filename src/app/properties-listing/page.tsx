@@ -587,7 +587,7 @@ function PropertiesListingContent() {
 
             {/* Location Search Bar */}
             <div className="mb-6">
-              <div className="max-w-md">
+              <div className="max-w-5xl">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Search by Location
                 </label>

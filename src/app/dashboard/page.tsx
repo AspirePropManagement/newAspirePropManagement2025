@@ -174,13 +174,6 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center space-x-3">
               <button
-                onClick={() => setShowPropertyForm(true)}
-                className="inline-flex items-center px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg hover:bg-orange-600 transition-colors duration-200 shadow-sm"
-              >
-                <PlusIcon className="w-4 h-4 mr-2" />
-                Post Property
-              </button>
-              <button
                 onClick={refreshData}
                 disabled={isLoading}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"

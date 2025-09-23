@@ -25,6 +25,9 @@ import { VirtualTourSection } from '@/components/VirtualTourSection';
 import { ShareButton } from '@/components/ShareButton';
 import { useToast } from '@/hooks/useToast';
 import { ToastContainer } from '@/components/ToastContainer';
+import { PropertyEnquiryForm } from '@/components/PropertyEnquiryForm';
+import { useNewProjects } from '@/hooks/useNewProjects';
+import { RecommendedPropertiesCarousel } from '@/components/RecommendedPropertiesCarousel';
 
 interface PropertyDetailPageProps {}
 
@@ -44,6 +47,7 @@ export default function PropertyDetailPage() {
   const { toasts, removeToast, showSuccess, showError, showInfo } = useToast();
 
   const { type, id } = params;
+  const { projects: recommendedProjects } = useNewProjects();
 
   // Check if property is in favorites on component mount
   useEffect(() => {
@@ -113,7 +117,7 @@ export default function PropertyDetailPage() {
 
   // Format price for display
   const formatPrice = (price: number) => {
-    if (!price) return 'Price on request';
+    if (!price) return '';
     if (price >= 10000000) {
       return `₹${(price / 10000000).toFixed(2)} Cr`;
     } else if (price >= 100000) {
@@ -266,7 +270,7 @@ export default function PropertyDetailPage() {
 
   // Get property price
   const getPropertyPrice = () => {
-    if (!property) return 'Price on request';
+    if (!property) return '';
     
     if (property.type === 'resale') {
       return formatPrice(property.asking_price);
@@ -275,7 +279,7 @@ export default function PropertyDetailPage() {
     } else if (property.type === 'new_project') {
       return formatPrice(property.starting_price);
     }
-    return 'Price on request';
+    return '';
   };
 
   // Get BHK configuration
@@ -384,9 +388,9 @@ export default function PropertyDetailPage() {
 
       {/* Quick Overview Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Property Images */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:col-span-2">
             <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden">
               {images.length > 0 ? (
                 <Image
@@ -432,68 +436,87 @@ export default function PropertyDetailPage() {
                 ))}
               </div>
             )}
-          </div>
 
-          {/* Property Overview */}
-          <div className="space-y-6">
-            {/* Property Type Badge */}
-            <div>
-              <span className="bg-orange-500 text-white text-sm px-3 py-1 rounded-full font-medium">
-                {getPropertyTypeLabel()}
-              </span>
-            </div>
+            {/* Property Overview (moved below images) */}
+            <div className="space-y-6">
+              {/* Property Type Badge */}
+              <div>
+                <span className="bg-orange-500 text-white text-sm px-3 py-1 rounded-full font-medium">
+                  {getPropertyTypeLabel()}
+                </span>
+              </div>
 
-            {/* Property Title */}
-            <h1 className="text-3xl font-bold text-gray-900">
-              {getPropertyTitle()}
-            </h1>
+              {/* Property Title */}
+              <h1 className="text-3xl font-bold text-gray-900">
+                {getPropertyTitle()}
+              </h1>
 
-            {/* Location */}
-            <div className="flex items-center text-gray-600">
-              <MapPinIcon className="w-5 h-5 mr-2" />
-              <span className="text-lg">{property.location || 'Location not specified'}</span>
-            </div>
+              {/* Location */}
+              <div className="flex items-center text-gray-600">
+                <MapPinIcon className="w-5 h-5 mr-2" />
+                <span className="text-lg">{property.location || 'Location not specified'}</span>
+              </div>
 
-            {/* Price */}
-            <div className="flex items-center">
-              <CurrencyRupeeIcon className="w-8 h-8 text-orange-500 mr-2" />
-              <span className="text-4xl font-bold text-gray-900">
-                {getPropertyPrice()}
-              </span>
-            </div>
-
-            {/* Configuration */}
-            <div className="flex items-center text-gray-600">
-              <HomeIcon className="w-5 h-5 mr-2" />
-              <span className="text-lg">{getBHKConfig()}</span>
-              {property.carpet_area && (
-                <span className="ml-4">• {property.carpet_area} sq.ft</span>
+              {/* Price */}
+              {getPropertyPrice() && (
+                <div className="flex items-center">
+                  <CurrencyRupeeIcon className="w-8 h-8 text-orange-500 mr-2" />
+                  <span className="text-4xl font-bold text-gray-900">
+                    {getPropertyPrice()}
+                  </span>
+                </div>
               )}
-            </div>
 
-             {/* Contact Button */}
-             <div className="flex justify-center">
-               <button 
-                 onClick={handleCallNow}
-                 className="bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-lg font-medium transition-colors flex items-center justify-center"
-               >
-                 <PhoneIcon className="w-5 h-5 mr-2" />
-                 Call Now
-               </button>
-             </div>
+              {/* Meta: Type + ID */}
+              <div className="text-xs text-gray-500">
+                <span>Type: {getPropertyTypeLabel()}</span>
+                <span className="mx-2">•</span>
+                <span>ID: {property.id}</span>
+              </div>
 
+              {/* Configuration */}
+              <div className="flex items-center text-gray-600">
+                <HomeIcon className="w-5 h-5 mr-2" />
+                <span className="text-lg">{getBHKConfig()}</span>
+                {property.carpet_area && (
+                  <span className="ml-4">• {property.carpet_area} sq.ft</span>
+                )}
+              </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{images.length}</div>
-                <div className="text-sm text-gray-600">Photos</div>
-                  </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{getPropertyAmenities().length}</div>
-                <div className="text-sm text-gray-600">Amenities</div>
+              {/* Contact Button */}
+              <div className="flex justify-center">
+                <button 
+                  onClick={handleCallNow}
+                  className="bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-lg font-medium transition-colors flex items-center justify-center"
+                >
+                  <PhoneIcon className="w-5 h-5 mr-2" />
+                  Call Now
+                </button>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">{images.length}</div>
+                  <div className="text-sm text-gray-600">Photos</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">{getPropertyAmenities().length}</div>
+                  <div className="text-sm text-gray-600">Amenities</div>
+                </div>
               </div>
             </div>
+          </div>
+
+          {/* Right-side Enquiry Form */}
+          <div className="lg:col-span-1 lg:sticky lg:top-24 self-start">
+            <PropertyEnquiryForm 
+              propertyTitle={getPropertyTitle()} 
+              propertyId={property.id}
+              propertyType={property.type}
+              propertyPrice={getPropertyPrice()}
+              propertyLocation={property.location || 'Location not specified'}
+            />
           </div>
         </div>
       </div>
@@ -515,6 +538,11 @@ export default function PropertyDetailPage() {
         amenities={getPropertyAmenities()}
         specifications={getPropertySpecifications()}
       />
+
+      {/* Recommended Properties */}
+      <RecommendedPropertiesCarousel projects={recommendedProjects} />
+
+      {/* Removed bottom enquiry form to avoid duplication on detail page */}
 
 
       {/* Toast Container */}
