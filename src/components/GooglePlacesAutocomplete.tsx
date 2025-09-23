@@ -61,6 +61,7 @@ export default function GooglePlacesAutocomplete({
           setApiLoaded(true);
           setError(null);
           console.log('Google Places API initialized successfully');
+          console.info('[GooglePlaces] READY: Initialization OK (AutocompleteService & PlacesService ready)');
         } else {
           setError('Google Maps API not properly loaded');
         }
@@ -77,6 +78,9 @@ export default function GooglePlacesAutocomplete({
       // Load Google Maps API if not already loaded
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
       console.log('API Key found:', apiKey ? 'Yes' : 'No');
+      if (apiKey) {
+        console.info('[GooglePlaces] INFO: Attempting to load Maps JavaScript API with Places library');
+      }
       
       if (!apiKey) {
         const errorMsg = 'Google Maps API key not found. Please add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to your .env.local file.';
@@ -90,6 +94,7 @@ export default function GooglePlacesAutocomplete({
       if (existingScript) {
         // Script exists, wait for it to load
         existingScript.addEventListener('load', initGooglePlaces);
+        console.info('[GooglePlaces] INFO: Maps script tag already present, waiting for load event');
         return;
       }
 
@@ -97,7 +102,10 @@ export default function GooglePlacesAutocomplete({
       script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
       script.async = true;
       script.defer = true;
-      script.onload = initGooglePlaces;
+      script.onload = () => {
+        console.info('[GooglePlaces] LOADED: Google Maps API script loaded');
+        initGooglePlaces();
+      };
       script.onerror = () => {
         console.error('Failed to load Google Maps API script');
         setError('Failed to load Google Maps API');
@@ -139,6 +147,13 @@ export default function GooglePlacesAutocomplete({
     autocompleteService.current.getPlacePredictions(request, (predictions: any[], status: any) => {
       setIsLoading(false);
       console.log('Autocomplete response:', { status, predictions: predictions?.length || 0 });
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        console.info('[GooglePlaces] WORKING: Prediction request succeeded');
+      } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+        console.info('[GooglePlaces] OK: Service available but zero results for query');
+      } else {
+        console.error('[GooglePlaces] ERROR: Prediction request failed with status:', status);
+      }
       
       if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions) {
         const formattedSuggestions = predictions.map(prediction => ({

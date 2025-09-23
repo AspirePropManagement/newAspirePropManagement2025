@@ -129,6 +129,16 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
       href: '/admin/hero-carousel',
       icon: PhotoIcon,
     },
+    {
+      name: 'Services',
+      href: '/admin/services',
+      icon: DocumentTextIcon,
+    },
+    {
+      name: 'Blogs',
+      href: '/admin/blogs',
+      icon: DocumentTextIcon,
+    },
   ];
 
   // User account menu items

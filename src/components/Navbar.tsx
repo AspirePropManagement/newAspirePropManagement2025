@@ -152,20 +152,23 @@ export default function Navbar() {
              <Link href="/why-us" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
                Why Us?
              </Link>
+            <Link href="/blog" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
+              Blog
+            </Link>
              <Link href="/services" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
                Services
              </Link>
              <Link href="/contact" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
                Enquiry
              </Link>
-             <div className="flex items-center space-x-2">
-               <Link href="/post-property" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
-                 Post Property
-               </Link>
-               <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
-                 FREE
-               </span>
-             </div>
+            {/* <div className="flex items-center space-x-2">
+              <Link href="/post-property" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
+                Post Property
+              </Link>
+              <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                FREE
+              </span>
+            </div> */}
            </nav>
 
           {/* Mobile Menu Button */}
@@ -387,6 +390,12 @@ export default function Navbar() {
                </svg>
                Why Us?
              </Link>
+            <Link href="/blog" className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium">
+              <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h10M7 16h10M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Blog
+            </Link>
                            <Link href="/services" className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium">
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -399,19 +408,21 @@ export default function Navbar() {
                </svg>
                Enquiry
              </Link>
-             <Link 
-               href="/post-property" 
-               className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium"
-               onClick={closeMobileMenu}
-             >
-               <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-               </svg>
-               <span>Post Property</span>
-               <span className="ml-auto bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
-                 FREE
-               </span>
-             </Link>
+            {/**
+             * <Link 
+             *   href="/post-property" 
+             *   className="flex items-center px-4 py-3 text-gray-700 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors font-medium"
+             *   onClick={closeMobileMenu}
+             * >
+             *   <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+             *     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+             *   </svg>
+             *   <span>Post Property</span>
+             *   <span className="ml-auto bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+             *     FREE
+             *   </span>
+             * </Link>
+             */}
            </nav>
 
                      {/* Mobile Contact Info */}
