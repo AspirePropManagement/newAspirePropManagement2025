@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useToast } from '@/hooks/useToast';
+import { ToastContainer } from '@/components/ToastContainer';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete';
 
 /**
@@ -22,6 +24,9 @@ export const FilterCard: React.FC = () => {
     amenities: [] as string[]
   });
 
+  // Toast utilities
+  const { toasts, showInfo, removeToast } = useToast();
+
   const handleFilterChange = (key: string, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
@@ -40,6 +45,26 @@ export const FilterCard: React.FC = () => {
     if (filters.priceRange) params.set('priceRange', filters.priceRange);
     
     return `${baseUrl}?${params.toString()}`;
+  };
+
+  const hasAnyFilterSelected = () => {
+    return Boolean(
+      filters.location ||
+      filters.propertyType ||
+      filters.bhkType ||
+      filters.budget ||
+      filters.constructionType ||
+      filters.furnishingType ||
+      filters.priceRange ||
+      (filters.amenities && filters.amenities.length > 0)
+    );
+  };
+
+  const handleSearchClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!hasAnyFilterSelected()) {
+      e.preventDefault();
+      showInfo('Please select a location or at least one filter before searching.');
+    }
   };
 
   const renderNewProjectsFilters = () => (
@@ -300,7 +325,7 @@ export const FilterCard: React.FC = () => {
           <div className="space-y-2 flex flex-col">
             <label className="block text-sm font-medium text-gray-700 opacity-0 h-[20px]">Search</label>
             <Link href={getSearchUrl()} className="flex items-end">
-              <button className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg h-[42px] flex items-center justify-center">
+              <button onClick={handleSearchClick} className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg h-[42px] flex items-center justify-center">
                 Search
               </button>
             </Link>
@@ -315,7 +340,7 @@ export const FilterCard: React.FC = () => {
               <div className="space-y-2 flex flex-col">
                 <label className="block text-sm font-medium text-gray-700 opacity-0 h-[20px]">Search</label>
                 <Link href={getSearchUrl()} className="flex items-end">
-                  <button className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg h-[42px] flex items-center justify-center">
+                  <button onClick={handleSearchClick} className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg h-[42px] flex items-center justify-center">
                     Search
                   </button>
                 </Link>
@@ -328,7 +353,7 @@ export const FilterCard: React.FC = () => {
               <div className="space-y-2 flex flex-col">
                 <label className="block text-sm font-medium text-gray-700 opacity-0 h-[20px]">Search</label>
                 <Link href={getSearchUrl()} className="flex items-end">
-                  <button className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg h-[42px] flex items-center justify-center">
+                  <button onClick={handleSearchClick} className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg h-[42px] flex items-center justify-center">
                     Search
                   </button>
                 </Link>
@@ -358,12 +383,14 @@ export const FilterCard: React.FC = () => {
           
           <div className="pt-2">
             <Link href={getSearchUrl()}>
-              <button className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg">
+              <button onClick={handleSearchClick} className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg">
                 Search Properties
               </button>
             </Link>
           </div>
         </div>
+        {/* Toasts */}
+        <ToastContainer toasts={toasts as any} onRemove={removeToast} />
       </div>
     </div>
   );

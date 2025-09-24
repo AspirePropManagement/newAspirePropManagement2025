@@ -148,6 +148,25 @@ export async function createResaleProperty(data: ResalePropertyData, userId?: st
       amenities: data.amenities || {},
       documents: [],
       notes: data.notes,
+      // New resale fields mapping
+      ownership_type: (data as any).ownershipType || null,
+      loan_on_property: (data as any).loanOnProperty === 'true' ? true : (data as any).loanOnProperty === 'false' ? false : null,
+      loan_amount: (data as any).loanAmount ? parseFloat((data as any).loanAmount) : null,
+      bank_name: (data as any).bankName || null,
+      reason_for_sale: (data as any).reasonForSale || null,
+      flats_per_floor: (data as any).flatsPerFloor || null,
+      society_area_size: (data as any).societyAreaSize || null,
+      rera_id: (data as any).reraId || null,
+      parking_vehicles: (data as any).parkingVehicles || [],
+      visit_days_weekend: (data as any).visitDaysWeekend || null,
+      visit_timing_weekend: ((data as any).visitTimingWeekendFrom && (data as any).visitTimingWeekendTo)
+        ? `${(data as any).visitTimingWeekendFrom}-${(data as any).visitTimingWeekendTo}`
+        : null,
+      visit_days_weekdays: (data as any).visitDaysWeekdays || null,
+      visit_timing_weekdays: ((data as any).visitTimingWeekdaysFrom && (data as any).visitTimingWeekdaysTo)
+        ? `${(data as any).visitTimingWeekdaysFrom}-${(data as any).visitTimingWeekdaysTo}`
+        : null,
+      listed_by: (data as any).listedBy || null,
       created_by: currentUserId
     };
     

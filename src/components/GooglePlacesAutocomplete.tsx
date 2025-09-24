@@ -232,15 +232,7 @@ export default function GooglePlacesAutocomplete({
         </div>
       )}
 
-      {/* Debug info (remove in production) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="absolute top-full left-0 right-0 mt-1 p-1 bg-gray-100 border border-gray-300 rounded text-xs text-gray-600">
-          API Loaded: {apiLoaded ? 'Yes' : 'No'} | 
-          Service: {autocompleteService.current ? 'Ready' : 'Not Ready'} | 
-          Suggestions: {suggestions.length} | 
-          Show: {showSuggestions ? 'Yes' : 'No'}
-        </div>
-      )}
+      
 
       {/* Suggestions dropdown */}
       {showSuggestions && suggestions.length > 0 && (

@@ -255,6 +255,24 @@ export function PropertyForm({
     visitDetails: '',
     notes: '',
     
+    // Resale specific new fields
+    ownershipType: '',
+    loanOnProperty: '',
+    loanAmount: '',
+    bankName: '',
+    reasonForSale: '',
+    flatsPerFloor: '',
+    societyAreaSize: '',
+    reraId: '',
+    parkingVehicles: [] as string[],
+    visitDaysWeekend: '',
+    visitTimingWeekendFrom: '',
+    visitTimingWeekendTo: '',
+    visitDaysWeekdays: '',
+    visitTimingWeekdaysFrom: '',
+    visitTimingWeekdaysTo: '',
+    listedBy: '',
+    
     // Images & Documents (Step 3)
     propertyImages: {},
     

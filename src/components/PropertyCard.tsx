@@ -319,6 +319,31 @@ export function PropertyCard({ property }: PropertyCardProps) {
               {property.parking_type.replace('_', ' ')}
             </span>
           )}
+          {property.type === 'resale' && property.rera_id && (
+            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+              RERA: {property.rera_id}
+            </span>
+          )}
+          {property.type === 'resale' && property.flats_per_floor && (
+            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+              {property.flats_per_floor} flats/floor
+            </span>
+          )}
+          {property.type === 'resale' && property.society_area_size && (
+            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+              Area: {property.society_area_size}
+            </span>
+          )}
+          {property.type === 'resale' && typeof property.loan_on_property === 'boolean' && (
+            <span className={`text-xs px-2 py-1 rounded ${property.loan_on_property ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
+              {property.loan_on_property ? `Loan: Yes${property.loan_amount ? ` (₹${Number(property.loan_amount).toLocaleString()})` : ''}${property.bank_name ? ` - ${property.bank_name}` : ''}` : 'Loan: No'}
+            </span>
+          )}
+          {property.type === 'resale' && property.listed_by && (
+            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded capitalize">
+              {property.listed_by}
+            </span>
+          )}
           {property.type === 'rental' && property.immediate_possession && (
             <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
               Immediate Possession

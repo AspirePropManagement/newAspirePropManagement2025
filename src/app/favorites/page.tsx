@@ -4,6 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { PropertyCard } from '@/components/PropertyCard';
 import { PropertyCardSkeleton } from '@/components/PropertyCardSkeleton';
 import { HeartIcon } from '@heroicons/react/24/outline';
+import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
+import Image from 'next/image';
+import { extractPropertyImages, getImageSrc, isBase64Image } from '@/utils/imageUtils';
 
 /**
  * Favorites Page
@@ -13,9 +17,12 @@ export default function FavoritesPage() {
   const [favoriteProperties, setFavoriteProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch favorite properties on component mount
+  // Fetch favorite properties on component mount and when favorites change
   useEffect(() => {
     fetchFavoriteProperties();
+    const handler = () => fetchFavoriteProperties();
+    window.addEventListener('favoritesUpdated', handler as EventListener);
+    return () => window.removeEventListener('favoritesUpdated', handler as EventListener);
   }, []);
 
   /**
@@ -27,103 +34,36 @@ export default function FavoritesPage() {
       
       // Get favorites from localStorage
       const favorites = localStorage.getItem('favoriteProperties');
-      const favoriteIds = favorites ? JSON.parse(favorites) : [];
-      
-      // Dummy properties data (same as properties listing)
-      const allProperties = [
-        {
-          id: 1,
-          type: 'new_project',
-          project_name: 'The Greenfront',
-          location: 'Hinjawadi, Pune',
-          description: '2 & 3 BHK Apartment, 4 BHK Duplex for Sale in Hinjawadi, Pune',
-          bhk_type: '2 & 3 BHK Apartment, 4 BHK Duplex',
-          starting_price: 11600000,
-          price_per_sqft: 12290,
-          built_up_area: 'On request',
-          carpet_area: '944 - 2,180 Sq.ft.',
-          project_status: 'under_construction',
-          developer_name: 'Greenfront Developers',
-          amenities: ['parking', 'swimming-pool', 'lift', 'gated-community'],
-          images: [
-            'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop'
-          ],
-          created_at: new Date().toISOString(),
-          offers_available: true
-        },
-        {
-          id: 2,
-          type: 'new_project',
-          project_name: 'Godrej Skyline',
-          location: 'Koregaon Park, Pune',
-          description: '3 & 4 BHK Apartment for Sale in Koregaon Park, Pune',
-          bhk_type: '3 & 4 BHK Apartment',
-          starting_price: 38900000,
-          price_per_sqft: 25930,
-          built_up_area: '1500 - 2400 Sq.ft.',
-          carpet_area: 'On request',
-          project_status: 'under_construction',
-          developer_name: 'Godrej Properties',
-          amenities: ['parking', 'swimming-pool', 'lift', 'gated-community', 'gas-pipeline'],
-          images: [
-            'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop'
-          ],
-          created_at: new Date().toISOString(),
-          offers_available: true
-        },
-        {
-          id: 3,
-          type: 'new_project',
-          project_name: 'Lodha Belmondo',
-          location: 'Hinjewadi, Pune',
-          description: '2, 3 & 4 BHK Luxury Apartments for Sale in Hinjewadi, Pune',
-          bhk_type: '2, 3 & 4 BHK',
-          starting_price: 8500000,
-          price_per_sqft: 8500,
-          built_up_area: '1200 - 2800 Sq.ft.',
-          carpet_area: '1100 - 2600 Sq.ft.',
-          project_status: 'ready_to_move',
-          developer_name: 'Lodha Group',
-          amenities: ['parking', 'swimming-pool', 'lift', 'gated-community', 'gas-pipeline'],
-          images: [
-            'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop'
-          ],
-          created_at: new Date().toISOString(),
-          offers_available: false
-        },
-        {
-          id: 4,
-          type: 'resale',
-          society_name: 'Prestige Shantiniketan',
-          location: 'Baner, Pune',
-          description: '3 BHK Apartment for Sale in Prestige Shantiniketan, Baner',
-          bhk_type: '3 BHK',
-          asking_price: 12500000,
-          price_per_sqft: 12500,
-          built_up_area: '1200 Sq.ft.',
-          carpet_area: '1100 Sq.ft.',
-          seller_name: 'Individual Owner',
-          amenities: ['parking', 'lift', 'gated-community'],
-          images: [
-            'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&h=300&fit=crop'
-          ],
-          created_at: new Date().toISOString(),
-          offers_available: true
-        }
+      const favoriteIds: string[] = favorites ? JSON.parse(favorites) : [];
+
+      if (favoriteIds.length === 0) {
+        setFavoriteProperties([]);
+        return;
+      }
+
+      // Fetch from all three tables in parallel
+      const [resaleRes, rentalRes, newProjRes] = await Promise.all([
+        supabase.from('resale_properties').select('*').in('id', favoriteIds),
+        supabase.from('rental_properties').select('*').in('id', favoriteIds),
+        supabase.from('new_projects').select('*').in('id', favoriteIds),
+      ]);
+
+      if (resaleRes.error) console.error('Favorites resale fetch error:', resaleRes.error);
+      if (rentalRes.error) console.error('Favorites rental fetch error:', rentalRes.error);
+      if (newProjRes.error) console.error('Favorites new_projects fetch error:', newProjRes.error);
+
+      const combined = [
+        ...(resaleRes.data || []).map(p => ({ ...p, type: 'resale' })),
+        ...(rentalRes.data || []).map(p => ({ ...p, type: 'rental' })),
+        ...(newProjRes.data || []).map(p => ({ ...p, type: 'new_project', location: p.project_location || p.location })),
       ];
 
-      // Filter properties that are in favorites
-      const favoritesList = allProperties.filter(property => 
-        favoriteIds.includes(property.id)
-      );
+      // Keep the order as per favorites selection if desired
+      const ordered = favoriteIds
+        .map(fid => combined.find(p => p.id === fid))
+        .filter(Boolean) as any[];
 
-      setFavoriteProperties(favoritesList);
+      setFavoriteProperties(ordered);
     } catch (err) {
       console.error('Error fetching favorite properties:', err);
     } finally {
@@ -195,18 +135,46 @@ export default function FavoritesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {favoriteProperties.map((property) => (
-              <div key={property.id} className="relative">
-                <PropertyCard property={property} />
-                <button
-                  onClick={() => removeFromFavorites(property.id)}
-                  className="absolute top-4 right-4 z-10 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-red-50 transition-colors"
-                  title="Remove from favorites"
-                >
-                  <HeartIcon className="w-5 h-5 text-red-500 fill-current" />
-                </button>
-              </div>
-            ))}
+            {favoriteProperties.map((property) => {
+              const title = (() => {
+                if (property.type === 'resale') return property.society_name || 'Resale Property';
+                if (property.type === 'rental') return property.society_name || 'Rental Property';
+                if (property.type === 'new_project') return property.project_name || 'New Project';
+                return 'Property';
+              })();
+              const images = extractPropertyImages(property);
+              const href = `/properties/${property.type}/${property.id}`;
+              return (
+                <Link key={property.id} href={href} className="group block">
+                  <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                    <div className="w-full aspect-[16/10] bg-gray-200 relative">
+                      {images.length > 0 ? (
+                        <Image
+                          src={getImageSrc(images[0])}
+                          alt={title}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          unoptimized={isBase64Image(images[0])}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-500">
+                          No Image
+                        </div>
+                      )}
+                      {/* Verified badge */}
+                      <span className="absolute bottom-3 left-3 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-600 text-white shadow">
+                        100% Verified
+                      </span>
+                    </div>
+                    <div className="px-3 py-3">
+                      <div className="text-base font-semibold text-gray-900 line-clamp-1 group-hover:underline" title={title}>
+                        {title}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

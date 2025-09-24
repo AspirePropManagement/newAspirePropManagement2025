@@ -42,6 +42,19 @@ function PropertiesListingContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage] = useState(12);
+  const [filtersReady, setFiltersReady] = useState(false);
+
+  // Normalize a location string coming from Google Places (e.g., "Pune, Maharashtra, India")
+  // into the primary city/town part (e.g., "Pune"). If no comma is present, return as-is.
+  const normalizeLocationString = (value: string) => {
+    if (!value) return '';
+    const trimmed = value.trim();
+    if (trimmed.includes(',')) {
+      // Take the first segment (city/locality), e.g., "Pune"
+      return trimmed.split(',')[0].trim();
+    }
+    return trimmed;
+  };
 
   // Initialize filters from URL parameters
   useEffect(() => {
@@ -60,17 +73,34 @@ function PropertiesListingContent() {
     // Get property type from URL
     const typeParam = searchParams.get('type');
     if (typeParam) {
-      urlFilters.propertyType = [typeParam];
+      const mappedType = typeParam === 'new-projects' ? 'new_project' : typeParam;
+      urlFilters.propertyType = [mappedType];
+    }
+
+    // Get location from URL
+    const locationParam = searchParams.get('location');
+    if (locationParam) {
+      urlFilters.location = locationParam;
+    }
+
+    // Get BHK from URL (single value support)
+    const bhkParam = searchParams.get('bhkType');
+    if (bhkParam) {
+      urlFilters.bhkType = [bhkParam];
     }
 
     setSelectedFilters(urlFilters);
+    setFiltersReady(true);
   }, [searchParams]);
 
   // Fetch properties based on filters
   const fetchProperties = useCallback(async () => {
+    if (!filtersReady) return;
     try {
       setLoading(true);
       setError(null);
+      // Clear previous results to avoid showing stale data
+      setProperties([]);
 
       if (!supabase) {
         setError('Database connection not available');
@@ -78,19 +108,25 @@ function PropertiesListingContent() {
         return;
       }
 
+      // Always compute a stable snapshot of filters, preferring URL when present
+      const rawLocation = searchParams.get('location') || selectedFilters.location;
+      const locationFilter = normalizeLocationString(rawLocation);
+      const typeFilters = selectedFilters.propertyType;
+      const bhkFilters = selectedFilters.bhkType;
+
       let allProperties: any[] = [];
 
       // Fetch from resale_properties table
-      if (selectedFilters.propertyType.length === 0 || selectedFilters.propertyType.includes('resale')) {
+      if (typeFilters.length === 0 || typeFilters.includes('resale')) {
         let resaleQuery = supabase.from('resale_properties').select('*');
 
-        if (selectedFilters.location) {
-          resaleQuery = resaleQuery.ilike('location', `%${selectedFilters.location}%`);
+        if (locationFilter) {
+          resaleQuery = resaleQuery.ilike('location', `%${locationFilter}%`);
         }
 
-        if (selectedFilters.bhkType.length > 0) {
+        if (bhkFilters.length > 0) {
           // Map filter values to database values
-          const mappedBhkTypes = selectedFilters.bhkType.map(type => {
+          const mappedBhkTypes = bhkFilters.map(type => {
             switch(type) {
               case '1_rk': return '1_rk';
               case '1_bhk': return '1_bhk';
@@ -130,16 +166,16 @@ function PropertiesListingContent() {
       }
 
       // Fetch from rental_properties table
-      if (selectedFilters.propertyType.length === 0 || selectedFilters.propertyType.includes('rental')) {
+      if (typeFilters.length === 0 || typeFilters.includes('rental')) {
         let rentalQuery = supabase.from('rental_properties').select('*');
 
-        if (selectedFilters.location) {
-          rentalQuery = rentalQuery.ilike('location', `%${selectedFilters.location}%`);
+        if (locationFilter) {
+          rentalQuery = rentalQuery.ilike('location', `%${locationFilter}%`);
         }
 
-        if (selectedFilters.bhkType.length > 0) {
+        if (bhkFilters.length > 0) {
           // Map filter values to database values
-          const mappedBhkTypes = selectedFilters.bhkType.map(type => {
+          const mappedBhkTypes = bhkFilters.map(type => {
             switch(type) {
               case '1_rk': return '1_rk';
               case '1_bhk': return '1_bhk';
@@ -178,11 +214,11 @@ function PropertiesListingContent() {
       }
 
       // Fetch from new_projects table
-      if (selectedFilters.propertyType.length === 0 || selectedFilters.propertyType.includes('new_project')) {
+      if (typeFilters.length === 0 || typeFilters.includes('new_project')) {
         let newProjectQuery = supabase.from('new_projects').select('*');
 
-        if (selectedFilters.location) {
-          newProjectQuery = newProjectQuery.ilike('project_location', `%${selectedFilters.location}%`);
+        if (locationFilter) {
+          newProjectQuery = newProjectQuery.ilike('project_location', `%${locationFilter}%`);
         }
 
         // Note: new_projects table doesn't have bhk_type column, so we skip this filter
@@ -226,9 +262,34 @@ function PropertiesListingContent() {
           allProperties.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       }
 
-      console.log('Fetched properties:', allProperties.length, allProperties);
-      setProperties(allProperties);
-      setTotalPages(Math.ceil(allProperties.length / itemsPerPage));
+      // Apply final in-memory filters to ensure correctness
+      const finallyFiltered = allProperties.filter((p) => {
+        // Enforce property type filter strictly
+        if (typeFilters.length > 0 && !typeFilters.includes(p.type)) {
+          return false;
+        }
+        // Enforce location filter across all types
+        if (locationFilter) {
+          const locationValue = p.type === 'new_project' ? (p.project_location || p.location || '') : (p.location || '');
+          if (!locationValue || !locationValue.toLowerCase().includes(locationFilter.toLowerCase())) {
+            return false;
+          }
+        }
+        // Enforce BHK filter when available (skip for new projects)
+        if (bhkFilters.length > 0) {
+          if (p.type !== 'new_project') {
+            const bhk = p.bhk_type;
+            if (!bhk || !bhkFilters.includes(bhk)) {
+              return false;
+            }
+          }
+        }
+        return true;
+      });
+
+      console.log('Fetched properties:', allProperties.length, 'After filters:', finallyFiltered.length);
+      setProperties(finallyFiltered);
+      setTotalPages(Math.ceil(finallyFiltered.length / itemsPerPage));
     } catch (err) {
       console.error('Error fetching properties:', err);
       setError('Failed to load properties. Please try again.');
@@ -238,8 +299,10 @@ function PropertiesListingContent() {
   }, [selectedFilters, sortBy, itemsPerPage]);
 
   useEffect(() => {
-    fetchProperties();
-  }, [fetchProperties]);
+    if (filtersReady) {
+      fetchProperties();
+    }
+  }, [fetchProperties, filtersReady]);
 
   const handleFilterChange = (filterType: string, value: string | string[] | boolean) => {
     setSelectedFilters(prev => ({
@@ -293,25 +356,26 @@ function PropertiesListingContent() {
     const hasResale = selectedFilters.propertyType.includes('resale');
     const hasRental = selectedFilters.propertyType.includes('rental');
     const hasNewProject = selectedFilters.propertyType.includes('new_project');
+    const where = selectedFilters.location ? ` in ${selectedFilters.location}` : '';
 
     if (hasResale && !hasRental && !hasNewProject) {
       return {
-        mainHeading: "Resale Properties in Pune",
+        mainHeading: `Resale Properties${where}`,
         subHeading: `${properties.length} properties available for sale`
       };
     } else if (hasRental && !hasResale && !hasNewProject) {
       return {
-        mainHeading: "Rental Properties in Pune",
+        mainHeading: `Rental Properties${where}`,
         subHeading: `${properties.length} properties available for rent`
       };
     } else if (hasNewProject && !hasResale && !hasRental) {
       return {
-        mainHeading: "New Projects in Pune",
+        mainHeading: `New Projects${where}`,
         subHeading: `${properties.length} new projects available`
       };
     } else {
       return {
-        mainHeading: "Properties in Pune",
+        mainHeading: `Properties${where}`,
         subHeading: `${properties.length} properties available`
       };
     }

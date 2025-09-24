@@ -167,6 +167,22 @@ export default function PropertyDetailPage() {
     if (property.property_age) specs['Property Age'] = property.property_age;
     if (property.is_negotiable !== undefined) specs['Negotiable'] = property.is_negotiable;
     if (property.has_amenities !== undefined) specs['Amenities Available'] = property.has_amenities;
+    if (property.listed_by) specs['Listed By'] = property.listed_by;
+    if (property.ownership_type) specs['Ownership'] = property.ownership_type;
+    if (property.rera_id) specs['RERA ID'] = property.rera_id;
+    if (property.flats_per_floor) specs['Flats per Floor'] = property.flats_per_floor;
+    if (property.society_area_size) specs['Society Area Size'] = property.society_area_size;
+    if (property.reason_for_sale) specs['Reason for Sale'] = property.reason_for_sale;
+    if (typeof property.loan_on_property === 'boolean') {
+      const loanSummary = property.loan_on_property
+        ? `Yes${property.loan_amount ? `, ₹${Number(property.loan_amount).toLocaleString()}` : ''}${property.bank_name ? `, ${property.bank_name}` : ''}`
+        : 'No';
+      specs['Loan on Property'] = loanSummary;
+    }
+    if (property.visit_days_weekend) specs['Visit Days (Weekend)'] = property.visit_days_weekend;
+    if (property.visit_timing_weekend) specs['Visit Timing (Weekend)'] = property.visit_timing_weekend;
+    if (property.visit_days_weekdays) specs['Visit Days (Weekdays)'] = property.visit_days_weekdays;
+    if (property.visit_timing_weekdays) specs['Visit Timing (Weekdays)'] = property.visit_timing_weekdays;
     
     // Rental specific
     if (property.type === 'rental') {
