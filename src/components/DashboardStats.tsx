@@ -91,17 +91,39 @@ export default function DashboardStats({ stats, isLoading }: DashboardStatsProps
   ]
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {statCards.map((card, index) => (
-        <div key={index} className="bg-white p-4 lg:p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
-          <div className="flex items-center">
-            <div className={`p-2 ${card.bgColor} rounded-lg`}>
-              {card.icon}
+        <div key={index} className="group bg-gradient-to-br from-white to-gray-50 p-6 rounded-3xl shadow-xl border border-gray-100 hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full opacity-10 -translate-y-10 translate-x-10 group-hover:scale-150 transition-transform duration-500"></div>
+          
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className={`p-3 ${card.bgColor} rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                {card.icon}
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
+                  {card.value}
+                </div>
+              </div>
             </div>
-            <div className="ml-3 lg:ml-4">
-              <p className="text-xs lg:text-sm font-medium text-gray-600">{card.title}</p>
-              <p className="text-xl lg:text-2xl font-semibold text-gray-900">{card.value}</p>
-              <p className="text-xs text-gray-500">{card.subtitle}</p>
+            
+            <div className="space-y-1">
+              <h3 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
+                {card.title}
+              </h3>
+              <p className="text-sm text-gray-600">{card.subtitle}</p>
+            </div>
+
+            {/* Progress bar */}
+            <div className="mt-4">
+              <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                <div 
+                  className={`h-1.5 rounded-full ${card.bgColor.replace('bg-', 'bg-').replace('-100', '-500')} transition-all duration-1000 group-hover:w-full`}
+                  style={{ width: `${Math.min((card.value / 100) * 100, 85)}%` }}
+                ></div>
+              </div>
             </div>
           </div>
         </div>

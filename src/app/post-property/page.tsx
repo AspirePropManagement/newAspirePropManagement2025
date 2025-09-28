@@ -6,6 +6,7 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '@/hooks/useAuth';
 import { PropertyForm } from '@/components/PropertyForm';
 import { PropertyFormSkeleton } from '@/components/skeletons';
+import PropertyListingsTable from '@/components/PropertyListingsTable';
 import { 
   createResaleProperty, 
   createRentalProperty, 
@@ -333,38 +334,52 @@ export default function PostPropertyPage() {
 
   // Show property form if user is authenticated
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50 to-red-100 py-8">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-3xl mb-6 shadow-2xl">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </div>
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-4">
             Post Your Property
           </h1>
-          <p className="text-lg text-gray-600">
-            List your property and reach thousands of potential buyers and renters
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            List your property and reach thousands of potential buyers and renters across our platform
           </p>
         </div>
 
         {/* Property Type Tabs */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8 px-6" aria-label="Tabs">
+        <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-gray-100 mb-8 overflow-hidden">
+          <div className="border-b border-gray-100">
+            <nav className="flex space-x-0 px-4" aria-label="Tabs">
               {[
-                { id: 'resale', name: 'Resale Property', icon: '🏠' },
-                { id: 'rental', name: 'Rental Property', icon: '🔑' },
-                { id: 'new_project', name: 'New Project', icon: '🏗️' }
+                { id: 'resale', name: 'Resale', icon: '🏠', gradient: 'from-blue-500 to-indigo-500' },
+                { id: 'rental', name: 'Rental', icon: '🔑', gradient: 'from-green-500 to-emerald-500' },
+                { id: 'new_project', name: 'New Project', icon: '🏗️', gradient: 'from-purple-500 to-pink-500' },
+                { id: 'listings', name: 'Listings', icon: '📋', gradient: 'from-orange-500 to-red-500' }
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`${
+                  className={`group relative flex-1 py-4 px-2 text-center transition-all duration-300 ${
                     activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
+                      ? 'text-white'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
                 >
-                  <span className="text-lg">{tab.icon}</span>
-                  <span>{tab.name}</span>
+                  {activeTab === tab.id && (
+                    <div className={`absolute inset-0 bg-gradient-to-r ${tab.gradient} rounded-t-xl shadow-lg`}></div>
+                  )}
+                  <div className="relative z-10 flex flex-col items-center space-y-1">
+                    <span className="text-lg group-hover:scale-110 transition-transform duration-300">{tab.icon}</span>
+                    <span className="font-semibold text-xs">{tab.name}</span>
+                  </div>
+                  {activeTab !== tab.id && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-50 to-gray-100 opacity-0 group-hover:opacity-100 rounded-t-xl transition-opacity duration-300"></div>
+                  )}
                 </button>
               ))}
             </nav>
@@ -372,9 +387,15 @@ export default function PostPropertyPage() {
         </div>
 
         {/* Property Form */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
           {isSubmitting ? (
-            <PropertyFormSkeleton />
+            <div className="p-8">
+              <PropertyFormSkeleton />
+            </div>
+          ) : activeTab === 'listings' ? (
+            <div className="p-8">
+              <PropertyListingsTable />
+            </div>
           ) : (
             <div className="p-8">
               <PropertyForm

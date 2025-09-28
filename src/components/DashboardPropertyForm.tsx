@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { PropertyForm } from './PropertyForm';
 import { PropertyFormSkeleton } from './skeletons';
+import PropertyListingsTable from './PropertyListingsTable';
 import { 
   createResaleProperty, 
   createRentalProperty, 
@@ -169,50 +170,72 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden border border-gray-100">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Post Your Property</h2>
-            <p className="text-gray-600 mt-1">Add a new property to the platform</p>
+        <div className="flex items-center justify-between p-8 bg-gradient-to-r from-orange-50 to-red-50 border-b border-orange-100">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900">Post Your Property</h2>
+              <p className="text-gray-600 mt-1 text-lg">Add a new property to the platform</p>
+            </div>
           </div>
           <button
             onClick={handleCancel}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="group p-3 text-gray-400 hover:text-gray-600 hover:bg-white/80 rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
           >
-            <XMarkIcon className="w-6 h-6" />
+            <XMarkIcon className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
           </button>
         </div>
 
         {/* Property Type Tabs */}
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-8 px-6" aria-label="Tabs">
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+          <nav className="flex space-x-0 px-4" aria-label="Tabs">
             {[
-              { id: 'resale', name: 'Resale Property', icon: '🏠' },
-              { id: 'rental', name: 'Rental Property', icon: '🔑' },
-              { id: 'new_project', name: 'New Project', icon: '🏗️' }
+              { id: 'resale', name: 'Resale', icon: '🏠', gradient: 'from-blue-500 to-indigo-500' },
+              { id: 'rental', name: 'Rental', icon: '🔑', gradient: 'from-green-500 to-emerald-500' },
+              { id: 'new_project', name: 'New Project', icon: '🏗️', gradient: 'from-purple-500 to-pink-500' },
+              { id: 'listings', name: 'Listings', icon: '📋', gradient: 'from-orange-500 to-red-500' }
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
-                className={`${
+                className={`group relative flex-1 py-4 px-2 text-center transition-all duration-300 ${
                   activeTab === tab.id
-                    ? 'border-orange-500 text-orange-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2`}
+                    ? 'text-white'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
               >
-                <span className="text-lg">{tab.icon}</span>
-                <span>{tab.name}</span>
+                {activeTab === tab.id && (
+                  <div className={`absolute inset-0 bg-gradient-to-r ${tab.gradient} rounded-t-xl shadow-lg`}></div>
+                )}
+                <div className="relative z-10 flex flex-col items-center space-y-1">
+                  <span className="text-lg group-hover:scale-110 transition-transform duration-300">{tab.icon}</span>
+                  <span className="font-semibold text-xs">{tab.name}</span>
+                </div>
+                {activeTab !== tab.id && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-white to-gray-50 opacity-0 group-hover:opacity-100 rounded-t-xl transition-opacity duration-300"></div>
+                )}
               </button>
             ))}
           </nav>
         </div>
 
         {/* Property Form */}
-        <div className="overflow-y-auto max-h-[calc(90vh-200px)]">
+        <div className="overflow-y-auto max-h-[calc(90vh-200px)] bg-gradient-to-br from-white to-gray-50 custom-scrollbar">
           {isSubmitting ? (
-            <PropertyFormSkeleton />
+            <div className="p-8">
+              <PropertyFormSkeleton />
+            </div>
+          ) : activeTab === 'listings' ? (
+            <div className="p-6">
+              <PropertyListingsTable />
+            </div>
           ) : (
             <div className="p-6">
               <PropertyForm

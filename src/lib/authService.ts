@@ -14,6 +14,8 @@ export interface User {
   phone?: string;
   role: 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER' | 'OWNER';
   is_active: boolean;
+  status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+  status_reason?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -60,12 +62,11 @@ class AuthService {
    */
   async login(email: string, password: string): Promise<{ success: boolean; user?: User; error?: string }> {
     try {
-      // Query the users table directly
+      // Fetch user by email (regardless of active status)
       const { data: users, error } = await supabase
         .from('users')
         .select('*')
         .eq('email', email)
-        .eq('is_active', true)
         .limit(1);
 
       if (error) {
@@ -83,6 +84,20 @@ class AuthService {
       const isValidPassword = await bcrypt.compare(password, user.password_hash);
       if (!isValidPassword) {
         return { success: false, error: 'Invalid password' };
+      }
+
+      // Check approval status after successful password validation
+      if (user.role !== 'ADMIN' && user.role !== 'BUYER') {
+        if (user.status === 'PENDING' || user.is_active === false) {
+          return { success: false, error: 'Your account is pending approval by admin.' };
+        }
+        if (user.status === 'REJECTED') {
+          return { success: false, error: 'Your account was rejected. Please contact support.' };
+        }
+      }
+
+      if (!user.is_active) {
+        return { success: false, error: 'Your account is inactive. Please contact support.' };
       }
 
       // Remove password_hash from user object
@@ -129,8 +144,7 @@ class AuthService {
           first_name: data.first_name || '',
           last_name: data.last_name || '',
           phone: data.phone || '',
-          role: data.role || 'BUYER',
-          is_active: true
+          role: data.role || 'BUYER'
         })
         .select()
         .single();

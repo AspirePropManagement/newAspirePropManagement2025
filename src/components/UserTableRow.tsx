@@ -7,6 +7,7 @@ interface UserTableRowProps {
   onEdit: (user: User) => void;
   onDelete: (userId: string) => void;
   onToggleStatus: (userId: string, isActive: boolean) => void;
+  onClick?: (user: User) => void;
 }
 
 export const UserTableRow: React.FC<UserTableRowProps> = ({
@@ -14,6 +15,7 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({
   onEdit,
   onDelete,
   onToggleStatus,
+  onClick,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -58,8 +60,21 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({
     });
   };
 
+  const handleRowClick = (e: React.MouseEvent) => {
+    // Don't trigger row click if clicking on action buttons
+    if ((e.target as HTMLElement).closest('button')) {
+      return;
+    }
+    if (onClick) {
+      onClick(user);
+    }
+  };
+
   return (
-    <tr className="border-b border-gray-200 hover:bg-gray-50">
+    <tr 
+      className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${onClick ? 'cursor-pointer' : ''}`}
+      onClick={handleRowClick}
+    >
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
           <div className="flex-shrink-0 h-10 w-10">

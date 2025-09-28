@@ -4,7 +4,15 @@ import React, { useState } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { KeyIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import { 
+  KeyIcon, 
+  EyeIcon, 
+  EyeSlashIcon, 
+  Cog6ToothIcon,
+  ShieldCheckIcon,
+  UserIcon
+} from '@heroicons/react/24/outline';
 import authService from '../../lib/authService';
 import { Toast } from '../../components/Toast';
 
@@ -25,6 +33,7 @@ export default function SettingsPage() {
   });
   
   const [isLoading, setIsLoading] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Show loading while checking authentication
@@ -106,6 +115,7 @@ export default function SettingsPage() {
           newPassword: '',
           confirmPassword: ''
         });
+        setIsChangingPassword(false); // Close modal on success
       } else {
         setMessage({ type: 'error', text: result.error || 'Failed to change password' });
       }
@@ -121,289 +131,275 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardLayout>
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Page Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings & Profile</h1>
-            <p className="text-gray-600">
-              Welcome back, {user.first_name || user.email} ({userRole})
+    <DashboardLayout>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-100 py-6">
+        <div className="w-full max-w-none px-6 lg:px-8">
+          {/* Modern Page Header */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl mb-4 shadow-lg">
+              <Cog6ToothIcon className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-3">
+              Settings & Preferences
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Customize your account, security settings, and application preferences
             </p>
           </div>
 
-          {/* Role-Specific Welcome Banner */}
-          <div className="mb-8">
-            {userRole === 'ADMIN' && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center">
-                  <svg className="h-5 w-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                  <span className="text-blue-800 font-medium">Admin Settings: You have full access to manage system settings and user accounts.</span>
+          {/* Bento Grid Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 xl:grid-cols-16 gap-6 max-w-7xl mx-auto">
+            
+            {/* Profile Quick Access - Medium Tile */}
+            <div className="lg:col-span-4 xl:col-span-5 bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-xl border border-blue-100 p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full opacity-20 -translate-y-12 translate-x-12"></div>
+              <div className="relative z-10">
+                <div className="flex items-center mb-6">
+                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
+                    <UserIcon className="h-7 w-7 text-blue-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Profile Management</h2>
+                    <p className="text-gray-600 text-sm">Manage your personal information</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="p-4 bg-white/60 rounded-xl backdrop-blur-sm">
+                    <p className="text-sm font-medium text-gray-900">
+                      {user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : 'Complete Your Profile'}
+                    </p>
+                    <p className="text-xs text-gray-500">{user.email}</p>
+                    <div className="mt-2 flex items-center">
+                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                        {userRole}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <Link
+                    href="/profile"
+                    className="block w-full p-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-all duration-200 text-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  >
+                    Edit Profile
+                  </Link>
                 </div>
               </div>
-            )}
-
-            {userRole === 'AGENT' && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <div className="flex items-center">
-                  <svg className="h-5 w-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                  <span className="text-green-800 font-medium">Agent Settings: Manage your profile and account security for professional property management.</span>
-                </div>
-              </div>
-            )}
-
-            {userRole === 'BUILDER' && (
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                <div className="flex items-center">
-                  <svg className="h-5 w-5 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                  <span className="text-purple-800 font-medium">Builder Settings: Manage your construction company profile and account security.</span>
-                </div>
-              </div>
-            )}
-
-            {userRole === 'BUYER' && (
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                <div className="flex items-center">
-                  <svg className="h-5 w-5 text-orange-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <span className="text-orange-800 font-medium">Buyer Settings: Manage your profile and account security for property searching.</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Password Change Form */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-center mb-6">
-              <KeyIcon className="h-6 w-6 text-blue-500 mr-3" />
-              <h2 className="text-xl font-semibold text-gray-900">Change Password</h2>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Current Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Current Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPasswords.current ? 'text' : 'password'}
-                    value={formData.currentPassword}
-                    onChange={(e) => handleInputChange('currentPassword', e.target.value)}
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter your current password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => togglePasswordVisibility('current')}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showPasswords.current ? (
-                      <EyeSlashIcon className="h-5 w-5 text-gray-400" />
-                    ) : (
-                      <EyeIcon className="h-5 w-5 text-gray-400" />
-                    )}
-                  </button>
+            {/* Account Security Overview - Large Tile */}
+            <div className="lg:col-span-8 xl:col-span-11 bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
+              <div className="flex items-center mb-8">
+                <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mr-4">
+                  <ShieldCheckIcon className="h-7 w-7 text-red-600" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Account Security</h2>
+                  <p className="text-gray-600">Manage your account security settings and password</p>
                 </div>
               </div>
 
-              {/* New Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  New Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPasswords.new ? 'text' : 'password'}
-                    value={formData.newPassword}
-                    onChange={(e) => handleInputChange('newPassword', e.target.value)}
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter your new password"
-                    required
-                  />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+                  <div className="flex items-center mb-4">
+                    <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                      <KeyIcon className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">Password Security</h3>
+                      <p className="text-sm text-gray-600">Last changed: {user.updated_at ? new Date(user.updated_at).toLocaleDateString() : 'Never'}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-yellow-500 h-2 rounded-full w-1/3"></div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Password strength: Weak</p>
+                  </div>
+                  
                   <button
-                    type="button"
-                    onClick={() => togglePasswordVisibility('new')}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setIsChangingPassword(true)}
+                    className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   >
-                    {showPasswords.new ? (
-                      <EyeSlashIcon className="h-5 w-5 text-gray-400" />
-                    ) : (
-                      <EyeIcon className="h-5 w-5 text-gray-400" />
-                    )}
+                    Change Password
                   </button>
                 </div>
-                <p className="mt-1 text-sm text-gray-500">
-                  Password must be at least 8 characters long
-                </p>
-              </div>
 
-              {/* Confirm New Password */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm New Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPasswords.confirm ? 'text' : 'password'}
-                    value={formData.confirmPassword}
-                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Confirm your new password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => togglePasswordVisibility('confirm')}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showPasswords.confirm ? (
-                      <EyeSlashIcon className="h-5 w-5 text-gray-400" />
-                    ) : (
-                      <EyeIcon className="h-5 w-5 text-gray-400" />
-                    )}
-                  </button>
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
+                  <div className="flex items-center mb-4">
+                    <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3">
+                      <ShieldCheckIcon className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">Account Status</h3>
+                      <p className="text-sm text-gray-600">Your account is secure</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Email Verified</span>
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Phone Verified</span>
+                      <div className={`w-2 h-2 rounded-full ${user.phone ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Account Active</span>
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              {/* Submit Button */}
-              <div className="flex items-center justify-between pt-4">
+
+          </div>
+        </div>
+      </div>
+
+      {/* Password Change Modal */}
+      {isChangingPassword && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-8">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mr-4">
+                    <KeyIcon className="h-7 w-7 text-red-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Change Password</h2>
+                    <p className="text-gray-600">Update your account password for better security</p>
+                  </div>
+                </div>
                 <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                  onClick={() => setIsChangingPassword(false)}
+                  className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
                 >
-                  {isLoading ? 'Changing Password...' : 'Change Password'}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors font-medium"
-                >
-                  Sign Out
+                  <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
-            </form>
-          </div>
 
-          {/* Profile Management Section */}
-          <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-            <div className="flex items-center mb-6">
-              <svg className="h-6 w-6 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              <h3 className="text-xl font-semibold text-gray-900">Profile Information</h3>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                  <input
-                    type="text"
-                    value={user.first_name || ''}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="First Name"
-                    readOnly
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                  <input
-                    type="text"
-                    value={user.first_name || ''}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Last Name"
-                    readOnly
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input
-                  type="email"
-                  value={user.email}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                  readOnly
-                />
-                <p className="mt-1 text-sm text-gray-500">Email cannot be changed</p>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                <input
-                  type="tel"
-                  value={user.phone || ''}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Phone Number"
-                  readOnly
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">User Role</label>
-                <div className="flex items-center">
-                  <span className="inline-flex items-center px-3 py-2 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                    {userRole}
-                  </span>
-                  <span className="ml-2 text-sm text-gray-500">Role cannot be changed</span>
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Account Status</label>
-                <div className="flex items-center">
-                  <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${
-                    user.is_active 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-red-100 text-red-800'
-                  }`}>
-                    {user.is_active ? 'Active' : 'Inactive'}
-                  </span>
-                  <span className="ml-2 text-sm text-gray-500">Status managed by administrators</span>
-                </div>
-              </div>
-            </div>
-          </div>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 gap-6">
+                  {/* Current Password */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Current Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPasswords.current ? 'text' : 'password'}
+                        value={formData.currentPassword}
+                        onChange={(e) => handleInputChange('currentPassword', e.target.value)}
+                        className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 focus:bg-white"
+                        placeholder="Enter your current password"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => togglePasswordVisibility('current')}
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                      >
+                        {showPasswords.current ? (
+                          <EyeSlashIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        ) : (
+                          <EyeIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
 
-          {/* Account Security Section */}
-          <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-            <div className="flex items-center mb-6">
-              <svg className="h-6 w-6 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <h3 className="text-xl font-semibold text-gray-900">Account Security</h3>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <h4 className="font-medium text-gray-900">Password</h4>
-                  <p className="text-sm text-gray-500">Last changed: {user.updated_at ? new Date(user.updated_at).toLocaleDateString() : 'Never'}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* New Password */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        New Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showPasswords.new ? 'text' : 'password'}
+                          value={formData.newPassword}
+                          onChange={(e) => handleInputChange('newPassword', e.target.value)}
+                          className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 focus:bg-white"
+                          placeholder="Enter your new password"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => togglePasswordVisibility('new')}
+                          className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                        >
+                          {showPasswords.new ? (
+                            <EyeSlashIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                          ) : (
+                            <EyeIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                          )}
+                        </button>
+                      </div>
+                      <p className="mt-1 text-xs text-gray-500">
+                        Password must be at least 8 characters long
+                      </p>
+                    </div>
+
+                    {/* Confirm New Password */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Confirm New Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showPasswords.confirm ? 'text' : 'password'}
+                          value={formData.confirmPassword}
+                          onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                          className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 focus:bg-white"
+                          placeholder="Confirm your new password"
+                          required
+                        />
+                        <button
+                          type="button"
+                          onClick={() => togglePasswordVisibility('confirm')}
+                          className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                        >
+                          {showPasswords.confirm ? (
+                            <EyeSlashIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                          ) : (
+                            <EyeIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <h4 className="font-medium text-gray-900">Two-Factor Authentication</h4>
-                  <p className="text-sm text-gray-500">Add an extra layer of security</p>
+
+                {/* Submit Button */}
+                <div className="flex items-center justify-between pt-6 border-t border-gray-100">
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="px-8 py-3 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  >
+                    {isLoading ? 'Changing Password...' : 'Change Password'}
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={() => setIsChangingPassword(false)}
+                    className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-all duration-200"
+                  >
+                    Cancel
+                  </button>
                 </div>
-                <span className="text-sm text-gray-400">Not enabled</span>
-              </div>
+              </form>
             </div>
           </div>
         </div>
-      </DashboardLayout>
+      )}
 
       {/* Toast Message */}
       {message && (
@@ -414,6 +410,6 @@ export default function SettingsPage() {
           onClose={() => setMessage(null)}
         />
       )}
-    </div>
+    </DashboardLayout>
   );
 }

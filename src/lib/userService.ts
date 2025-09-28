@@ -122,3 +122,65 @@ export const toggleUserStatus = async (id: string, isActive: boolean): Promise<U
 
   return data;
 };
+
+/**
+ * Fetches pending users by role for approval
+ */
+export const getPendingUsersByRole = async (role: string): Promise<User[]> => {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('role', role)
+    .eq('status', 'PENDING')
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    throw new Error(`Error fetching pending ${role}s: ${error.message}`);
+  }
+
+  return data || [];
+};
+
+/**
+ * Approves a user (sets status to APPROVED)
+ */
+export const approveUser = async (id: string): Promise<User> => {
+  const { data, error } = await supabase
+    .from('users')
+    .update({ 
+      status: 'APPROVED', 
+      status_reason: null,
+      updated_at: new Date().toISOString() 
+    })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Error approving user: ${error.message}`);
+  }
+
+  return data;
+};
+
+/**
+ * Rejects a user (sets status to REJECTED)
+ */
+export const rejectUser = async (id: string, reason?: string): Promise<User> => {
+  const { data, error } = await supabase
+    .from('users')
+    .update({ 
+      status: 'REJECTED', 
+      status_reason: reason || null,
+      updated_at: new Date().toISOString() 
+    })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Error rejecting user: ${error.message}`);
+  }
+
+  return data;
+};

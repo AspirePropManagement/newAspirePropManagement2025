@@ -25,6 +25,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
   const [isFavorite, setIsFavorite] = React.useState(false);
   const [imageIndex, setImageIndex] = React.useState(0);
   const [imageError, setImageError] = React.useState(false);
+  const dotsContainerRef = React.useRef<HTMLDivElement>(null);
 
   // Check if property is in favorites on component mount
   React.useEffect(() => {
@@ -33,6 +34,36 @@ export function PropertyCard({ property }: PropertyCardProps) {
     const isInFavorites = favoriteIds.includes(property.id);
     setIsFavorite(isInFavorites);
   }, [property.id]);
+
+  // Auto-scroll to active dot when image index changes
+  React.useEffect(() => {
+    if (dotsContainerRef.current && getPropertyImages().length > 1) {
+      const container = dotsContainerRef.current;
+      const activeDot = container.children[imageIndex] as HTMLElement;
+      
+      if (activeDot) {
+        const containerWidth = container.offsetWidth;
+        const dotLeft = activeDot.offsetLeft;
+        const dotWidth = activeDot.offsetWidth;
+        const scrollLeft = container.scrollLeft;
+        
+        // Check if dot is outside visible area
+        if (dotLeft < scrollLeft) {
+          // Dot is to the left of visible area
+          container.scrollTo({
+            left: dotLeft - 20, // Add some padding
+            behavior: 'smooth'
+          });
+        } else if (dotLeft + dotWidth > scrollLeft + containerWidth) {
+          // Dot is to the right of visible area
+          container.scrollTo({
+            left: dotLeft + dotWidth - containerWidth + 20, // Add some padding
+            behavior: 'smooth'
+          });
+        }
+      }
+    }
+  }, [imageIndex]);
 
   // Handle favorite toggle
   const handleFavoriteToggle = () => {
@@ -161,32 +192,35 @@ export function PropertyCard({ property }: PropertyCardProps) {
   const images = getPropertyImages();
 
   return (
-    <Link href={`/properties/${property.type}/${property.id}`} className="block">
-      <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer">
+    <div className="group bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer relative">
+      {/* Gradient overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
+      
       {/* Property Image */}
-      <div className="relative h-48 bg-gray-200">
+      <div className="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
         {images.length > 0 && !imageError ? (
           <Image
             src={getImageSrc(images[imageIndex])}
             alt={getPropertyTitle()}
             fill
-            className="object-cover"
+            className="object-cover group-hover:scale-110 transition-transform duration-700"
             onError={() => {
               setImageError(true);
             }}
-            // For base64 images, we don't need to configure domains
             unoptimized={isBase64Image(images[imageIndex])}
           />
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200">
-            <HomeIcon className="w-12 h-12 text-gray-400 mb-2" />
-            <span className="text-sm text-gray-500">No Image Available</span>
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+            <div className="w-20 h-20 bg-gradient-to-br from-gray-300 to-gray-400 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
+              <HomeIcon className="w-10 h-10 text-white" />
+            </div>
+            <span className="text-gray-500 font-medium">No Image Available</span>
           </div>
         )}
 
         {/* Image Navigation */}
         {images.length > 1 && (
-          <div className="absolute inset-0 flex items-center justify-between p-2 opacity-0 hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -194,10 +228,12 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 setImageError(false);
                 setImageIndex(prev => prev === 0 ? images.length - 1 : prev - 1);
               }}
-              className="w-8 h-8 bg-black bg-opacity-60 text-white rounded-full flex items-center justify-center hover:bg-opacity-80 transition-all duration-200 shadow-lg"
+              className="w-10 h-10 bg-white/90 backdrop-blur-sm text-gray-800 rounded-full flex items-center justify-center hover:bg-white hover:scale-110 transition-all duration-200 shadow-xl"
               title="Previous image"
             >
-              ‹
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
             <button
               onClick={(e) => {
@@ -206,28 +242,23 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 setImageError(false);
                 setImageIndex(prev => (prev + 1) % images.length);
               }}
-              className="w-8 h-8 bg-black bg-opacity-60 text-white rounded-full flex items-center justify-center hover:bg-opacity-80 transition-all duration-200 shadow-lg"
+              className="w-10 h-10 bg-white/90 backdrop-blur-sm text-gray-800 rounded-full flex items-center justify-center hover:bg-white hover:scale-110 transition-all duration-200 shadow-xl"
               title="Next image"
             >
-              ›
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         )}
 
         {/* Property Type Badge */}
-        <div className="absolute top-3 left-3">
-          <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+        <div className="absolute top-4 left-4">
+          <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm px-4 py-2 rounded-full font-semibold shadow-lg group-hover:scale-105 transition-transform duration-300">
             {getPropertyTypeLabel()}
           </span>
         </div>
 
-        {/* Verified Badge */}
-        <div className="absolute bottom-3 left-3">
-          <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium flex items-center shadow">
-            <CheckBadgeIcon className="w-3.5 h-3.5 mr-1 text-white" />
-            100% Verified
-          </span>
-        </div>
 
         {/* Favorite Button */}
         <button
@@ -236,133 +267,115 @@ export function PropertyCard({ property }: PropertyCardProps) {
             e.stopPropagation();
             handleFavoriteToggle();
           }}
-          className="absolute top-3 right-3 w-8 h-8 bg-white bg-opacity-90 rounded-full flex items-center justify-center hover:bg-opacity-100 transition-all z-10"
+          className="absolute top-4 right-4 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white hover:scale-110 transition-all duration-300 shadow-lg z-20"
           title={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
           {isFavorite ? (
-            <HeartIconSolid className="w-5 h-5 text-red-500" />
+            <HeartIconSolid className="w-6 h-6 text-red-500" />
           ) : (
-            <HeartIcon className="w-5 h-5 text-gray-600" />
+            <HeartIcon className="w-6 h-6 text-gray-600 hover:text-red-500 transition-colors" />
           )}
         </button>
 
         {/* Image Dots */}
         {images.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1 bg-black bg-opacity-30 rounded-full px-2 py-1">
-            {images.map((_: any, index: number) => (
-              <button
-                key={index}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setImageError(false);
-                  setImageIndex(index);
-                }}
-                className={`w-2 h-2 rounded-full transition-all duration-200 hover:scale-125 ${
-                  index === imageIndex 
-                    ? 'bg-white shadow-md' 
-                    : 'bg-white bg-opacity-60 hover:bg-opacity-80'
-                }`}
-                title={`View image ${index + 1}`}
-              />
-            ))}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/30 backdrop-blur-sm rounded-full px-3 py-2 max-w-[calc(100%-2rem)]">
+            <div 
+              ref={dotsContainerRef}
+              className="flex space-x-2 overflow-x-auto scrollbar-hide max-w-full"
+            >
+              {images.map((_: any, index: number) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setImageError(false);
+                    setImageIndex(index);
+                  }}
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 hover:scale-125 flex-shrink-0 ${
+                    index === imageIndex 
+                      ? 'bg-white shadow-md scale-110' 
+                      : 'bg-white/60 hover:bg-white/80'
+                  }`}
+                  title={`View image ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
 
       {/* Property Details */}
-      <div className="p-4">
+      <div className="p-6 relative z-10">
         {/* Property Title */}
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
-          {getPropertyTitle()}
-        </h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-xl font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors duration-300 flex-1 mr-3">
+            {getPropertyTitle()}
+          </h3>
+          
+          {/* Verified Badge */}
+          <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center shadow-md group-hover:scale-105 transition-transform duration-300 flex-shrink-0">
+            <CheckBadgeIcon className="w-3.5 h-3.5 mr-1 text-white" />
+            100% Verified
+          </div>
+        </div>
 
         {/* Location */}
-        <div className="flex items-center text-gray-600 text-sm mb-2">
-          <MapPinIcon className="w-4 h-4 mr-1" />
-          <span className="line-clamp-1">{getPropertyLocation()}</span>
+        <div className="flex items-center text-gray-600 text-sm mb-4 group-hover:text-gray-800 transition-colors duration-300">
+          <div className="w-5 h-5 bg-blue-100 rounded-lg flex items-center justify-center mr-2 group-hover:bg-blue-200 transition-colors duration-300">
+            <MapPinIcon className="w-3 h-3 text-blue-600" />
+          </div>
+          <span className="line-clamp-1 font-medium">{getPropertyLocation()}</span>
         </div>
 
         {/* Configuration */}
-        <div className="flex items-center text-gray-600 text-sm mb-3">
-          <HomeIcon className="w-4 h-4 mr-1" />
-          <span>{getBHKConfig()}</span>
+        <div className="flex items-center text-gray-600 text-sm mb-4 group-hover:text-gray-800 transition-colors duration-300">
+          <div className="w-5 h-5 bg-purple-100 rounded-lg flex items-center justify-center mr-2 group-hover:bg-purple-200 transition-colors duration-300">
+            <HomeIcon className="w-3 h-3 text-purple-600" />
+          </div>
+          <span className="font-medium">{getBHKConfig()}</span>
           {property.carpet_area && (
-            <span className="ml-2">• {property.carpet_area} sq.ft</span>
+            <span className="ml-2 px-2 py-1 bg-gray-100 rounded-lg text-xs font-medium">
+              {property.carpet_area} sq.ft
+            </span>
           )}
         </div>
 
         {/* Price */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center">
-            <CurrencyRupeeIcon className="w-5 h-5 text-orange-500 mr-1" />
-            <span className="text-xl font-bold text-gray-900">
+            <div className="w-6 h-6 bg-orange-100 rounded-lg flex items-center justify-center mr-2 group-hover:bg-orange-200 transition-colors duration-300">
+              <CurrencyRupeeIcon className="w-4 h-4 text-orange-600" />
+            </div>
+            <span className="text-2xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors duration-300">
               {getPropertyPrice()}
             </span>
           </div>
           {getPricePerSqFt() && (
-            <span className="text-sm text-gray-600">
-              {getPricePerSqFt()}
-            </span>
+            <div className="text-right">
+              <span className="text-sm font-semibold text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                {getPricePerSqFt()}
+              </span>
+            </div>
           )}
         </div>
 
-        {/* Additional Details */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {property.furnishing_type && (
-            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-              {property.furnishing_type.replace('_', ' ')}
-            </span>
-          )}
-          {property.parking_type && (
-            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-              {property.parking_type.replace('_', ' ')}
-            </span>
-          )}
-          {property.type === 'resale' && property.rera_id && (
-            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-              RERA: {property.rera_id}
-            </span>
-          )}
-          {property.type === 'resale' && property.flats_per_floor && (
-            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-              {property.flats_per_floor} flats/floor
-            </span>
-          )}
-          {property.type === 'resale' && property.society_area_size && (
-            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-              Area: {property.society_area_size}
-            </span>
-          )}
-          {property.type === 'resale' && typeof property.loan_on_property === 'boolean' && (
-            <span className={`text-xs px-2 py-1 rounded ${property.loan_on_property ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
-              {property.loan_on_property ? `Loan: Yes${property.loan_amount ? ` (₹${Number(property.loan_amount).toLocaleString()})` : ''}${property.bank_name ? ` - ${property.bank_name}` : ''}` : 'Loan: No'}
-            </span>
-          )}
-          {property.type === 'resale' && property.listed_by && (
-            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded capitalize">
-              {property.listed_by}
-            </span>
-          )}
-          {property.type === 'rental' && property.immediate_possession && (
-            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-              Immediate Possession
-            </span>
-          )}
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex space-x-2">
-          <Link 
-            href={`/properties/${property.type}/${property.id}`}
-            onClick={(e) => e.stopPropagation()}
-            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-center py-2 px-4 rounded-lg font-medium transition-colors"
-          >
-            View Details
-          </Link>
-        </div>
+        {/* Action Button */}
+        <Link 
+          href={`/properties/${property.type}/${property.id}`}
+          onClick={(e) => e.stopPropagation()}
+          className="block w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-center py-4 px-6 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group-hover:scale-105"
+        >
+          <div className="flex items-center justify-center">
+            <span>View Details</span>
+            <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </div>
+        </Link>
       </div>
-      </div>
-    </Link>
+    </div>
   );
 }

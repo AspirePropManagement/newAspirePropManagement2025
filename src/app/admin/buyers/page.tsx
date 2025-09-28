@@ -5,6 +5,7 @@ import { useUserManagement } from '@/hooks/useUserManagement';
 import { UserTableRow } from '@/components/UserTableRow';
 import { UserTableHeader } from '@/components/UserTableHeader';
 import { UserEditModal } from '@/components/UserEditModal';
+import { UserDetailsModal } from '@/components/UserDetailsModal';
 import { InlinePreloader } from '@/components/Preloader';
 import { Pagination } from '@/components/Pagination';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -18,6 +19,8 @@ export default function AdminBuyersPage() {
   const { users, loading, error, updateUser, deleteUser, toggleUserStatus } = useUserManagement('BUYER');
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -93,6 +96,11 @@ export default function AdminBuyersPage() {
   const closeEditModal = () => {
     setIsEditModalOpen(false);
     setEditingUser(null);
+  };
+
+  const handleUserClick = (user: User) => {
+    setSelectedUser(user);
+    setIsDetailsModalOpen(true);
   };
 
   const handleSearch = (query: string) => {
@@ -203,6 +211,7 @@ export default function AdminBuyersPage() {
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onToggleStatus={handleToggleStatus}
+                    onClick={handleUserClick}
                   />
                 ))}
               </tbody>
@@ -226,6 +235,16 @@ export default function AdminBuyersPage() {
         isOpen={isEditModalOpen}
         onClose={closeEditModal}
         onSave={handleSaveEdit}
+      />
+
+      {/* User Details Modal */}
+      <UserDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedUser(null);
+        }}
+        user={selectedUser}
       />
     </DashboardLayout>
   );

@@ -65,7 +65,12 @@ export default function AuthPage() {
             router.push('/dashboard');
           }, 1000);
         } else {
-          setError(result.error || 'Login failed');
+          // Show friendly message for pending approval
+          if (result.error && result.error.toLowerCase().includes('pending')) {
+            setError('Your account is waiting for admin approval.');
+          } else {
+            setError(result.error || 'Login failed');
+          }
         }
       } else {
         // Sign up

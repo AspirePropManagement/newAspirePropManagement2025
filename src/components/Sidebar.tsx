@@ -18,7 +18,8 @@ import {
   ListBulletIcon,
   PhotoIcon,
   DocumentTextIcon,
-  PlusIcon
+  PlusIcon,
+  UserIcon
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -130,6 +131,11 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
       icon: PhotoIcon,
     },
     {
+      name: 'Ads Banners',
+      href: '/admin/ads-banners',
+      icon: PhotoIcon,
+    },
+    {
       name: 'Services',
       href: '/admin/services',
       icon: DocumentTextIcon,
@@ -144,7 +150,12 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
   // User account menu items
   const userMenuItems = [
     {
-      name: 'Settings & Profile',
+      name: 'Profile',
+      href: '/profile',
+      icon: UserIcon,
+    },
+    {
+      name: 'Settings',
       href: '/settings',
       icon: Cog6ToothIcon,
     },
