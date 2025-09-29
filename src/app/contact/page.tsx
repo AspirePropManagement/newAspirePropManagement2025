@@ -337,12 +337,11 @@ export default function ContactPage() {
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg bg-white"
                       >
                         <option value="">Select Budget Range</option>
-                        <option value="under-50-lakhs">Under ₹50 Lakhs</option>
-                        <option value="50-lakhs-1-crore">₹50 Lakhs - ₹1 Crore</option>
+                        <option value="under-40-lakhs">Under ₹40 Lakhs</option>
+                        <option value="40-70-lakhs">₹40 Lakhs - ₹70 Lakhs</option>
+                        <option value="70-lakhs-1-crore">₹70 Lakhs - ₹1 Crore</option>
                         <option value="1-2-crore">₹1 Crore - ₹2 Crore</option>
-                        <option value="2-5-crore">₹2 Crore - ₹5 Crore</option>
-                        <option value="5-10-crore">₹5 Crore - ₹10 Crore</option>
-                        <option value="above-10-crore">Above ₹10 Crore</option>
+                        <option value="above-2-crore">Above ₹2 Crore</option>
                         <option value="flexible">Flexible</option>
                       </select>
                     </div>

@@ -57,8 +57,7 @@ export default function FilterModal({ isOpen, onClose, selectedFilters, onFilter
       bhkType: [],
       listedBy: [],
       ageOfProperty: [],
-      amenities: [],
-      propertiesWithPhotos: false
+      amenities: []
     };
     setLocalFilters(clearedFilters);
     onFilterChange(clearedFilters);
@@ -313,24 +312,6 @@ export default function FilterModal({ isOpen, onClose, selectedFilters, onFilter
             </div>
           </div>
 
-          {/* Properties with Photos */}
-          <div>
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Properties with Photos</h3>
-              <button
-                onClick={() => handleToggleChange('propertiesWithPhotos')}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  localFilters.propertiesWithPhotos ? 'bg-orange-500' : 'bg-gray-200'
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    localFilters.propertiesWithPhotos ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Footer */}

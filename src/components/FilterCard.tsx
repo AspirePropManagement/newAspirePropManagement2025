@@ -120,12 +120,11 @@ export const FilterCard: React.FC = () => {
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select Budget</option>
-          <option value="under-50">Under 50 Lacs</option>
-          <option value="50-75">50 Lacs - 75 Lacs</option>
-          <option value="75-1cr">75 Lacs - 1 Crore</option>
-          <option value="1-2cr">1 Crore - 2 Crore</option>
-          <option value="2-5cr">2 Crore - 5 Crore</option>
-          <option value="above-5cr">Above 5 Crore</option>
+          <option value="under-40">Under 40 Lacs</option>
+          <option value="40-70">40 Lacs - 70 Lacs</option>
+          <option value="70-100">70 Lacs - 1 Crore</option>
+          <option value="100-200">1 Crore - 2 Crore</option>
+          <option value="above-200">Above 2 Crore</option>
         </select>
       </div>
     </>
@@ -254,11 +253,11 @@ export const FilterCard: React.FC = () => {
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select Price Range</option>
-          <option value="under-50lac">Under ₹50 Lacs</option>
-          <option value="50lac-1cr">₹50 Lacs - ₹1 Crore</option>
-          <option value="1cr-2cr">₹1 Crore - ₹2 Crore</option>
-          <option value="2cr-5cr">₹2 Crore - ₹5 Crore</option>
-          <option value="above-5cr">Above ₹5 Crore</option>
+          <option value="under-40">Under ₹40 Lacs</option>
+          <option value="40-70">₹40 Lacs - ₹70 Lacs</option>
+          <option value="70-100">₹70 Lacs - ₹1 Crore</option>
+          <option value="100-200">₹1 Crore - ₹2 Crore</option>
+          <option value="above-200">Above ₹2 Crore</option>
         </select>
       </div>
     </>

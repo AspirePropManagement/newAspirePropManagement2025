@@ -12,8 +12,7 @@ import {
   HomeIcon,
   BuildingOfficeIcon,
   UserIcon,
-  ClockIcon,
-  PhotoIcon
+  ClockIcon
 } from '@heroicons/react/24/outline';
 
 /**
@@ -34,8 +33,7 @@ function PropertiesListingContent() {
     bhkType: [] as string[],
     listedBy: [] as string[],
     ageOfProperty: [] as string[],
-    amenities: [] as string[],
-    propertiesWithPhotos: false
+    amenities: [] as string[]
   });
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('relevance');
@@ -56,6 +54,37 @@ function PropertiesListingContent() {
     return trimmed;
   };
 
+  /**
+   * Get budget ranges based on selected property types
+   * Different ranges for rental, resale, and new projects
+   */
+  const getBudgetRanges = () => {
+    const hasRental = selectedFilters.propertyType.includes('rental');
+    const hasResale = selectedFilters.propertyType.includes('resale');
+    const hasNewProject = selectedFilters.propertyType.includes('new_project');
+
+    // If only rental is selected, show rental ranges
+    if (hasRental && !hasResale && !hasNewProject) {
+      return [
+        { value: 'under-15k', label: 'Under ₹15,000' },
+        { value: '15k-25k', label: '₹15,000 - ₹25,000' },
+        { value: '25k-40k', label: '₹25,000 - ₹40,000' },
+        { value: '40k-60k', label: '₹40,000 - ₹60,000' },
+        { value: '60k-1lac', label: '₹60,000 - ₹1,00,000' },
+        { value: 'above-1lac', label: 'Above ₹1,00,000' }
+      ];
+    }
+
+    // For resale and new projects, use purchase price ranges
+    return [
+      { value: 'under-40', label: 'Under 40 lacs' },
+      { value: '40-70', label: '40 lacs - 70 lacs' },
+      { value: '70-100', label: '70 lacs - 1 Crore' },
+      { value: '100-200', label: '1 Crore - 2 Crore' },
+      { value: 'above-200', label: 'Above 2 Crore' }
+    ];
+  };
+
   // Initialize filters from URL parameters
   useEffect(() => {
     const urlFilters = {
@@ -66,8 +95,7 @@ function PropertiesListingContent() {
       bhkType: [] as string[],
       listedBy: [] as string[],
       ageOfProperty: [] as string[],
-      amenities: [] as string[],
-      propertiesWithPhotos: false
+      amenities: [] as string[]
     };
 
     // Get property type from URL
@@ -331,8 +359,7 @@ function PropertiesListingContent() {
       bhkType: [],
       listedBy: [],
       ageOfProperty: [],
-      amenities: [],
-      propertiesWithPhotos: false
+      amenities: []
     });
     setCurrentPage(1);
   };
@@ -347,7 +374,6 @@ function PropertiesListingContent() {
     if (selectedFilters.listedBy.length > 0) count++;
     if (selectedFilters.ageOfProperty.length > 0) count++;
     if (selectedFilters.amenities.length > 0) count++;
-    if (selectedFilters.propertiesWithPhotos) count++;
     return count;
   };
 
@@ -466,14 +492,7 @@ function PropertiesListingContent() {
                 <h4 className="font-bold text-gray-900 text-base">Budget Range</h4>
               </div>
               <div className="space-y-3">
-                {[
-                  { value: 'under-40', label: 'Under 40 lacs' },
-                  { value: '40-70', label: '40 lacs - 70 lacs' },
-                  { value: '70-100', label: '70 lacs - 1 Crore' },
-                  { value: '100-200', label: '1 Crore - 2 Crore' },
-                  { value: 'above-200', label: 'Above 2 Crore' },
-                  { value: 'on-request', label: 'On request/Coming Soon' }
-                ].map((option) => (
+                {getBudgetRanges().map((option) => (
                   <label key={option.value} className="group/item flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-white/60 transition-all duration-200">
                     <input
                       type="checkbox"
@@ -615,23 +634,6 @@ function PropertiesListingContent() {
               </div>
             </div>
 
-            {/* Properties with Photos */}
-            <div className="group p-4 bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl border border-pink-100 hover:shadow-lg transition-all duration-300">
-              <label className="group/item flex items-center space-x-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={selectedFilters.propertiesWithPhotos}
-                  onChange={(e) => handleFilterChange('propertiesWithPhotos', e.target.checked)}
-                  className="w-4 h-4 text-pink-500 border-pink-300 rounded focus:ring-pink-500 focus:ring-2 transition-all duration-200"
-                />
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <PhotoIcon className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm text-gray-700 font-bold group-hover/item:text-gray-900 transition-colors duration-200">Properties with Photos</span>
-                </div>
-              </label>
-            </div>
           </div>
         </div>
 
