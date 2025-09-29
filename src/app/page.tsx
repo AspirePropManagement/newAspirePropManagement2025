@@ -11,12 +11,21 @@ import { useNewProjects } from '@/hooks/useNewProjects';
 import { RentalPropertiesCarousel } from '@/components/RentalPropertiesCarousel';
 import { useRentalProperties } from '@/hooks/useRentalProperties';
 import { EnquiryForm } from '@/components/EnquiryForm';
+import { AdsBannerSection } from '@/components/AdsBannerSection';
+import { PropertyTypesSection } from '@/components/PropertyTypesSection';
+import { ResalePropertiesCarousel } from '@/components/ResalePropertiesCarousel';
+import { useResaleProperties } from '@/hooks/useResaleProperties';
+import { ServicesCarousel } from '@/components/ServicesCarousel';
+import { useServices } from '@/hooks/useServices';
+import { TopBuildersCarousel } from '@/components/TopBuildersCarousel';
 
 
 export default function HomePage() {
   const { loading } = useAuth();
   const { projects: newProjects, loading: projectsLoading } = useNewProjects();
   const { properties: rentalProperties, loading: rentalLoading } = useRentalProperties();
+  const { properties: resaleProperties, loading: resaleLoading } = useResaleProperties(12);
+  const { services, loading: servicesLoading } = useServices(8);
 
   // Show loading state
   if (loading) {
@@ -34,7 +43,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-white">
       {/* Hero Section with Filter Card */}
       <div className="relative">
         <HeroCarousel />
@@ -43,10 +52,35 @@ export default function HomePage() {
       </div>
 
       {/* Blank Spacer Section - Prevents content from being cut by filter card */}
-      <div className="h-32 md:h-36 lg:h-40 bg-gradient-to-br from-blue-50 to-indigo-100"></div>
+      <div className="h-32 md:h-36 lg:h-40 bg-white"></div>
+
+      {/* New Projects Section */}
+      <NewProjectsCarousel projects={newProjects} />
+
+      {/* Ads Banner Section */}
+      <AdsBannerSection location="home_middle" />
+
+      {/* Property Types Section */}
+      <PropertyTypesSection />
+
+      {/* Resale Properties Section */}
+      <ResalePropertiesCarousel properties={resaleProperties} />
+
+      {/* Services Section */}
+      <ServicesCarousel services={services} />
+
+      {/* Rental Properties Section */}
+      <RentalPropertiesCarousel properties={rentalProperties} />
 
       {/* Tools Section */}
       <div className="container mx-auto px-4 py-16 relative z-0">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Real Estate Tools</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Use our comprehensive tools to make informed real estate decisions and calculate your investment potential.
+          </p>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* EMI Calculator */}
           <Link href="/tools/emi-calculator" className="text-center space-y-4 group cursor-pointer">
@@ -94,60 +128,13 @@ export default function HomePage() {
           </Link>
         </div>
 
-        {/* Services Section */}
-        <div className="mt-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Real Estate Services</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Comprehensive real estate solutions to help you make informed decisions and maximize your investment potential.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Property Management Service */}
-            <Link href="/services" className="text-center space-y-4 group cursor-pointer">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-blue-200 transition-colors duration-200">
-                <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">Property Management</h3>
-              <p className="text-gray-600">Comprehensive property management services to maximize your investment returns and ensure hassle-free ownership.</p>
-            </Link>
-            
-            {/* Investment Advisory Service */}
-            <Link href="/services" className="text-center space-y-4 group cursor-pointer">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-green-200 transition-colors duration-200">
-                <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">Investment Advisory</h3>
-              <p className="text-gray-600">Expert guidance to help you make informed investment decisions and build a profitable real estate portfolio.</p>
-            </Link>
-            
-            {/* Property Valuation Service */}
-            <Link href="/services" className="text-center space-y-4 group cursor-pointer">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-purple-200 transition-colors duration-200">
-                <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">Property Valuation</h3>
-              <p className="text-gray-600">Professional property valuation services using advanced analytics and market expertise for accurate assessments.</p>
-            </Link>
-          </div>
-        </div>
       </div>
 
-      {/* New Projects Section */}
-      <NewProjectsCarousel projects={newProjects} />
-
-      {/* Rental Properties Section */}
-      <RentalPropertiesCarousel properties={rentalProperties} />
+      {/* Top Builders Section */}
+      <TopBuildersCarousel />
 
       {/* Enquiry Form Section */}
-      <div className="py-16 bg-gray-50">
+      <div className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <EnquiryForm />
         </div>

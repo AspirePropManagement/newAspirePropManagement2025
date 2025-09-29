@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { 
   MapPinIcon, 
   PhoneIcon, 
@@ -10,7 +11,8 @@ import {
   UserGroupIcon,
   BuildingOfficeIcon,
   ChartBarIcon,
-  HeartIcon
+  HeartIcon,
+  QrCodeIcon
 } from '@heroicons/react/24/outline'
 import { footerConfig } from '@/config/footerConfig'
 import { useAuth } from '@/hooks/useAuth'
@@ -26,7 +28,7 @@ export function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className={`grid grid-cols-1 md:grid-cols-2 ${isAuthenticated ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-8 text-center md:text-left`}>
+        <div className={`grid grid-cols-1 md:grid-cols-2 ${isAuthenticated ? 'lg:grid-cols-5' : 'lg:grid-cols-4'} gap-8 text-center md:text-left`}>
           {/* Company Info */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-center md:justify-start space-x-3 mb-6">
@@ -158,6 +160,93 @@ export function Footer() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* QR Code Section */}
+          <div className="flex flex-col items-center">
+            <h4 className="text-lg font-semibold mb-6 text-orange-500 flex items-center justify-center">
+              <QrCodeIcon className="w-5 h-5 mr-2" />
+              Scan & Connect
+            </h4>
+            <div className="bg-white p-3 rounded-lg shadow-lg">
+              <div className="w-28 h-28 bg-white rounded flex items-center justify-center">
+                {/* Realistic QR Code Pattern */}
+                <svg width="112" height="112" viewBox="0 0 112 112" className="w-full h-full">
+                  {/* Corner squares */}
+                  <rect x="0" y="0" width="28" height="28" fill="black"/>
+                  <rect x="4" y="4" width="20" height="20" fill="white"/>
+                  <rect x="8" y="8" width="12" height="12" fill="black"/>
+                  
+                  <rect x="84" y="0" width="28" height="28" fill="black"/>
+                  <rect x="88" y="4" width="20" height="20" fill="white"/>
+                  <rect x="92" y="8" width="12" height="12" fill="black"/>
+                  
+                  <rect x="0" y="84" width="28" height="28" fill="black"/>
+                  <rect x="4" y="88" width="20" height="20" fill="white"/>
+                  <rect x="8" y="92" width="12" height="12" fill="black"/>
+                  
+                  {/* Timing patterns */}
+                  <rect x="32" y="24" width="4" height="4" fill="black"/>
+                  <rect x="40" y="24" width="4" height="4" fill="black"/>
+                  <rect x="48" y="24" width="4" height="4" fill="black"/>
+                  <rect x="56" y="24" width="4" height="4" fill="black"/>
+                  <rect x="64" y="24" width="4" height="4" fill="black"/>
+                  <rect x="72" y="24" width="4" height="4" fill="black"/>
+                  <rect x="80" y="24" width="4" height="4" fill="black"/>
+                  
+                  <rect x="24" y="32" width="4" height="4" fill="black"/>
+                  <rect x="24" y="40" width="4" height="4" fill="black"/>
+                  <rect x="24" y="48" width="4" height="4" fill="black"/>
+                  <rect x="24" y="56" width="4" height="4" fill="black"/>
+                  <rect x="24" y="64" width="4" height="4" fill="black"/>
+                  <rect x="24" y="72" width="4" height="4" fill="black"/>
+                  <rect x="24" y="80" width="4" height="4" fill="black"/>
+                  
+                  {/* Data modules - random pattern */}
+                  <rect x="32" y="32" width="4" height="4" fill="black"/>
+                  <rect x="40" y="32" width="4" height="4" fill="black"/>
+                  <rect x="52" y="32" width="4" height="4" fill="black"/>
+                  <rect x="60" y="32" width="4" height="4" fill="black"/>
+                  <rect x="72" y="32" width="4" height="4" fill="black"/>
+                  
+                  <rect x="32" y="40" width="4" height="4" fill="black"/>
+                  <rect x="44" y="40" width="4" height="4" fill="black"/>
+                  <rect x="56" y="40" width="4" height="4" fill="black"/>
+                  <rect x="68" y="40" width="4" height="4" fill="black"/>
+                  
+                  <rect x="36" y="48" width="4" height="4" fill="black"/>
+                  <rect x="48" y="48" width="4" height="4" fill="black"/>
+                  <rect x="52" y="48" width="4" height="4" fill="black"/>
+                  <rect x="64" y="48" width="4" height="4" fill="black"/>
+                  <rect x="76" y="48" width="4" height="4" fill="black"/>
+                  
+                  <rect x="32" y="56" width="4" height="4" fill="black"/>
+                  <rect x="40" y="56" width="4" height="4" fill="black"/>
+                  <rect x="56" y="56" width="4" height="4" fill="black"/>
+                  <rect x="68" y="56" width="4" height="4" fill="black"/>
+                  <rect x="76" y="56" width="4" height="4" fill="black"/>
+                  
+                  <rect x="36" y="64" width="4" height="4" fill="black"/>
+                  <rect x="44" y="64" width="4" height="4" fill="black"/>
+                  <rect x="60" y="64" width="4" height="4" fill="black"/>
+                  <rect x="72" y="64" width="4" height="4" fill="black"/>
+                  
+                  <rect x="32" y="72" width="4" height="4" fill="black"/>
+                  <rect x="48" y="72" width="4" height="4" fill="black"/>
+                  <rect x="56" y="72" width="4" height="4" fill="black"/>
+                  <rect x="64" y="72" width="4" height="4" fill="black"/>
+                  <rect x="76" y="72" width="4" height="4" fill="black"/>
+                  
+                  <rect x="40" y="80" width="4" height="4" fill="black"/>
+                  <rect x="52" y="80" width="4" height="4" fill="black"/>
+                  <rect x="68" y="80" width="4" height="4" fill="black"/>
+                  <rect x="76" y="80" width="4" height="4" fill="black"/>
+                </svg>
+              </div>
+            </div>
+            <p className="text-gray-400 text-xs mt-3 text-center">
+              Scan to visit our website
+            </p>
           </div>
         </div>
 

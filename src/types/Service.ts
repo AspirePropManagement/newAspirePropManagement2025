@@ -1,41 +1,54 @@
-export interface ServiceItem {
+/**
+ * TypeScript types for Services functionality
+ */
+
+export interface ServiceImage {
+  id: string;
+  service_id: string;
+  image_path: string;
+  alt_text?: string;
+  created_at: string;
+}
+
+export interface Service {
   id: string;
   service_name: string;
   slug: string;
-  short_description?: string | null;
-  description?: string | null;
-  image_data?: string | null; // base64 data URL
-  image_path?: string | null;
-  image_alt?: string | null;
+  short_description?: string;
+  description?: string;
+  image_path?: string;
+  image_alt?: string;
   is_active: boolean;
   sort_order: number;
-  created_by?: string | null;
+  created_by?: string;
   created_at: string;
   updated_at: string;
+  deleted_at?: string;
+  image_data?: string;
+  service_images?: ServiceImage[];
 }
 
-export interface CreateServiceItem {
+export interface ServiceCreateData {
   service_name: string;
   slug: string;
-  short_description?: string | null;
-  description?: string | null;
-  image_data?: string | null; // base64 data URL
-  image_path?: string | null;
-  image_alt?: string | null;
+  short_description?: string;
+  description?: string;
+  image_path?: string;
+  image_alt?: string;
   is_active?: boolean;
   sort_order?: number;
+  created_by?: string;
+  image_data?: string;
 }
 
-export interface UpdateServiceItem {
+export interface ServiceUpdateData {
   service_name?: string;
   slug?: string;
-  short_description?: string | null;
-  description?: string | null;
-  image_data?: string | null; // base64 data URL
-  image_path?: string | null;
-  image_alt?: string | null;
+  short_description?: string;
+  description?: string;
+  image_path?: string;
+  image_alt?: string;
   is_active?: boolean;
   sort_order?: number;
+  image_data?: string;
 }
-
-

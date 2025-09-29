@@ -172,7 +172,7 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
   }
 
   return (
-    <div className="py-16 bg-gray-50">
+    <div className="py-16 bg-white">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -183,7 +183,7 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
         </div>
 
         {/* Carousel Container */}
-        <div className="relative">
+        <div className="relative mb-8">
           {/* Navigation Buttons */}
           {totalSlides > 1 && (
             <>
@@ -212,14 +212,14 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
             >
               {Array.from({ length: totalSlides }, (_, slideIndex) => (
                 <div key={slideIndex} className="w-full flex-shrink-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-2 pb-8">
                     {properties
                       .slice(slideIndex * 4, (slideIndex + 1) * 4)
                       .map((property) => (
                         <Link
                           key={property.id}
                           href={`/properties/rental/${property.id}`}
-                          className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100"
+                          className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-105 hover:-translate-y-2"
                         >
                           {/* Property Image */}
                           <div className="relative h-48 overflow-hidden">
@@ -266,53 +266,20 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
                               {property.bhk_type.replace('_', ' ').toUpperCase()} {property.property_type.replace('_', ' ').toUpperCase()}
                             </h3>
                             
-                            <p className="text-sm text-gray-600 mb-2 flex items-center">
+                            {/* Rent Amount */}
+                            <div className="mb-2">
+                              <span className="text-lg font-bold text-green-600">
+                                {formatRent(property.rent_amount)}/month
+                              </span>
+                            </div>
+                            
+                            <p className="text-sm text-gray-600 flex items-center">
                               <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                               </svg>
                               {property.location}
                             </p>
-
-                            <p className="text-sm text-gray-500 mb-3">
-                              by {property.owner_name}
-                            </p>
-
-                            {/* Rent Amount */}
-                            <div className="mb-3">
-                              <span className="text-xl font-bold text-green-600">
-                                {formatRent(property.rent_amount)}
-                              </span>
-                              {property.deposit_amount && (
-                                <span className="text-sm text-gray-500 ml-2">
-                                  (Deposit: ₹{(property.deposit_amount / 100000).toFixed(1)}L)
-                                </span>
-                              )}
-                            </div>
-
-                            {/* Amenities */}
-                            {getAmenities(property).length > 0 && (
-                              <div className="flex flex-wrap gap-1 mb-3">
-                                {getAmenities(property).map((amenity, index) => (
-                                  <span
-                                    key={index}
-                                    className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
-                                  >
-                                    {amenity}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-
-                            {/* Property Type and Date */}
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-orange-600">
-                                RENTAL
-                              </span>
-                              <span className="text-xs text-gray-400">
-                                {new Date(property.created_at).toLocaleDateString()}
-                              </span>
-                            </div>
                           </div>
                         </Link>
                       ))}
@@ -322,23 +289,6 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
             </div>
           </div>
 
-          {/* Dots Indicator */}
-          {totalSlides > 1 && (
-            <div className="flex justify-center mt-8 space-x-2">
-              {Array.from({ length: totalSlides }, (_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-                    index === currentIndex
-                      ? 'bg-orange-500'
-                      : 'bg-gray-300 hover:bg-gray-400'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </div>
