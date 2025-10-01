@@ -53,7 +53,7 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
   useEffect(() => {
     const updateCardsPerSlide = () => {
       if (window.innerWidth < 768) {
-        setCardsPerSlide(1); // Mobile: 1 card
+        setCardsPerSlide(2); // Mobile: 2 cards
       } else if (window.innerWidth < 1024) {
         setCardsPerSlide(2); // Tablet: 2 cards
       } else {
@@ -233,9 +233,8 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
             >
               {Array.from({ length: totalSlides }, (_, slideIndex) => (
                 <div key={slideIndex} className="w-full flex-shrink-0" style={{ maxWidth: '100%' }}>
-                  <div className={`grid gap-4 sm:gap-6 px-1 sm:px-2 pb-8 ${
-                    cardsPerSlide === 1 ? 'grid-cols-1' :
-                    cardsPerSlide === 2 ? 'grid-cols-1 md:grid-cols-2' :
+                  <div className={`grid gap-3 sm:gap-4 md:gap-6 px-1 sm:px-2 pb-8 ${
+                    cardsPerSlide === 2 ? 'grid-cols-2 md:grid-cols-2' :
                     'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
                   }`} style={{ maxWidth: '100%' }}>
                     {properties
@@ -247,7 +246,7 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
                           className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-105 hover:-translate-y-2"
                         >
                           {/* Property Image */}
-                          <div className="relative h-48 overflow-hidden">
+                          <div className="relative h-36 sm:h-44 md:h-48 overflow-hidden">
                             <Image
                               src={getPropertyImage(property)}
                               alt={`${property.bhk_type} ${property.property_type}`}
@@ -259,16 +258,16 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
                               }}
                             />
                           {/* Verified Badge */}
-                          <div className="absolute bottom-3 left-3">
-                            <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium flex items-center shadow">
-                              <CheckBadgeIcon className="w-3.5 h-3.5 mr-1 text-white" />
-                              100% Verified
+                          <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
+                            <span className="bg-green-600 text-white text-[8px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-medium flex items-center shadow">
+                              <CheckBadgeIcon className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 mr-0.5 sm:mr-1 text-white" />
+                              <span className="hidden sm:inline">100% </span>Verified
                             </span>
                           </div>
                             {/* Status Badge */}
                             {property.status && (
-                              <div className="absolute top-3 left-3">
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
+                                <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium ${
                                   property.status === 'available' 
                                     ? 'bg-green-100 text-green-800' 
                                     : 'bg-gray-100 text-gray-800'
@@ -278,28 +277,28 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
                               </div>
                             )}
                             {/* Furnishing Badge */}
-                            <div className="absolute top-3 right-3">
-                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
+                              <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-blue-100 text-blue-800">
                                 {property.furnishing_type.replace('_', ' ').toUpperCase()}
                               </span>
                             </div>
                           </div>
 
                           {/* Property Details */}
-                          <div className="p-4">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors duration-200 line-clamp-2">
+                          <div className="p-2 sm:p-3 md:p-4">
+                            <h3 className="text-xs sm:text-sm md:text-lg font-semibold text-gray-900 mb-1 sm:mb-2 group-hover:text-orange-600 transition-colors duration-200 line-clamp-2">
                               {property.bhk_type.replace('_', ' ').toUpperCase()} {property.property_type.replace('_', ' ').toUpperCase()}
                             </h3>
                             
                             {/* Rent Amount */}
-                            <div className="mb-2">
-                              <span className="text-lg font-bold text-green-600">
-                                {formatRent(property.rent_amount)}/month
+                            <div className="mb-1 sm:mb-2">
+                              <span className="text-sm sm:text-base md:text-lg font-bold text-green-600">
+                                {formatRent(property.rent_amount)}
                               </span>
                             </div>
                             
-                            <p className="text-sm text-gray-600 flex items-center">
-                              <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <p className="text-[10px] sm:text-xs md:text-sm text-gray-600 flex items-center truncate">
+                              <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                               </svg>
