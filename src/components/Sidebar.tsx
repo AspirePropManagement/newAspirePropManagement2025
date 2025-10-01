@@ -51,11 +51,27 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
     setShowLogoutModal(false);
   };
 
+  // Get dashboard route based on user role
+  const getDashboardRoute = (role: string) => {
+    switch (role) {
+      case 'ADMIN':
+        return '/admin';
+      case 'AGENT':
+        return '/agent';
+      case 'BUILDER':
+        return '/builder';
+      case 'BUYER':
+        return '/buyer';
+      default:
+        return '/dashboard';
+    }
+  };
+
   // Common menu items for all roles
   const commonMenuItems = [
     {
       name: 'Dashboard',
-      href: '/dashboard',
+      href: getDashboardRoute(userRole),
       icon: HomeIcon,
     },
   ];

@@ -81,7 +81,7 @@ export default function Navbar() {
     // Close the profile dropdown
     setIsProfileOpen(false)
     
-    // Simple role-based routing
+    // Role-based routing to specific dashboards
     let dashboardRoute = '/dashboard';
     switch (userRole) {
       case 'ADMIN':
@@ -201,7 +201,7 @@ export default function Navbar() {
                          {/* Toll Free Number */}
              <div className="text-right">
                <p className="text-xs text-gray-600 font-medium">Toll Free Number</p>
-               <p className="text-xs font-bold text-gray-800">+91 8080 190190</p>
+               <p className="text-xs font-bold text-gray-800">+91 92262 54182</p>
              </div>
             
             {/* Icons */}
@@ -211,14 +211,14 @@ export default function Navbar() {
                   console.log('Heart icon clicked! Navigating to favorites page');
                   window.location.href = '/favorites';
                 }}
-                className="relative w-8 h-8 text-gray-400 hover:text-red-500 transition-colors"
+                className="relative w-8 h-8 text-gray-400 hover:text-red-500 transition-colors flex items-center justify-center"
                 title="My Favorites"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"/>
                 </svg>
                 {favoriteCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+                  <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] leading-none rounded-full min-w-[16px] h-[16px] flex items-center justify-center font-bold shadow-sm border border-white">
                     {favoriteCount > 9 ? '9+' : favoriteCount}
                   </span>
                 )}
@@ -432,7 +432,7 @@ export default function Navbar() {
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                </svg>
                <p className="text-xs text-gray-600 font-medium">Toll Free Number</p>
-               <p className="text-lg font-bold text-gray-800">+91 8080 190190</p>
+               <p className="text-lg font-bold text-gray-800">+91 92262 54182</p>
              </div>
            </div>
 

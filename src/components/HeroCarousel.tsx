@@ -59,7 +59,6 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   return (
     <span className={className}>
       {displayedText}
-      <span className="animate-pulse">|</span>
     </span>
   );
 };
@@ -138,7 +137,7 @@ export const HeroCarousel: React.FC = () => {
 
   if (error || images.length === 0) {
     return (
-      <div className="relative h-screen bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
+      <div className="relative h-[100dvh] md:h-[100vh] bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
@@ -155,9 +154,18 @@ export const HeroCarousel: React.FC = () => {
   }
 
   return (
-    <div className="relative h-screen overflow-hidden bg-gray-900 z-10" style={{ zIndex: 10 }}>
+    <div 
+      className="relative h-[100dvh] md:h-[100vh] overflow-clip hero-no-scroll bg-gray-900 z-10 w-full" 
+      style={{ 
+        zIndex: 10, 
+        overscrollBehavior: 'none',
+        overflow: 'clip',
+        position: 'relative',
+        maxHeight: '100dvh'
+      }}
+    >
       {/* Carousel Images */}
-      <div className="relative h-full">
+      <div className="relative h-full overflow-clip hero-no-scroll" style={{ overflow: 'clip' }}>
         {images.map((image, index) => (
           <div
             key={image.id}
@@ -175,24 +183,42 @@ export const HeroCarousel: React.FC = () => {
             
             {/* Image Overlay with Content */}
             <div 
-              className="absolute inset-0 flex items-center"
+              className="absolute inset-0 flex items-center overflow-clip hero-no-scroll"
               style={{
-                background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3))'
+                background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3))',
+                overflow: 'clip'
               }}
             >
-              <div className="text-left text-white px-8 max-w-2xl ml-16 md:ml-20 lg:ml-24">
-                <div className="mb-6">
+              <div 
+                className="text-left text-white flex flex-col justify-center sm:px-6 md:px-8 pr-10 sm:pr-12 max-w-[100vw] md:max-w-2xl ml-4 sm:ml-8 md:ml-20 lg:ml-24"
+                style={{ overflow: 'clip', maxHeight: '80vh' }}
+              >
+                <div 
+                  className="mb-6 overflow-clip"
+                  style={{ 
+                    minHeight: '3rem',
+                    maxHeight: '10rem',
+                    overflow: 'clip'
+                  }}
+                >
                   <TypewriterText 
                     text={image.title || "Discover Your Next Journey"}
-                    className="text-5xl font-bold block"
+                    className="text-3xl sm:text-4xl md:text-5xl font-bold block break-words leading-tight"
                     resetTrigger={currentIndex}
                   />
                 </div>
                 {image.description && (
-                  <div>
+                  <div 
+                    className="overflow-clip"
+                    style={{ 
+                      minHeight: '2rem',
+                      maxHeight: '8rem',
+                      overflow: 'clip'
+                    }}
+                  >
                     <TypewriterText 
                       text={image.description}
-                      className="text-xl text-gray-200 block"
+                      className="text-base sm:text-lg md:text-xl text-gray-200 block break-words leading-relaxed"
                       delay={1000}
                       resetTrigger={currentIndex}
                     />
@@ -225,33 +251,7 @@ export const HeroCarousel: React.FC = () => {
         </>
       )}
 
-      {/* Dots Indicator */}
-      {images.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {images.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                index === currentIndex 
-                  ? 'bg-orange-500 scale-125' 
-                  : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Progress Bar */}
-      {images.length > 1 && (
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-black bg-opacity-20">
-          <div 
-            className="h-full bg-orange-500 transition-all duration-1000 ease-linear"
-            style={{ width: `${((currentIndex + 1) / images.length) * 100}%` }}
-          />
-        </div>
-      )}
+      
     </div>
   );
 };

@@ -218,7 +218,7 @@ export default function OwnerSettingsPage() {
                     </button>
                   </div>
                   <p className="text-sm text-gray-500">
-                    Last login: {user?.last_login ? new Date(user.last_login).toLocaleDateString() : 'Unknown'}
+                    Member since: {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'}
                   </p>
                 </div>
               </div>

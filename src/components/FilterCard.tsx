@@ -264,13 +264,13 @@ export const FilterCard: React.FC = () => {
   );
 
   return (
-    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-[98%] md:w-[95%] lg:w-[90%] max-w-7xl z-50">
+    <div className="w-full md:w-[85%] lg:w-[80%] xl:w-[75%] max-w-7xl mx-auto px-4">
       <div 
         className="bg-white rounded-2xl shadow-2xl p-6 animate-slide-up"
         style={{
-          background: 'rgba(255,255,255,0.9)',
+          background: 'rgba(255,255,255,0.98)',
           backdropFilter: 'blur(10px)',
-          boxShadow: '0px 12px 30px rgba(0,0,0,0.25)'
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15), 0 10px 30px rgba(0, 0, 0, 0.1)',
         }}
       >
         <div className="text-center mb-6">

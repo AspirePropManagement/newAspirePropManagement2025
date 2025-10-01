@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
           <ul>
             <li>Browse our <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/properties-listing" style="color: #f97316;">property listings</a></li>
             <li>Check out our <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/services" style="color: #f97316;">services</a></li>
-            <li>Call us directly at <strong>+91 8080 190190</strong></li>
+            <li>Call us directly at <strong>+91 92262 54182</strong></li>
           </ul>
           
           <p>Best regards,<br>
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
         In the meantime, feel free to:
         - Browse our property listings
         - Check out our services  
-        - Call us directly at +91 8080 190190
+        - Call us directly at +91 92262 54182
         
         Best regards,
         Aspire Property Management Team

@@ -109,7 +109,7 @@ function getFallbackResponse(userInput: string): string {
   const isPersonalDataQuery = personalDataKeywords.some(keyword => input.includes(keyword))
   
   if (isPersonalDataQuery) {
-    return 'I\'d be happy to help you with your personal data! However, you need to be logged in to access your account information. Please log in to continue, or if you\'re already logged in, the requested information is not available at the moment. Please try again later or contact our support team at +91 8080 190190.'
+    return 'I\'d be happy to help you with your personal data! However, you need to be logged in to access your account information. Please log in to continue, or if you\'re already logged in, the requested information is not available at the moment. Please try again later or contact our support team at +91 92262 54182.'
   }
   
   if (input.includes('property') || input.includes('house') || input.includes('apartment')) {
@@ -125,7 +125,7 @@ function getFallbackResponse(userInput: string): string {
   }
   
   if (input.includes('agent') || input.includes('contact') || input.includes('help')) {
-    return 'Hello! I can connect you with our expert real estate agents! They\'re available to provide personalized assistance with your property needs. You can also call our toll-free number: +91 8080 190190'
+    return 'Hello! I can connect you with our expert real estate agents! They\'re available to provide personalized assistance with your property needs. You can also call our toll-free number: +91 92262 54182'
   }
   
   if (input.includes('loan') || input.includes('mortgage') || input.includes('financing')) {
@@ -270,7 +270,7 @@ Always be helpful, professional, and encouraging. Keep responses concise but inf
 
 Company: Aspire Property Management
 Tagline: "NO ONE TARGETS YOUR NEED BETTER"
-Toll-free: +91 8080 190190`
+Toll-free: +91 92262 54182`
 
   if (userData && userData.profile) {
     const { first_name, last_name, role } = userData.profile
@@ -301,7 +301,7 @@ Toll-free: +91 8080 190190`
     }
   }
 
-  basePrompt += `\n\nIMPORTANT: If user asks about data that is not available, always respond politely that the requested information is not available at the moment and suggest they try again later or contact support at +91 8080 190190.`
+  basePrompt += `\n\nIMPORTANT: If user asks about data that is not available, always respond politely that the requested information is not available at the moment and suggest they try again later or contact support at +91 92262 54182.`
   basePrompt += `\n\nRespond as Kriti would - warmly and professionally.`
   
   return basePrompt

@@ -23,7 +23,7 @@ export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col-reverse space-y-reverse space-y-2">
+    <div className="fixed bottom-3 right-2 sm:bottom-4 sm:right-4 z-50 flex flex-col-reverse space-y-reverse space-y-2 max-w-[95vw]">
       {toasts.map((toast, index) => (
         <div 
           key={toast.id} 

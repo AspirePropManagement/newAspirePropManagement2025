@@ -28,6 +28,13 @@ export default function ContactPage() {
     }));
   };
 
+  const handleLocationChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      location: value
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -123,7 +130,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Phone</h3>
-                    <p className="text-gray-600 mb-1">+91 8080 190190</p>
+                    <p className="text-gray-600 mb-1">+91 92262 54182</p>
                     <p className="text-sm text-gray-500">Mon - Fri: 9:00 AM - 6:00 PM</p>
                   </div>
                 </div>
@@ -137,7 +144,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">Email</h3>
-                    <p className="text-gray-600 mb-1">info@aspireprop.com</p>
+                    <p className="text-gray-600 mb-1">aspireprop07@gmail.com</p>
                     <p className="text-sm text-gray-500">We&apos;ll respond within 24 hours</p>
                   </div>
                 </div>
@@ -353,7 +360,7 @@ export default function ContactPage() {
                       </label>
                       <GooglePlacesAutocomplete
                         value={formData.location}
-                        onChange={(value) => handleInputChange({ target: { name: 'location', value } })}
+                        onChange={handleLocationChange}
                         placeholder="Enter preferred location (e.g., Pune, Maharashtra)"
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg"
                         id="location"
@@ -475,7 +482,7 @@ export default function ContactPage() {
                   How quickly do you respond to inquiries?
                 </h3>
                 <p className="text-gray-600">
-                  We typically respond to all inquiries within 24 hours during business days. For urgent matters, please call us directly at +91 8080 190190.
+                  We typically respond to all inquiries within 24 hours during business days. For urgent matters, please call us directly at +91 92262 54182.
                 </p>
               </div>
 

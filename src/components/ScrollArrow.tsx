@@ -57,10 +57,10 @@ export const ScrollArrow: React.FC = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 z-40">
+    <div className="fixed bottom-24 right-4 sm:right-6 lg:right-8 z-40 max-w-full">
       <button
         onClick={handleScrollClick}
-        className="group relative w-12 h-12 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-gray-200"
+        className="group relative w-10 h-10 sm:w-11 sm:h-11 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-md shadow-md hover:shadow-lg transition-all duration-300 backdrop-blur-sm border border-gray-200"
         aria-label={isAtTop ? "Scroll to bottom" : "Scroll to top"}
       >
         {/* Arrow Icon */}
@@ -83,11 +83,7 @@ export const ScrollArrow: React.FC = () => {
           </svg>
         </div>
 
-        {/* Hover Effect Ring */}
-        <div className="absolute inset-0 rounded-full border-2 border-transparent group-hover:border-orange-500 group-hover:border-opacity-50 transition-all duration-300 scale-0 group-hover:scale-110"></div>
-        
-        {/* Pulse Animation */}
-        <div className="absolute inset-0 rounded-full bg-orange-500 opacity-0 group-hover:opacity-20 animate-ping"></div>
+        {/* Remove circular hover ring/pulse to avoid confusion with scrollbar */}
       </button>
     </div>
   );

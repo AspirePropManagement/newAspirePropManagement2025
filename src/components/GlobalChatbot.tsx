@@ -117,7 +117,7 @@ const GlobalChatbot: React.FC = () => {
       // Fallback response
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'I\'m sorry, I\'m having trouble connecting right now. Please try again or contact our support team at +91 8080 190190',
+        text: 'I\'m sorry, I\'m having trouble connecting right now. Please try again or contact our support team at +91 92262 54182',
         isUser: false,
         timestamp: new Date()
       }
@@ -203,7 +203,7 @@ const GlobalChatbot: React.FC = () => {
       {/* Chat Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group animate-chat-bounce ${
+        className={`fixed bottom-4 right-2 sm:bottom-6 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group animate-chat-bounce ${
           isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
         }`}
         title="Chat with Kriti"
@@ -232,7 +232,7 @@ const GlobalChatbot: React.FC = () => {
 
       {/* Chat Interface */}
       <div
-        className={`fixed bottom-6 right-6 z-50 w-80 h-96 bg-white rounded-lg shadow-2xl border border-gray-200 transition-all duration-300 ${
+        className={`fixed bottom-4 right-2 sm:bottom-6 sm:right-6 z-50 w-[90vw] max-w-sm h-96 bg-white rounded-lg shadow-2xl border border-gray-200 transition-all duration-300 ${
           isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
         }`}
       >

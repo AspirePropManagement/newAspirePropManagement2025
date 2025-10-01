@@ -276,10 +276,10 @@ export default function WhyUsPage() {
                 Start Property Search
               </Link>
               <a 
-                href="tel:+918080190190"
+                href="tel:+919226254182"
                 className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors duration-300"
               >
-                Call +91 8080 190190
+                Call +91 92262 54182
               </a>
             </div>
           </div>

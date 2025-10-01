@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
-type UserRole = 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER'
+type UserRole = 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER' | 'OWNER'
 
 interface AuthGuardProps {
   children: React.ReactNode

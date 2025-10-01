@@ -44,8 +44,8 @@ export const footerConfig: FooterConfig = {
     logo: '/logo.png'
   },
   contact: {
-    email: 'info@aspireprop.com',
-    phone: '+91 8080 190190',
+    email: 'aspireprop07@gmail.com',
+    phone: '+91 92262 54182',
     address: 'Mumbai, Maharashtra, India'
   },
   social: {

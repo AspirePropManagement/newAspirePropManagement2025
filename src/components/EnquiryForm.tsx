@@ -381,10 +381,10 @@ export const EnquiryForm: React.FC = () => {
                   <span className="text-sm text-gray-600 font-medium">Call Us</span>
                 </div>
                 <a 
-                  href="tel:+918080190190" 
+                  href="tel:+919226254182" 
                   className="text-lg font-bold text-gray-900 hover:text-orange-600 transition-colors whitespace-nowrap"
                 >
-                  +91 8080 190190
+                  +91 92262 54182
                 </a>
               </div>
             </div>

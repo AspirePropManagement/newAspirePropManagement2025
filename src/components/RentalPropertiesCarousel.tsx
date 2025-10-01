@@ -47,9 +47,27 @@ interface RentalPropertiesCarouselProps {
 export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [cardsPerSlide, setCardsPerSlide] = useState(1);
+
+  // Update cards per slide based on screen size
+  useEffect(() => {
+    const updateCardsPerSlide = () => {
+      if (window.innerWidth < 768) {
+        setCardsPerSlide(1); // Mobile: 1 card
+      } else if (window.innerWidth < 1024) {
+        setCardsPerSlide(2); // Tablet: 2 cards
+      } else {
+        setCardsPerSlide(4); // Desktop: 4 cards
+      }
+    };
+
+    updateCardsPerSlide();
+    window.addEventListener('resize', updateCardsPerSlide);
+    return () => window.removeEventListener('resize', updateCardsPerSlide);
+  }, []);
 
   // Calculate how many slides we need
-  const totalSlides = Math.ceil(properties.length / 4);
+  const totalSlides = Math.ceil(properties.length / cardsPerSlide);
   const maxIndex = Math.max(0, totalSlides - 1);
 
   useEffect(() => {
@@ -189,14 +207,14 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
             <>
               <button
                 onClick={prevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200"
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200"
                 aria-label="Previous properties"
               >
                 <ChevronLeftIcon className="w-6 h-6 text-gray-600" />
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200"
                 aria-label="Next properties"
               >
                 <ChevronRightIcon className="w-6 h-6 text-gray-600" />
@@ -205,16 +223,23 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
           )}
 
           {/* Properties Grid */}
-          <div className="overflow-hidden">
+          <div className="overflow-hidden w-full">
             <div 
-              className="flex transition-transform duration-300 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              className="flex transition-transform duration-300 ease-in-out w-full"
+              style={{ 
+                transform: `translateX(-${currentIndex * 100}%)`,
+                maxWidth: '100%'
+              }}
             >
               {Array.from({ length: totalSlides }, (_, slideIndex) => (
-                <div key={slideIndex} className="w-full flex-shrink-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-2 pb-8">
+                <div key={slideIndex} className="w-full flex-shrink-0" style={{ maxWidth: '100%' }}>
+                  <div className={`grid gap-4 sm:gap-6 px-1 sm:px-2 pb-8 ${
+                    cardsPerSlide === 1 ? 'grid-cols-1' :
+                    cardsPerSlide === 2 ? 'grid-cols-1 md:grid-cols-2' :
+                    'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+                  }`} style={{ maxWidth: '100%' }}>
                     {properties
-                      .slice(slideIndex * 4, (slideIndex + 1) * 4)
+                      .slice(slideIndex * cardsPerSlide, (slideIndex + 1) * cardsPerSlide)
                       .map((property) => (
                         <Link
                           key={property.id}

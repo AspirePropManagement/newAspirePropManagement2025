@@ -24,6 +24,24 @@ interface Builder {
  */
 export function TopBuildersCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [cardsPerSlide, setCardsPerSlide] = useState(1);
+
+  // Update cards per slide based on screen size
+  useEffect(() => {
+    const updateCardsPerSlide = () => {
+      if (window.innerWidth < 768) {
+        setCardsPerSlide(1); // Mobile: 1 card
+      } else if (window.innerWidth < 1024) {
+        setCardsPerSlide(1); // Tablet: 1 card
+      } else {
+        setCardsPerSlide(2); // Desktop: 2 cards
+      }
+    };
+
+    updateCardsPerSlide();
+    window.addEventListener('resize', updateCardsPerSlide);
+    return () => window.removeEventListener('resize', updateCardsPerSlide);
+  }, []);
 
   // Real Pune builders data with reviews from web sources
   const builders: Builder[] = [
@@ -231,18 +249,22 @@ export function TopBuildersCarousel() {
         </div>
 
         {/* Infinite Sliding Carousel */}
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden w-full">
           <div 
-            className={`flex ${isTransitioning ? 'transition-transform duration-1000 ease-in-out' : ''}`}
+            className={`flex w-full ${isTransitioning ? 'transition-transform duration-1000 ease-in-out' : ''}`}
             style={{ 
               transform: `translateX(-${currentIndex * (100 / 2)}%)`,
+              maxWidth: '100%'
             }}
           >
             {shuffledBuilders.map((builder, index) => (
               <div
                 key={`${builder.id}-${index}`}
-                className="flex-shrink-0 px-3"
-                style={{ width: `${100 / 2}%` }}
+                className="flex-shrink-0 px-2 sm:px-3"
+                style={{ 
+                  width: `${100 / cardsPerSlide}%`,
+                  maxWidth: `${100 / cardsPerSlide}%`
+                }}
               >
                 <div className="bg-white border border-gray-200 p-4 hover:shadow-lg transition-shadow duration-300 rounded-lg min-h-[200px]">
                   {/* Bento Grid Layout */}
@@ -312,9 +334,9 @@ export function TopBuildersCarousel() {
                     <div className="col-span-12 row-span-2 flex items-start">
                       <div className="w-full">
                         <p className="text-xs text-gray-700 leading-relaxed line-clamp-4">
-                          <span className="text-gray-500 italic">"</span>
+                          <span className="text-gray-500 italic">&ldquo;</span>
                           {builder.review}
-                          <span className="text-gray-500 italic">"</span>
+                          <span className="text-gray-500 italic">&rdquo;</span>
                         </p>
                       </div>
                     </div>

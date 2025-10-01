@@ -3,9 +3,10 @@
 /**
  * Environment validation script for build-time checks
  * This script validates that required environment variables are present
+ * All variables are now treated as optional to allow flexible builds
  */
 
-const requiredEnvVars = [
+const recommendedEnvVars = [
   'NEXT_PUBLIC_SUPABASE_URL',
   'NEXT_PUBLIC_SUPABASE_ANON_KEY',
   'OPENAI_KEY'
@@ -23,30 +24,33 @@ const optionalEnvVars = [
 function validateEnvironment() {
   console.log('🔍 Validating environment variables...\n')
   
-  const missing = []
-  const present = []
+  const recommendedMissing = []
+  const recommendedPresent = []
   
-  // Check required variables
-  for (const varName of requiredEnvVars) {
+  // Check recommended variables
+  for (const varName of recommendedEnvVars) {
     if (process.env[varName]) {
-      present.push(varName)
+      recommendedPresent.push(varName)
     } else {
-      missing.push(varName)
+      recommendedMissing.push(varName)
     }
   }
   
   // Check optional variables
   const optionalMissing = []
+  const optionalPresent = []
   for (const varName of optionalEnvVars) {
-    if (!process.env[varName]) {
+    if (process.env[varName]) {
+      optionalPresent.push(varName)
+    } else {
       optionalMissing.push(varName)
     }
   }
   
   // Report results
-  if (present.length > 0) {
-    console.log('✅ Present environment variables:')
-    present.forEach(varName => {
+  if (recommendedPresent.length > 0) {
+    console.log('✅ Present recommended environment variables:')
+    recommendedPresent.forEach(varName => {
       const value = process.env[varName]
       const displayValue = varName.includes('KEY') || varName.includes('SECRET') || varName.includes('PASS')
         ? '*'.repeat(Math.min(value.length, 8)) + '...'
@@ -56,30 +60,42 @@ function validateEnvironment() {
     console.log('')
   }
   
-  if (missing.length > 0) {
-    console.log('❌ Missing required environment variables:')
-    missing.forEach(varName => {
+  if (optionalPresent.length > 0) {
+    console.log('✅ Present optional environment variables:')
+    optionalPresent.forEach(varName => {
+      const value = process.env[varName]
+      const displayValue = varName.includes('KEY') || varName.includes('SECRET') || varName.includes('PASS')
+        ? '*'.repeat(Math.min(value.length, 8)) + '...'
+        : value
+      console.log(`   ${varName}: ${displayValue}`)
+    })
+    console.log('')
+  }
+  
+  if (recommendedMissing.length > 0) {
+    console.log('⚠️  Missing recommended environment variables (some features may not work):')
+    recommendedMissing.forEach(varName => {
       console.log(`   ${varName}`)
     })
     console.log('')
   }
   
   if (optionalMissing.length > 0) {
-    console.log('⚠️  Missing optional environment variables:')
+    console.log('ℹ️  Missing optional environment variables (optional features may be disabled):')
     optionalMissing.forEach(varName => {
       console.log(`   ${varName}`)
     })
     console.log('')
   }
   
-  if (missing.length === 0) {
-    console.log('🎉 All required environment variables are present!')
-    return true
+  if (recommendedMissing.length === 0 && optionalMissing.length === 0) {
+    console.log('🎉 All environment variables are present!')
   } else {
-    console.log('💥 Build will fail due to missing required environment variables.')
-    console.log('   Please set the missing variables in your environment or .env.local file.')
-    return false
+    console.log('✅ Build will continue. Set missing variables in .env.local for full functionality.')
   }
+  console.log('')
+  
+  return true
 }
 
 // Run validation

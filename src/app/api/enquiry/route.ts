@@ -128,8 +128,8 @@ export async function POST(request: NextRequest) {
           </p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="tel:+918080190190" style="background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
-              Call Us: +91 8080 190190
+            <a href="tel:+919226254182" style="background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
+              Call Us: +91 92262 54182
             </a>
           </div>
           

@@ -16,9 +16,27 @@ interface ServicesCarouselProps {
 export function ServicesCarousel({ services }: ServicesCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [cardsPerSlide, setCardsPerSlide] = useState(4);
 
-  // Calculate how many slides we need (6 services per slide)
-  const totalSlides = Math.ceil(services.length / 6);
+  // Update cards per slide based on screen size
+  useEffect(() => {
+    const updateCardsPerSlide = () => {
+      if (window.innerWidth < 768) {
+        setCardsPerSlide(4); // Mobile: 4 cards (2 rows of 2)
+      } else if (window.innerWidth < 1024) {
+        setCardsPerSlide(4); // Tablet: 4 cards (2 rows of 2)
+      } else {
+        setCardsPerSlide(6); // Desktop: 6 cards (1 row)
+      }
+    };
+
+    updateCardsPerSlide();
+    window.addEventListener('resize', updateCardsPerSlide);
+    return () => window.removeEventListener('resize', updateCardsPerSlide);
+  }, []);
+
+  // Calculate how many slides we need
+  const totalSlides = Math.ceil(services.length / cardsPerSlide);
   const maxIndex = Math.max(0, totalSlides - 1);
 
   useEffect(() => {
@@ -141,14 +159,14 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
             <>
               <button
                 onClick={prevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200"
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200"
                 aria-label="Previous services"
               >
                 <ChevronLeftIcon className="w-6 h-6 text-gray-600" />
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200"
                 aria-label="Next services"
               >
                 <ChevronRightIcon className="w-6 h-6 text-gray-600" />
@@ -157,16 +175,22 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
           )}
 
           {/* Services Grid */}
-          <div className="overflow-hidden">
+          <div className="overflow-hidden w-full">
             <div 
-              className="flex transition-transform duration-300 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              className="flex transition-transform duration-300 ease-in-out w-full"
+              style={{ 
+                transform: `translateX(-${currentIndex * 100}%)`,
+                maxWidth: '100%'
+              }}
             >
               {Array.from({ length: totalSlides }, (_, slideIndex) => (
-                <div key={slideIndex} className="w-full flex-shrink-0">
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 px-2 pb-8">
+                <div key={slideIndex} className="w-full flex-shrink-0" style={{ maxWidth: '100%' }}>
+                  <div className={`grid gap-2 px-1 sm:px-2 pb-8 ${
+                    cardsPerSlide === 4 ? 'grid-cols-2' :
+                    'grid-cols-2 md:grid-cols-3 lg:grid-cols-6'
+                  }`} style={{ maxWidth: '100%' }}>
                     {services
-                      .slice(slideIndex * 6, (slideIndex + 1) * 6)
+                      .slice(slideIndex * cardsPerSlide, (slideIndex + 1) * cardsPerSlide)
                       .map((service) => (
                         <div
                           key={service.id}

@@ -3,19 +3,19 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { ServicesService } from '@/lib/serviceService'
-import { CreateServiceItem, ServiceItem, UpdateServiceItem } from '@/types/Service'
+import { Service, ServiceCreateData, ServiceUpdateData } from '@/types/Service'
 import { InlinePreloader } from '@/components/Preloader'
 
 export default function AdminServicesPage() {
-  const [services, setServices] = useState<ServiceItem[]>([])
+  const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [showForm, setShowForm] = useState<boolean>(false)
   const [saving, setSaving] = useState<boolean>(false)
-  const [editing, setEditing] = useState<ServiceItem | null>(null)
+  const [editing, setEditing] = useState<Service | null>(null)
   const [search, setSearch] = useState<string>('')
 
-  const emptyForm: CreateServiceItem = {
+  const emptyForm: ServiceCreateData = {
     service_name: '',
     slug: '',
     short_description: '',
@@ -25,7 +25,7 @@ export default function AdminServicesPage() {
     is_active: true,
     sort_order: 0,
   }
-  const [form, setForm] = useState<CreateServiceItem>(emptyForm)
+  const [form, setForm] = useState<ServiceCreateData>(emptyForm)
 
   useEffect(() => {
     const load = async () => {
@@ -84,7 +84,7 @@ export default function AdminServicesPage() {
     if (!editing) return
     setSaving(true)
     try {
-      const updates: UpdateServiceItem = { ...form }
+      const updates: ServiceUpdateData = { ...form }
       const updated = await ServicesService.update(editing.id, updates)
       setServices(prev => prev.map(s => (s.id === editing.id ? updated : s)))
       setEditing(null)

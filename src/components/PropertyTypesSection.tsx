@@ -74,17 +74,17 @@ export function PropertyTypesSection() {
   return (
     <div className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+        <div className="flex flex-col lg:flex-row items-center lg:items-center justify-between gap-8">
           {/* Left Content */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 text-center lg:text-left">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-              Where Everyone's
+              Where Everyone&apos;s
             </h2>
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
               investing
             </h2>
             <p className="text-lg text-orange-600 font-semibold mb-6">
-              <span className="text-gray-900">aspire prop management</span> you can't miss! picks
+              <span className="text-gray-900">aspire prop management</span> you can&apos;t miss! picks
             </p>
             
             {/* Available Properties Button */}
@@ -109,8 +109,8 @@ export function PropertyTypesSection() {
           </div>
 
           {/* Right Content - Property Types Icons */}
-          <div className="flex-1">
-            <div className="flex justify-start items-center gap-12 lg:gap-16 flex-wrap pl-8 lg:pl-12">
+          <div className="flex-1 w-full">
+            <div className="flex justify-center lg:justify-start items-center gap-8 sm:gap-12 lg:gap-16 flex-wrap lg:pl-8 xl:pl-12">
               {propertyTypes.map((type) => (
                 <div
                   key={type.id}

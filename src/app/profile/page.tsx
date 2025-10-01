@@ -174,6 +174,11 @@ export default function ProfilePage() {
       return;
     }
     
+    if (!user) {
+      setMessage({ type: 'error', text: 'User not found' });
+      return;
+    }
+    
     setIsLoadingPassword(true);
     setMessage(null);
     

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { ServicesService } from '@/lib/serviceService'
-import { ServiceItem } from '@/types/Service'
+import { Service } from '@/types/Service'
 import { InlinePreloader } from '@/components/Preloader'
 
 /**
@@ -14,7 +14,7 @@ import { InlinePreloader } from '@/components/Preloader'
 
 
 export default function ServicesPage() {
-  const [services, setServices] = useState<ServiceItem[]>([])
+  const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 

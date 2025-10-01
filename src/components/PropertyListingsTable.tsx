@@ -245,7 +245,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
               <HomeIcon className="w-8 h-8 text-gray-400" />
             </div>
             <h4 className="text-lg font-semibold text-gray-900 mb-2">No {tabs.find(t => t.id === activeTab)?.name} Properties</h4>
-            <p className="text-gray-600">You haven't listed any {activeTab} properties yet.</p>
+            <p className="text-gray-600">You haven&apos;t listed any {activeTab} properties yet.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">

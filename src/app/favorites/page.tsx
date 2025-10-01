@@ -41,6 +41,12 @@ export default function FavoritesPage() {
         return;
       }
 
+      if (!supabase) {
+        console.error('Database connection not available');
+        setFavoriteProperties([]);
+        return;
+      }
+
       // Fetch from all three tables in parallel
       const [resaleRes, rentalRes, newProjRes] = await Promise.all([
         supabase.from('resale_properties').select('*').in('id', favoriteIds),

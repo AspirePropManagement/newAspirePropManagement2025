@@ -43,16 +43,21 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Hero Section with Filter Card */}
-      <div className="relative">
-        <HeroCarousel />
-        {/* Filter Card - Positioned to overlay both hero and features sections */}
-        <FilterCard />
+      <div className="relative w-full">
+        <div className="relative w-full" style={{ height: '100vh', maxHeight: '100vh', overflow: 'clip' }}>
+          <HeroCarousel />
+        </div>
+        
+        {/* Filter Card - 50% overlapping hero, 50% below */}
+        <div className="absolute bottom-0 left-0 right-0 transform translate-y-1/2 z-20">
+          <FilterCard />
+        </div>
       </div>
 
-      {/* Blank Spacer Section - Prevents content from being cut by filter card */}
-      <div className="h-32 md:h-36 lg:h-40 bg-white"></div>
+      {/* Add spacing to prevent overlap with next section */}
+      <div className="h-32 md:h-40"></div>
 
       {/* New Projects Section */}
       <NewProjectsCarousel projects={newProjects} />

@@ -460,8 +460,72 @@
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    max-width: 100vw;
+  }
+  html {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    max-width: 100vw;
+  }
+  
+  /* Ensure all containers respect viewport width */
+  .container {
+    max-width: 100vw;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Ensure responsive images don't cause overflow */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Ensure carousels don't cause horizontal scroll */
+  .overflow-hidden {
+    overflow-x: hidden;
+  }
+  
+  /* Mobile-specific fixes */
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    
+    /* Fix for any remaining overflow issues */
+    .overflow-hidden {
+      overflow-x: hidden !important;
+    }
+  }
+  
+  /* Allow vertical scrolling but prevent horizontal */
+  html, body {
+    overflow-x: hidden !important;
+    overflow-y: auto;
+    overscroll-behavior: none;
+  }
+  
+  /* Hero: force-hide any inner scrollbars (Edge/Chrome/Firefox) */
+  .hero-no-scroll {
+    overflow: clip !important;
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none;    /* Firefox */
+    overscroll-behavior: none;
+  }
+  .hero-no-scroll::-webkit-scrollbar {
+    display: none;            /* Chrome/Safari/Edge */
+  }
+  
+  /* Prevent scrolling when hero is in view */
+  .hero-section-active {
+    overflow: clip !important;
+    height: 100vh;
+    height: 100dvh;
+    position: relative;
   }
 }

@@ -378,7 +378,7 @@ export const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
               <div className="flex items-center justify-between">
                 <div>
                   <h5 className="text-lg font-semibold text-yellow-800">Pending Approval</h5>
-                  <p className="text-sm text-yellow-700">Review this user's registration and take action</p>
+                  <p className="text-sm text-yellow-700">Review this user&apos;s registration and take action</p>
                 </div>
                 <div className="flex space-x-3">
                   <button
