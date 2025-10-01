@@ -13,6 +13,7 @@ import { UserDetailsModal } from '@/components/UserDetailsModal';
 import { MinimalUserRow } from '@/components/MinimalUserRow';
 import { RejectionModal } from '@/components/RejectionModal';
 import { ToastContainer } from '@/components/ToastContainer';
+import { ScrollArrow } from '@/components/ScrollArrow';
 import { useToast } from '@/hooks/useToast';
 import { User } from '@/types/User';
 import { UserUpdateData } from '@/types/User';
@@ -32,6 +33,10 @@ export default function AdminAgentsPage() {
   const [pendingUsers, setPendingUsers] = useState<User[]>([]);
   const [pendingLoading, setPendingLoading] = useState(false);
   
+  // Pagination for pending users
+  const [pendingCurrentPage, setPendingCurrentPage] = useState(1);
+  const [pendingPageSize, setPendingPageSize] = useState(10);
+  
   // Modal states
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -42,7 +47,7 @@ export default function AdminAgentsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(10);
 
   // Fetch pending users
   const fetchPendingUsers = async () => {
@@ -91,10 +96,28 @@ export default function AdminAgentsPage() {
   // Calculate total pages
   const totalPages = Math.ceil(filteredActiveUsers.length / pageSize);
 
+  // Paginate pending users
+  const paginatedPendingUsers = useMemo(() => {
+    const startIndex = (pendingCurrentPage - 1) * pendingPageSize;
+    const endIndex = startIndex + pendingPageSize;
+    return pendingUsers.slice(startIndex, endIndex);
+  }, [pendingUsers, pendingCurrentPage, pendingPageSize]);
+
+  const pendingTotalPages = Math.ceil(pendingUsers.length / pendingPageSize);
+
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, statusFilter]);
+
+  // Reset pending pagination when tab changes
+  useEffect(() => {
+    if (activeTab === 'pending') {
+      setPendingCurrentPage(1);
+    } else {
+      setCurrentPage(1);
+    }
+  }, [activeTab]);
 
   const handleEdit = (user: User) => {
     setEditingUser(user);
@@ -192,6 +215,16 @@ export default function AdminAgentsPage() {
     setCurrentPage(1);
   };
 
+  const handlePendingPageChange = (page: number) => {
+    setPendingCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePendingPageSizeChange = (size: number) => {
+    setPendingPageSize(size);
+    setPendingCurrentPage(1);
+  };
+
   if (loading) {
     return (
       <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
@@ -228,18 +261,18 @@ export default function AdminAgentsPage() {
 
   return (
     <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Agent Management</h1>
-          <p className="text-gray-600 mt-2">Manage all agent accounts in the system</p>
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Agent Management</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">Manage all agent accounts in the system</p>
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-gray-200 mb-6">
-          <nav className="-mb-px flex space-x-8">
+        <div className="border-b border-gray-200 mb-4 sm:mb-6">
+          <nav className="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto">
             <button
               onClick={() => setActiveTab('pending')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`py-2 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                 activeTab === 'pending'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -249,7 +282,7 @@ export default function AdminAgentsPage() {
             </button>
             <button
               onClick={() => setActiveTab('active')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`py-2 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                 activeTab === 'active'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -262,9 +295,9 @@ export default function AdminAgentsPage() {
 
         {activeTab === 'pending' ? (
           <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-900">Agents Waiting for Approval</h2>
-              <p className="text-sm text-gray-500">Click on any row to view details, or use quick approve/reject actions</p>
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+              <h2 className="text-base sm:text-lg font-medium text-gray-900">Agents Waiting for Approval</h2>
+              <p className="text-xs sm:text-sm text-gray-500 mt-1">Click on any row to view details, or use quick approve/reject actions</p>
             </div>
             {pendingLoading ? (
               <div className="p-6">
@@ -277,18 +310,128 @@ export default function AdminAgentsPage() {
                 <p className="text-gray-600">All agent registrations have been reviewed.</p>
               </div>
             ) : (
-              <div className="divide-y divide-gray-200">
-                {pendingUsers.map((user) => (
-                  <MinimalUserRow
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        User
+                      </th>
+                      <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Role
+                      </th>
+                      <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Status
+                      </th>
+                      <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Phone
+                      </th>
+                      <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Joined
+                      </th>
+                      <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {paginatedPendingUsers.map((user) => (
+                      <tr 
                     key={user.id}
-                    user={user}
-                    onClick={handleUserClick}
-                    onApprove={handleApprove}
-                    onReject={handleReject}
-                    showApprovalActions={true}
-                  />
-                ))}
+                        className="border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
+                        onClick={() => handleUserClick(user)}
+                      >
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10">
+                              <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                <span className="text-xs sm:text-sm font-medium text-gray-700">
+                                  {user.first_name?.[0] || user.email[0].toUpperCase()}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="ml-2 sm:ml-4 min-w-0">
+                              <div className="text-xs sm:text-sm font-medium text-gray-900 truncate">
+                                {user.first_name && user.last_name
+                                  ? `${user.first_name} ${user.last_name}`
+                                  : 'N/A'}
+                              </div>
+                              <div className="text-xs sm:text-sm text-gray-500 truncate">{user.email}</div>
+                            </div>
+                          </div>
+                        </td>
+                        
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                            {user.role}
+                          </span>
+                        </td>
+                        
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            Pending
+                          </span>
+                        </td>
+                        
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">
+                          {user.phone || 'N/A'}
+                        </td>
+                        
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
+                          {new Date(user.created_at).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          })}
+                        </td>
+                        
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
+                          <div className="flex items-center justify-end space-x-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleApprove(user.id);
+                              }}
+                              className="inline-flex items-center px-3 py-1.5 sm:px-2 sm:py-1 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors"
+                            >
+                              <svg className="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              <span className="hidden sm:inline">Approve</span>
+                              <span className="sm:hidden">✓</span>
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleReject(user.id);
+                              }}
+                              className="inline-flex items-center px-3 py-1.5 sm:px-2 sm:py-1 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
+                            >
+                              <svg className="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                              <span className="hidden sm:inline">Reject</span>
+                              <span className="sm:hidden">✗</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
+            )}
+            
+            {/* Pagination for Pending Users */}
+            {!pendingLoading && pendingUsers.length > 0 && (
+              <Pagination
+                currentPage={pendingCurrentPage}
+                totalPages={pendingTotalPages}
+                totalItems={pendingUsers.length}
+                pageSize={pendingPageSize}
+                onPageChange={handlePendingPageChange}
+                onPageSizeChange={handlePendingPageSizeChange}
+              />
             )}
           </div>
         ) : (
@@ -315,25 +458,26 @@ export default function AdminAgentsPage() {
               </div>
             ) : (
               <div className="bg-white shadow-md rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         User
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         Role
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         Phone
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         Joined
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                         Actions
                       </th>
                     </tr>
@@ -351,6 +495,7 @@ export default function AdminAgentsPage() {
                     ))}
                   </tbody>
                 </table>
+                </div>
                 
                 {/* Pagination */}
                 <Pagination
@@ -413,6 +558,9 @@ export default function AdminAgentsPage() {
         toasts={toasts}
         onRemove={removeToast}
       />
+
+      {/* Scroll Arrow */}
+      <ScrollArrow />
     </DashboardLayout>
   );
 }
