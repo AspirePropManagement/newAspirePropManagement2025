@@ -6,6 +6,7 @@ import { useHeroCarousel } from '../hooks/useHeroCarousel';
 import { CreateHeroCarouselImage } from '../types/HeroCarousel';
 import { Plus, Eye, EyeOff, Trash2, GripVertical } from 'lucide-react';
 import { Toast } from './Toast';
+import { ScrollArrow } from './ScrollArrow';
 
 /**
  * Component for managing hero carousel images
@@ -261,16 +262,16 @@ export const HeroCarouselManager: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Hero Carousel Manager</h1>
-          <p className="text-gray-600">Manage images for the landing page hero section</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Hero Carousel Manager</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Manage images for the landing page hero section</p>
         </div>
         <button
           onClick={() => setShowUploadForm(true)}
-          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base w-full sm:w-auto"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Image
@@ -298,15 +299,15 @@ export const HeroCarouselManager: React.FC = () => {
       )}
 
       {/* Images Display - Horizontal Carousel */}
-      <div className="bg-white rounded-lg border border-gray-200">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">
+      <div className="bg-white rounded-lg sm:rounded-xl border border-gray-200">
+        <div className="p-4 sm:p-6 border-b border-gray-200">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
               Carousel Images ({images.length})
             </h3>
             {isReordering && (
-              <div className="flex items-center text-sm text-blue-600">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+              <div className="flex items-center text-xs sm:text-sm text-blue-600">
+                <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-blue-600 mr-2"></div>
                 Reordering...
               </div>
             )}
@@ -314,46 +315,47 @@ export const HeroCarouselManager: React.FC = () => {
         </div>
 
         {loading && images.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <div>Loading images...</div>
+          <div className="p-6 sm:p-8 text-center text-gray-500">
+            <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue-600 mx-auto mb-3 sm:mb-4"></div>
+            <div className="text-sm sm:text-base">Loading images...</div>
           </div>
         ) : images.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
-            No images uploaded yet. Click &quot;Add Image&quot; to get started.
+          <div className="p-6 sm:p-8 text-center text-gray-500">
+            <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">📷</div>
+            <div className="text-sm sm:text-base">No images uploaded yet. Click &quot;Add Image&quot; to get started.</div>
           </div>
         ) : (
-          <div className="p-6">
+          <div className="p-3 sm:p-6">
             <div className="relative">
-              {/* Navigation Arrows */}
+              {/* Navigation Arrows - Hidden on mobile, shown on larger screens */}
               <button
                 onClick={scrollLeft}
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white border border-gray-200 rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
+                className="hidden lg:block absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white border border-gray-200 rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
                 title="Scroll Left"
               >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
               
               <button
                 onClick={scrollRight}
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white border border-gray-200 rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
+                className="hidden lg:block absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white border border-gray-200 rounded-full p-2 shadow-lg hover:bg-gray-50 transition-colors"
                 title="Scroll Right"
               >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
 
               <div 
                 ref={carouselRef}
-                className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide px-12"
+                className="flex space-x-3 sm:space-x-4 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide px-0 lg:px-12"
               >
                 {images.map((image, index) => (
                   <div
                     key={image.id}
-                                         className={`relative bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 p-4 transition-all flex-shrink-0 w-80 ${
+                    className={`relative bg-gray-50 rounded-lg sm:rounded-xl border-2 border-dashed border-gray-200 p-3 sm:p-4 transition-all flex-shrink-0 w-72 sm:w-80 ${
                        dragIndex === index ? 'border-blue-400 bg-blue-50' : ''
                      }`}
                     draggable
@@ -364,15 +366,15 @@ export const HeroCarouselManager: React.FC = () => {
                     {/* Drag Handle */}
                     <div className="absolute top-2 right-2 cursor-move text-gray-400 hover:text-gray-600">
                       {isReordering ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                        <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-gray-400"></div>
                       ) : (
-                        <GripVertical className="w-4 h-4" />
+                        <GripVertical className="w-3 h-3 sm:w-4 sm:h-4" />
                       )}
                     </div>
 
                     {/* Image Preview */}
-                    <div className="mb-4">
-                      <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                    <div className="mb-3 sm:mb-4">
+                      <div className="relative w-full h-40 sm:h-48 rounded-lg overflow-hidden">
                         <Image
                           src={image.image_data}
                           alt={image.alt_text || image.title}
@@ -383,10 +385,10 @@ export const HeroCarouselManager: React.FC = () => {
                     </div>
 
                     {/* Image Info */}
-                    <div className="space-y-2">
-                      <h4 className="font-semibold text-gray-900 truncate">{image.title}</h4>
+                    <div className="space-y-1.5 sm:space-y-2">
+                      <h4 className="text-sm sm:text-base font-semibold text-gray-900 truncate">{image.title}</h4>
                       {image.description && (
-                        <p className="text-sm text-gray-600 line-clamp-2">{image.description}</p>
+                        <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">{image.description}</p>
                       )}
                       <div className="flex items-center justify-between text-xs text-gray-500">
                         <span>Order: {image.display_order}</span>
@@ -395,7 +397,7 @@ export const HeroCarouselManager: React.FC = () => {
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-4 flex justify-between items-center">
+                    <div className="mt-3 sm:mt-4 flex justify-between items-center gap-2">
                       <button
                         onClick={async () => {
                           setTogglingImageId(image.id);
@@ -409,7 +411,7 @@ export const HeroCarouselManager: React.FC = () => {
                           }
                         }}
                         disabled={togglingImageId === image.id}
-                        className={`flex items-center px-2 py-1 rounded text-xs disabled:opacity-50 ${
+                        className={`flex items-center px-2 py-1 rounded text-xs disabled:opacity-50 flex-1 justify-center ${
                           image.is_active
                             ? 'text-green-600 bg-green-100 hover:bg-green-200'
                             : 'text-gray-600 bg-gray-100 hover:bg-gray-200'
@@ -420,7 +422,8 @@ export const HeroCarouselManager: React.FC = () => {
                         ) : (
                           image.is_active ? <Eye className="w-3 h-3 mr-1" /> : <EyeOff className="w-3 h-3 mr-1" />
                         )}
-                        {image.is_active ? 'Active' : 'Inactive'}
+                        <span className="hidden sm:inline">{image.is_active ? 'Active' : 'Inactive'}</span>
+                        <span className="sm:hidden">{image.is_active ? '👁️' : '🚫'}</span>
                       </button>
 
                       <button
@@ -430,9 +433,9 @@ export const HeroCarouselManager: React.FC = () => {
                         title="Delete"
                       >
                         {deletingImageId === image.id ? (
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                          <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-red-600"></div>
                         ) : (
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                         )}
                       </button>
                     </div>
@@ -448,10 +451,10 @@ export const HeroCarouselManager: React.FC = () => {
 
       {/* Upload Form Modal */}
       {showUploadForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
+              <h2 className="text-base sm:text-lg font-semibold">
                 Upload New Image
               </h2>
               <button
@@ -459,16 +462,16 @@ export const HeroCarouselManager: React.FC = () => {
                   setShowUploadForm(false);
                   resetForm();
                 }}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 hover:text-gray-600 transition-colors p-1"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Title *
@@ -560,21 +563,21 @@ export const HeroCarouselManager: React.FC = () => {
                 )}
               </div>
 
-              <div className="flex justify-end space-x-3 pt-4">
+              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
                 <button
                   type="button"
                   onClick={() => {
                     setShowUploadForm(false);
                     resetForm();
                   }}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2.5 sm:py-2 text-sm sm:text-base text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors w-full sm:w-auto"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading || isUploading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center min-w-[120px]"
+                  className="px-4 py-2.5 sm:py-2 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center min-w-[120px] w-full sm:w-auto"
                 >
                   {isUploading ? (
                     <>
@@ -593,24 +596,24 @@ export const HeroCarouselManager: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteModalOpen && imageToDelete && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">Confirm Deletion</h3>
-            <p className="text-gray-700 mb-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-xl max-w-md w-full">
+            <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">Confirm Deletion</h3>
+            <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">
               Are you sure you want to delete image &quot;{images.find(img => img.id === imageToDelete)?.title}&quot;?
               <br />
-              <span className="text-sm text-gray-500">This action cannot be undone.</span>
+              <span className="text-xs sm:text-sm text-gray-500 mt-2 block">This action cannot be undone.</span>
             </p>
-            <div className="flex justify-end space-x-3">
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
               <button
                 onClick={cancelDelete}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="px-4 py-2.5 sm:py-2 text-sm sm:text-base text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors w-full sm:w-auto"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="px-4 py-2.5 sm:py-2 text-sm sm:text-base bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors w-full sm:w-auto"
               >
                 Delete
               </button>
@@ -618,6 +621,9 @@ export const HeroCarouselManager: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Scroll Arrow */}
+      <ScrollArrow />
     </div>
   );
 };
