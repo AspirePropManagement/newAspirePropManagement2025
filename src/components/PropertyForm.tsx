@@ -10,9 +10,10 @@ import { Slider } from '@/components/ui/slider';
 import { PropertyAmenities } from '@/types/PropertyAmenities';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete';
 
-// Common input styling
-const inputClass = "w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-lg";
-const selectClass = "w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-lg bg-white";
+// Common input styling - Enhanced Mobile responsive
+const inputClass = "w-full px-3 sm:px-4 py-3 sm:py-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base md:text-lg min-w-0";
+const selectClass = "w-full px-3 sm:px-4 py-3 sm:py-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base md:text-lg bg-white min-w-0";
+const labelClass = "block text-sm sm:text-base font-medium text-gray-700 mb-2";
 
 // 12-Hour Time Picker Component
 const TimePicker12Hour = ({ 
@@ -32,10 +33,34 @@ const TimePicker12Hour = ({
     if (value) {
       const [h, m] = value.split(':');
       const hour24 = parseInt(h);
-      const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
+      const minute24 = parseInt(m || '0');
+      
+      // Convert 24-hour to 12-hour format
+      let hour12 = hour24;
+      let period = 'AM';
+      
+      if (hour24 === 0) {
+        hour12 = 12;
+        period = 'AM';
+      } else if (hour24 === 12) {
+        hour12 = 12;
+        period = 'PM';
+      } else if (hour24 > 12) {
+        hour12 = hour24 - 12;
+        period = 'PM';
+      } else {
+        hour12 = hour24;
+        period = 'AM';
+      }
+      
       setHours(hour12.toString());
-      setMinutes(m || '00');
-      setAmPm(hour24 >= 12 ? 'PM' : 'AM');
+      setMinutes(minute24.toString().padStart(2, '0'));
+      setAmPm(period);
+    } else {
+      // Reset to default values when no value
+      setHours('');
+      setMinutes('');
+      setAmPm('AM');
     }
   }, [value]);
 
@@ -60,22 +85,26 @@ const TimePicker12Hour = ({
   const updateTime = (h: string, m: string, ap: string) => {
     if (h && m) {
       let hour24 = parseInt(h);
+      
+      // Convert 12-hour to 24-hour format
       if (ap === 'PM' && hour24 !== 12) {
         hour24 += 12;
       } else if (ap === 'AM' && hour24 === 12) {
         hour24 = 0;
       }
-      const time24 = `${hour24.toString().padStart(2, '0')}:${m}`;
+      
+      const minute24 = parseInt(m);
+      const time24 = `${hour24.toString().padStart(2, '0')}:${minute24.toString().padStart(2, '0')}`;
       onChange(time24);
     }
   };
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-1 sm:space-x-2 min-w-0">
       <select
         value={hours}
         onChange={handleHoursChange}
-        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="flex-1 px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm min-w-0"
       >
         <option value="">Hour</option>
         {Array.from({ length: 12 }, (_, i) => i + 1).map(hour => (
@@ -83,12 +112,12 @@ const TimePicker12Hour = ({
         ))}
       </select>
       
-      <span className="text-gray-500">:</span>
+      <span className="text-gray-500 text-sm flex-shrink-0">:</span>
       
       <select
         value={minutes}
         onChange={handleMinutesChange}
-        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="flex-1 px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm min-w-0"
       >
         <option value="">Min</option>
         {Array.from({ length: 60 }, (_, i) => i).map(minute => (
@@ -101,7 +130,7 @@ const TimePicker12Hour = ({
       <select
         value={amPm}
         onChange={handleAmPmChange}
-        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm flex-shrink-0"
       >
         <option value="AM">AM</option>
         <option value="PM">PM</option>
@@ -417,7 +446,7 @@ export function PropertyForm({
   };
 
   const renderBasicInformation = () => (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           {propertyType === 'rental' ? 'Owner Name' : 'Seller Name'} *
@@ -615,214 +644,235 @@ export function PropertyForm({
   };
 
   const renderNewProjectDetails = () => (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Project Name *
-        </label>
-        <input
-          type="text"
-          value={formData.projectName}
-          onChange={(e) => handleInputChange('projectName', e.target.value)}
-          className={inputClass}
-          placeholder="Enter project name"
-          required
-        />
+    <div className="space-y-4 sm:space-y-6">
+      {/* First Row - Basic Project Info */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Project Name *
+          </label>
+          <input
+            type="text"
+            value={formData.projectName}
+            onChange={(e) => handleInputChange('projectName', e.target.value)}
+            className={inputClass}
+            placeholder="Enter project name"
+            required
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Crafted By *
+          </label>
+          <input
+            type="text"
+            value={formData.craftedBy}
+            onChange={(e) => handleInputChange('craftedBy', e.target.value)}
+            className={inputClass}
+            placeholder="Enter developer/builder name"
+            required
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Crafted By *
-        </label>
-        <input
-          type="text"
-          value={formData.craftedBy}
-          onChange={(e) => handleInputChange('craftedBy', e.target.value)}
-          className={inputClass}
-          placeholder="Enter developer/builder name"
-          required
-        />
+      {/* Second Row - Construction Details */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Construction Type *
+          </label>
+          <select
+            value={formData.constructionType}
+            onChange={(e) => handleInputChange('constructionType', e.target.value)}
+            className={selectClass}
+            required
+          >
+            <option value="">Select Construction Type</option>
+            <option value="new_launching">New Launching</option>
+            <option value="under_construction">Under Construction</option>
+            <option value="ready_to_move">Ready to Move</option>
+            <option value="partial_ready_to_move">Partial Ready to Move</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Total Project Area Size
+          </label>
+          <input
+            type="text"
+            value={formData.totalProjectAreaSize}
+            onChange={(e) => handleInputChange('totalProjectAreaSize', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 10 acres, 50,000 sq ft"
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Construction Type *
-        </label>
-        <select
-          value={formData.constructionType}
-          onChange={(e) => handleInputChange('constructionType', e.target.value)}
-          className={selectClass}
-          required
-        >
-          <option value="">Select Construction Type</option>
-          <option value="new_launching">New Launching</option>
-          <option value="under_construction">Under Construction</option>
-          <option value="ready_to_move">Ready to Move</option>
-          <option value="partial_ready_to_move">Partial Ready to Move</option>
-        </select>
+      {/* Third Row - Project Structure */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Number of Towers
+          </label>
+          <input
+            type="number"
+            value={formData.towersCount}
+            onChange={(e) => handleInputChange('towersCount', e.target.value)}
+            className={inputClass}
+            placeholder="Enter number of towers"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Total Floors
+          </label>
+          <input
+            type="number"
+            value={formData.totalFloors}
+            onChange={(e) => handleInputChange('totalFloors', e.target.value)}
+            className={inputClass}
+            placeholder="Enter total floors"
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Total Project Area Size
-        </label>
-        <input
-          type="text"
-          value={formData.totalProjectAreaSize}
-          onChange={(e) => handleInputChange('totalProjectAreaSize', e.target.value)}
-          className={inputClass}
-          placeholder="e.g., 10 acres, 50,000 sq ft"
-        />
+      {/* Fourth Row - Property Details */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Flats per Floor
+          </label>
+          <input
+            type="text"
+            value={formData.flatsPerFloor}
+            onChange={(e) => handleInputChange('flatsPerFloor', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 2, 4, 6"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            ROI
+          </label>
+          <input
+            type="text"
+            value={formData.roi}
+            onChange={(e) => handleInputChange('roi', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 12-15%"
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Number of Towers
-        </label>
-        <input
-          type="number"
-          value={formData.towersCount}
-          onChange={(e) => handleInputChange('towersCount', e.target.value)}
-          className={inputClass}
-          placeholder="Enter number of towers"
-        />
+      {/* Fifth Row - Financial Details */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Rental Yield
+          </label>
+          <input
+            type="number"
+            value={formData.rentalYield}
+            onChange={(e) => handleInputChange('rentalYield', e.target.value)}
+            className={inputClass}
+            placeholder="Enter rental yield percentage"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Marketed By
+          </label>
+          <input
+            type="text"
+            value={formData.marketedBy}
+            onChange={(e) => handleInputChange('marketedBy', e.target.value)}
+            className={inputClass}
+            placeholder="Enter marketing company name"
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Total Floors
-        </label>
-        <input
-          type="number"
-          value={formData.totalFloors}
-          onChange={(e) => handleInputChange('totalFloors', e.target.value)}
-          className={inputClass}
-          placeholder="Enter total floors"
-        />
+      {/* Sixth Row - Listing & Compliance */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Listed By *
+          </label>
+          <select
+            value={formData.listedBy}
+            onChange={(e) => handleInputChange('listedBy', e.target.value)}
+            className={selectClass}
+            required
+          >
+            <option value="">Select Listed By</option>
+            <option value="builder">Builder</option>
+            <option value="agent">Agent</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Facing (As per Vastu Compliances)
+          </label>
+          <select
+            value={formData.facingVastu}
+            onChange={(e) => handleInputChange('facingVastu', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Facing</option>
+            <option value="north">North</option>
+            <option value="south">South</option>
+            <option value="east">East</option>
+            <option value="west">West</option>
+            <option value="northeast">North East</option>
+            <option value="northwest">North West</option>
+            <option value="southeast">South East</option>
+            <option value="southwest">South West</option>
+          </select>
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Flats per Floor
-        </label>
-        <input
-          type="text"
-          value={formData.flatsPerFloor}
-          onChange={(e) => handleInputChange('flatsPerFloor', e.target.value)}
-          className={inputClass}
-          placeholder="e.g., 2, 4, 6"
-        />
+      {/* Seventh Row - Dates */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Suggestion Date
+          </label>
+          <input
+            type="date"
+            value={formData.suggestionDate}
+            onChange={(e) => handleInputChange('suggestionDate', e.target.value)}
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Suggestion Year
+          </label>
+          <input
+            type="number"
+            value={formData.suggestionYear}
+            onChange={(e) => handleInputChange('suggestionYear', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 2025"
+          />
+        </div>
       </div>
 
+      {/* BHK Type Checkboxes for New Projects - Mobile Responsive */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          ROI
-        </label>
-        <input
-          type="text"
-          value={formData.roi}
-          onChange={(e) => handleInputChange('roi', e.target.value)}
-          className={inputClass}
-          placeholder="e.g., 12-15%"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Rental Yield
-        </label>
-        <input
-          type="number"
-          value={formData.rentalYield}
-          onChange={(e) => handleInputChange('rentalYield', e.target.value)}
-          className={inputClass}
-          placeholder="Enter rental yield percentage"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Marketed By
-        </label>
-        <input
-          type="text"
-          value={formData.marketedBy}
-          onChange={(e) => handleInputChange('marketedBy', e.target.value)}
-          className={inputClass}
-          placeholder="Enter marketing company name"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Listed By *
-        </label>
-        <select
-          value={formData.listedBy}
-          onChange={(e) => handleInputChange('listedBy', e.target.value)}
-          className={selectClass}
-          required
-        >
-          <option value="">Select Listed By</option>
-          <option value="builder">Builder</option>
-          <option value="agent">Agent</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Facing (As per Vastu Compliances)
-        </label>
-        <select
-          value={formData.facingVastu}
-          onChange={(e) => handleInputChange('facingVastu', e.target.value)}
-          className={selectClass}
-        >
-          <option value="">Select Facing</option>
-          <option value="north">North</option>
-          <option value="south">South</option>
-          <option value="east">East</option>
-          <option value="west">West</option>
-          <option value="northeast">North East</option>
-          <option value="northwest">North West</option>
-          <option value="southeast">South East</option>
-          <option value="southwest">South West</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Suggestion Date
-        </label>
-        <input
-          type="date"
-          value={formData.suggestionDate}
-          onChange={(e) => handleInputChange('suggestionDate', e.target.value)}
-          className={inputClass}
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Suggestion Year
-        </label>
-        <input
-          type="number"
-          value={formData.suggestionYear}
-          onChange={(e) => handleInputChange('suggestionYear', e.target.value)}
-          className={inputClass}
-          placeholder="e.g., 2025"
-        />
-      </div>
-
-      {/* BHK Type Checkboxes for New Projects */}
-      <div className="col-span-2">
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+        <label className={labelClass}>
           Available BHK Types
         </label>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
           {['1_rk', '1_bhk', '2_bhk', '3_bhk', '4_bhk', '5_bhk', '5_plus_bhk'].map((bhkType) => (
-            <label key={bhkType} className="flex items-center space-x-2 cursor-pointer">
+            <label key={bhkType} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
               <input
                 type="checkbox"
                 checked={formData.availableBhkTypes?.includes(bhkType) || false}
@@ -833,9 +883,9 @@ export function PropertyForm({
                     : currentTypes.filter((type: string) => type !== bhkType);
                   handleInputChange('availableBhkTypes', newTypes);
                 }}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded flex-shrink-0"
               />
-              <span className="text-sm text-gray-700">
+              <span className="text-xs sm:text-sm text-gray-700">
                 {bhkType.replace('_', ' ').toUpperCase()}
               </span>
             </label>
@@ -846,108 +896,117 @@ export function PropertyForm({
   );
 
   const renderResaleDetails = () => (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Society Name
-        </label>
-        <input
-          type="text"
-          value={formData.societyName}
-          onChange={(e) => handleInputChange('societyName', e.target.value)}
-          className={inputClass}
-          placeholder="Enter society name"
-        />
+    <div className="space-y-4 sm:space-y-6">
+      {/* First Row - Basic Info */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Society Name
+          </label>
+          <input
+            type="text"
+            value={formData.societyName}
+            onChange={(e) => handleInputChange('societyName', e.target.value)}
+            className={inputClass}
+            placeholder="Enter society name"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Floor Number
+          </label>
+          <input
+            type="text"
+            value={formData.floorNo}
+            onChange={(e) => handleInputChange('floorNo', e.target.value)}
+            className={inputClass}
+            placeholder="Enter floor number"
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Floor Number
-        </label>
-        <input
-          type="text"
-          value={formData.floorNo}
-          onChange={(e) => handleInputChange('floorNo', e.target.value)}
-          className={inputClass}
-          placeholder="Enter floor number"
-        />
+      {/* Second Row - Property Details */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Facing
+          </label>
+          <select
+            value={formData.facing}
+            onChange={(e) => handleInputChange('facing', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Facing</option>
+            <option value="north">North</option>
+            <option value="south">South</option>
+            <option value="east">East</option>
+            <option value="west">West</option>
+            <option value="northeast">North East</option>
+            <option value="northwest">North West</option>
+            <option value="southeast">South East</option>
+            <option value="southwest">South West</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Furnishing Type *
+          </label>
+          <select
+            value={formData.furnishingType}
+            onChange={(e) => handleInputChange('furnishingType', e.target.value)}
+            className={selectClass}
+            required
+          >
+            <option value="">Select Furnishing Type</option>
+            <option value="fully_furnished">Fully Furnished</option>
+            <option value="semi_furnished">Semi Furnished</option>
+            <option value="un_furnished">Unfurnished</option>
+          </select>
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Facing
-        </label>
-        <select
-          value={formData.facing}
-          onChange={(e) => handleInputChange('facing', e.target.value)}
-          className={selectClass}
-        >
-          <option value="">Select Facing</option>
-          <option value="north">North</option>
-          <option value="south">South</option>
-          <option value="east">East</option>
-          <option value="west">West</option>
-          <option value="northeast">North East</option>
-          <option value="northwest">North West</option>
-          <option value="southeast">South East</option>
-          <option value="southwest">South West</option>
-        </select>
+      {/* Third Row - Ownership & Loan */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Ownership Type
+          </label>
+          <select
+            value={formData.ownershipType}
+            onChange={(e) => handleInputChange('ownershipType', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Ownership Type</option>
+            <option value="freehold">Freehold</option>
+            <option value="leasehold">Leasehold</option>
+            <option value="cooperative">Cooperative Society</option>
+            <option value="condominium">Condominium</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Loan on Property
+          </label>
+          <select
+            value={formData.loanOnProperty}
+            onChange={(e) => handleInputChange('loanOnProperty', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Furnishing Type *
-        </label>
-        <select
-          value={formData.furnishingType}
-          onChange={(e) => handleInputChange('furnishingType', e.target.value)}
-          className={selectClass}
-          required
-        >
-          <option value="">Select Furnishing Type</option>
-          <option value="fully_furnished">Fully Furnished</option>
-          <option value="semi_furnished">Semi Furnished</option>
-          <option value="un_furnished">Unfurnished</option>
-        </select>
-      </div>
-
-      {/* New Resale Fields */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Ownership Type
-        </label>
-        <select
-          value={formData.ownershipType}
-          onChange={(e) => handleInputChange('ownershipType', e.target.value)}
-          className={selectClass}
-        >
-          <option value="">Select Ownership Type</option>
-          <option value="freehold">Freehold</option>
-          <option value="leasehold">Leasehold</option>
-          <option value="cooperative">Cooperative Society</option>
-          <option value="condominium">Condominium</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Loan on Property
-        </label>
-        <select
-          value={formData.loanOnProperty}
-          onChange={(e) => handleInputChange('loanOnProperty', e.target.value)}
-          className={selectClass}
-        >
-          <option value="">Select</option>
-          <option value="true">Yes</option>
-          <option value="false">No</option>
-        </select>
-      </div>
-
+      {/* Loan Details - Conditional */}
       {formData.loanOnProperty === 'true' && (
-        <>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className={labelClass}>
               Loan Amount
             </label>
             <input
@@ -960,7 +1019,7 @@ export function PropertyForm({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className={labelClass}>
               Bank Name
             </label>
             <input
@@ -971,11 +1030,12 @@ export function PropertyForm({
               placeholder="Enter bank name"
             />
           </div>
-        </>
+        </div>
       )}
 
+      {/* Reason for Sale - Full Width */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className={labelClass}>
           Reason for Sale
         </label>
         <textarea
@@ -987,69 +1047,75 @@ export function PropertyForm({
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Flats per Floor
-        </label>
-        <input
-          type="text"
-          value={formData.flatsPerFloor}
-          onChange={(e) => handleInputChange('flatsPerFloor', e.target.value)}
-          className={inputClass}
-          placeholder="e.g., 2, 4, 6"
-        />
+      {/* Fourth Row - Additional Details */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Flats per Floor
+          </label>
+          <input
+            type="text"
+            value={formData.flatsPerFloor}
+            onChange={(e) => handleInputChange('flatsPerFloor', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 2, 4, 6"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Society Area Size
+          </label>
+          <input
+            type="text"
+            value={formData.societyAreaSize}
+            onChange={(e) => handleInputChange('societyAreaSize', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 5 acres, 25,000 sq ft"
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Society Area Size
-        </label>
-        <input
-          type="text"
-          value={formData.societyAreaSize}
-          onChange={(e) => handleInputChange('societyAreaSize', e.target.value)}
-          className={inputClass}
-          placeholder="e.g., 5 acres, 25,000 sq ft"
-        />
-      </div>
+      {/* Fifth Row - RERA & Listed By */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            RERA ID
+          </label>
+          <input
+            type="text"
+            value={formData.reraId}
+            onChange={(e) => handleInputChange('reraId', e.target.value)}
+            className={inputClass}
+            placeholder="Enter RERA ID"
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          RERA ID
-        </label>
-        <input
-          type="text"
-          value={formData.reraId}
-          onChange={(e) => handleInputChange('reraId', e.target.value)}
-          className={inputClass}
-          placeholder="Enter RERA ID"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Listed By *
-        </label>
-        <select
-          value={formData.listedBy}
-          onChange={(e) => handleInputChange('listedBy', e.target.value)}
-          className={selectClass}
-          required
-        >
-          <option value="">Select Listed By</option>
-          <option value="owner">Owner</option>
-          <option value="agent">Agent</option>
-        </select>
+        <div>
+          <label className={labelClass}>
+            Listed By *
+          </label>
+          <select
+            value={formData.listedBy}
+            onChange={(e) => handleInputChange('listedBy', e.target.value)}
+            className={selectClass}
+            required
+          >
+            <option value="">Select Listed By</option>
+            <option value="owner">Owner</option>
+            <option value="agent">Agent</option>
+          </select>
+        </div>
       </div>
 
       {/* Parking Vehicles Checkboxes */}
-      <div className="col-span-2">
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+      <div>
+        <label className={labelClass}>
           Parking Vehicles
         </label>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {['car', 'two_wheeler', 'bicycle', 'other'].map((vehicle) => (
-            <label key={vehicle} className="flex items-center space-x-2 cursor-pointer">
+            <label key={vehicle} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
               <input
                 type="checkbox"
                 checked={formData.parkingVehicles?.includes(vehicle) || false}
@@ -1088,7 +1154,7 @@ export function PropertyForm({
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Visit Timing (Weekend)
         </label>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-2 sm:grid sm:grid-cols-2 sm:gap-3 sm:space-y-0">
           <div>
             <label className="block text-xs text-gray-500 mb-1">From</label>
             <TimePicker12Hour
@@ -1123,7 +1189,7 @@ export function PropertyForm({
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Visit Timing (Weekdays)
         </label>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-2 sm:grid sm:grid-cols-2 sm:gap-3 sm:space-y-0">
           <div>
             <label className="block text-xs text-gray-500 mb-1">From</label>
             <TimePicker12Hour
@@ -1184,99 +1250,108 @@ export function PropertyForm({
   );
 
   const renderRentalDetails = () => (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Society Name
-        </label>
-        <input
-          type="text"
-          value={formData.societyName}
-          onChange={(e) => handleInputChange('societyName', e.target.value)}
-          className={inputClass}
-          placeholder="Enter society name"
-        />
+    <div className="space-y-4 sm:space-y-6">
+      {/* First Row - Basic Info */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Society Name
+          </label>
+          <input
+            type="text"
+            value={formData.societyName}
+            onChange={(e) => handleInputChange('societyName', e.target.value)}
+            className={inputClass}
+            placeholder="Enter society name"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Floor Number
+          </label>
+          <input
+            type="text"
+            value={formData.floorNo}
+            onChange={(e) => handleInputChange('floorNo', e.target.value)}
+            className={inputClass}
+            placeholder="Enter floor number"
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Floor Number
-        </label>
-        <input
-          type="text"
-          value={formData.floorNo}
-          onChange={(e) => handleInputChange('floorNo', e.target.value)}
-          className={inputClass}
-          placeholder="Enter floor number"
-        />
+      {/* Second Row - Property Details */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Furnishing Type *
+          </label>
+          <select
+            value={formData.furnishingType}
+            onChange={(e) => handleInputChange('furnishingType', e.target.value)}
+            className={selectClass}
+            required
+          >
+            <option value="">Select Furnishing Type</option>
+            <option value="fully_furnished">Fully Furnished</option>
+            <option value="semi_furnished">Semi Furnished</option>
+            <option value="un_furnished">Unfurnished</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Deposit Amount
+          </label>
+          <input
+            type="number"
+            value={formData.depositAmount}
+            onChange={(e) => handleInputChange('depositAmount', e.target.value)}
+            className={inputClass}
+            placeholder="Enter deposit amount"
+          />
+        </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Furnishing Type *
-        </label>
-        <select
-          value={formData.furnishingType}
-          onChange={(e) => handleInputChange('furnishingType', e.target.value)}
-          className={selectClass}
-          required
-        >
-          <option value="">Select Furnishing Type</option>
-          <option value="fully_furnished">Fully Furnished</option>
-          <option value="semi_furnished">Semi Furnished</option>
-          <option value="un_furnished">Unfurnished</option>
-        </select>
+      {/* Third Row - Rental Specific */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Tenant Type *
+          </label>
+          <select
+            value={formData.tenantType}
+            onChange={(e) => handleInputChange('tenantType', e.target.value)}
+            className={selectClass}
+            required
+          >
+            <option value="">Select Tenant Type</option>
+            <option value="family">Family</option>
+            <option value="bachelor">Bachelor</option>
+            <option value="anyone">Anyone</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Listed By *
+          </label>
+          <select
+            value={formData.listedBy}
+            onChange={(e) => handleInputChange('listedBy', e.target.value)}
+            className={selectClass}
+            required
+          >
+            <option value="">Select Listed By</option>
+            <option value="owner">Owner</option>
+            <option value="agent">Agent</option>
+          </select>
+        </div>
       </div>
 
+      {/* Fourth Row - Availability */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Deposit Amount
-        </label>
-        <input
-          type="number"
-          value={formData.depositAmount}
-          onChange={(e) => handleInputChange('depositAmount', e.target.value)}
-          className={selectClass}
-          placeholder="Enter deposit amount"
-        />
-      </div>
-
-      {/* New Rental Fields */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Tenant Type *
-        </label>
-        <select
-          value={formData.tenantType}
-          onChange={(e) => handleInputChange('tenantType', e.target.value)}
-          className={selectClass}
-          required
-        >
-          <option value="">Select Tenant Type</option>
-          <option value="family">Family</option>
-          <option value="bachelor">Bachelor</option>
-          <option value="anyone">Anyone</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Listed By *
-        </label>
-        <select
-          value={formData.listedBy}
-          onChange={(e) => handleInputChange('listedBy', e.target.value)}
-          className={selectClass}
-          required
-        >
-          <option value="">Select Listed By</option>
-          <option value="owner">Owner</option>
-          <option value="agent">Agent</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className={labelClass}>
           Available From Date
         </label>
         <input
@@ -1288,13 +1363,13 @@ export function PropertyForm({
       </div>
 
       {/* Parking Vehicles Checkboxes */}
-      <div className="col-span-2">
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+      <div>
+        <label className={labelClass}>
           Parking Vehicles
         </label>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {['car', 'two_wheeler', 'bicycle', 'other'].map((vehicle) => (
-            <label key={vehicle} className="flex items-center space-x-2 cursor-pointer">
+            <label key={vehicle} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
               <input
                 type="checkbox"
                 checked={formData.parkingVehicles?.includes(vehicle) || false}
@@ -1305,9 +1380,9 @@ export function PropertyForm({
                     : currentVehicles.filter((v: string) => v !== vehicle);
                   handleInputChange('parkingVehicles', newVehicles);
                 }}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded flex-shrink-0"
               />
-              <span className="text-sm text-gray-700 capitalize">
+              <span className="text-xs sm:text-sm text-gray-700 capitalize">
                 {vehicle.replace('_', ' ')}
               </span>
             </label>
@@ -1315,79 +1390,85 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Visit Details */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Visit Days (Weekend)
-        </label>
-        <input
-          type="text"
-          value={formData.visitDaysWeekend}
-          onChange={(e) => handleInputChange('visitDaysWeekend', e.target.value)}
-          className={inputClass}
-          placeholder="e.g., Saturday, Sunday"
-        />
-      </div>
+      {/* Visit Details - Weekend */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Visit Days (Weekend)
+          </label>
+          <input
+            type="text"
+            value={formData.visitDaysWeekend}
+            onChange={(e) => handleInputChange('visitDaysWeekend', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., Saturday, Sunday"
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Visit Timing (Weekend)
-        </label>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">From</label>
-            <TimePicker12Hour
-              value={formData.visitTimingWeekendFrom}
-              onChange={(value) => handleInputChange('visitTimingWeekendFrom', value)}
-            />
-          </div>
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">To</label>
-            <TimePicker12Hour
-              value={formData.visitTimingWeekendTo}
-              onChange={(value) => handleInputChange('visitTimingWeekendTo', value)}
-            />
+        <div>
+          <label className={labelClass}>
+            Visit Timing (Weekend)
+          </label>
+          <div className="space-y-2">
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">From</label>
+              <TimePicker12Hour
+                value={formData.visitTimingWeekendFrom}
+                onChange={(value) => handleInputChange('visitTimingWeekendFrom', value)}
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">To</label>
+              <TimePicker12Hour
+                value={formData.visitTimingWeekendTo}
+                onChange={(value) => handleInputChange('visitTimingWeekendTo', value)}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Visit Days (Weekdays)
-        </label>
-        <input
-          type="text"
-          value={formData.visitDaysWeekdays}
-          onChange={(e) => handleInputChange('visitDaysWeekdays', e.target.value)}
-          className={inputClass}
-          placeholder="e.g., Monday to Friday"
-        />
-      </div>
+      {/* Visit Details - Weekdays */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Visit Days (Weekdays)
+          </label>
+          <input
+            type="text"
+            value={formData.visitDaysWeekdays}
+            onChange={(e) => handleInputChange('visitDaysWeekdays', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., Monday to Friday"
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Visit Timing (Weekdays)
-        </label>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">From</label>
-            <TimePicker12Hour
-              value={formData.visitTimingWeekdaysFrom}
-              onChange={(value) => handleInputChange('visitTimingWeekdaysFrom', value)}
-            />
-          </div>
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">To</label>
-            <TimePicker12Hour
-              value={formData.visitTimingWeekdaysTo}
-              onChange={(value) => handleInputChange('visitTimingWeekdaysTo', value)}
-            />
+        <div>
+          <label className={labelClass}>
+            Visit Timing (Weekdays)
+          </label>
+          <div className="space-y-2">
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">From</label>
+              <TimePicker12Hour
+                value={formData.visitTimingWeekdaysFrom}
+                onChange={(value) => handleInputChange('visitTimingWeekdaysFrom', value)}
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">To</label>
+              <TimePicker12Hour
+                value={formData.visitTimingWeekdaysTo}
+                onChange={(value) => handleInputChange('visitTimingWeekdaysTo', value)}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="col-span-2">
-        <label className="flex items-center space-x-2 cursor-pointer">
+      {/* Pets Allowed */}
+      <div>
+        <label className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
           <input
             type="checkbox"
             checked={formData.petsAllowed || false}
@@ -1398,34 +1479,38 @@ export function PropertyForm({
         </label>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Square Feet
-        </label>
-        <input
-          type="number"
-          value={formData.squareFeet}
-          onChange={(e) => handleInputChange('squareFeet', e.target.value)}
-          className={selectClass}
-          placeholder="Enter square feet"
-        />
+      {/* Property Measurements */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Square Feet
+          </label>
+          <input
+            type="number"
+            value={formData.squareFeet}
+            onChange={(e) => handleInputChange('squareFeet', e.target.value)}
+            className={inputClass}
+            placeholder="Enter square feet"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Carpet Area
+          </label>
+          <input
+            type="number"
+            value={formData.carpetArea}
+            onChange={(e) => handleInputChange('carpetArea', e.target.value)}
+            className={inputClass}
+            placeholder="Enter carpet area"
+          />
+        </div>
       </div>
 
+      {/* Notes */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Carpet Area
-        </label>
-        <input
-          type="number"
-          value={formData.carpetArea}
-          onChange={(e) => handleInputChange('carpetArea', e.target.value)}
-          className={selectClass}
-          placeholder="Enter carpet area"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className={labelClass}>
           Notes
         </label>
         <textarea
@@ -1460,14 +1545,14 @@ export function PropertyForm({
   );
 
   const renderReviewSubmit = () => (
-    <div className="space-y-6">
-      <div className="bg-gray-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Review Your Property Details</h3>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="bg-gray-50 rounded-lg sm:rounded-xl p-4 sm:p-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Review Your Property Details</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <div>
-            <h4 className="font-medium text-gray-700 mb-3">Basic Information</h4>
-            <div className="space-y-2 text-sm">
+            <h4 className="font-medium text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">Basic Information</h4>
+            <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
               <p><span className="font-medium">Name:</span> {formData.sellerName || 'Not provided'}</p>
               <p><span className="font-medium">Email:</span> {formData.sellerEmail || 'Not provided'}</p>
               <p><span className="font-medium">Contact:</span> {formData.contactNumber || 'Not provided'}</p>
@@ -1478,8 +1563,8 @@ export function PropertyForm({
           </div>
           
           <div>
-            <h4 className="font-medium text-gray-700 mb-3">Property Details</h4>
-            <div className="space-y-2 text-sm">
+            <h4 className="font-medium text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">Property Details</h4>
+            <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
               <p><span className="font-medium">Society:</span> {formData.societyName || 'Not provided'}</p>
               <p><span className="font-medium">Furnishing:</span> {formData.furnishingType || 'Not provided'}</p>
               <p><span className="font-medium">Square Feet:</span> {formData.squareFeet || 'Not provided'}</p>
@@ -1494,9 +1579,9 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Amenities Review Section */}
-      <div className="bg-gray-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Review Your Selected Amenities</h3>
+      {/* Amenities Review Section - Mobile Responsive */}
+      <div className="bg-gray-50 rounded-lg sm:rounded-xl p-4 sm:p-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Review Your Selected Amenities</h3>
         
         {(() => {
           const selectedAmenities = Object.entries(formData.amenities).filter(([category, items]) => 
@@ -1506,26 +1591,26 @@ export function PropertyForm({
           if (selectedAmenities.length === 0) {
             return (
               <div className="text-center py-4">
-                <p className="text-gray-500">No amenities selected</p>
-                <p className="text-sm text-gray-400 mt-1">Go back to Step 4 to select amenities</p>
+                <p className="text-gray-500 text-sm sm:text-base">No amenities selected</p>
+                <p className="text-xs sm:text-sm text-gray-400 mt-1">Go back to Step 4 to select amenities</p>
               </div>
             );
           }
 
           return (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {selectedAmenities.map(([category, items]) => (
-                <div key={category} className="border border-gray-200 rounded-lg p-4 bg-white">
-                  <h4 className="font-medium text-gray-800 mb-3 capitalize">
+                <div key={category} className="border border-gray-200 rounded-lg sm:rounded-xl p-3 sm:p-4 bg-white">
+                  <h4 className="font-medium text-gray-800 mb-2 sm:mb-3 capitalize text-sm sm:text-base">
                     {category.replace('_', ' ')} ({Object.values(items).filter(Boolean).length})
                   </h4>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {Object.entries(items).map(([itemKey, isSelected]) => {
                       if (!isSelected) return null;
                       return (
                         <span 
                           key={itemKey} 
-                          className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+                          className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-blue-100 text-blue-800"
                         >
                           {itemKey.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </span>
@@ -1539,9 +1624,9 @@ export function PropertyForm({
         })()}
       </div>
 
-      {/* Images Review Section */}
-      <div className="bg-gray-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Review Your Uploaded Images</h3>
+      {/* Images Review Section - Mobile Responsive */}
+      <div className="bg-gray-50 rounded-lg sm:rounded-xl p-4 sm:p-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Review Your Uploaded Images</h3>
         
         {(() => {
           // Get all images from the image manager
@@ -1554,24 +1639,24 @@ export function PropertyForm({
 
           if (!hasImages) {
             return (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <PhotoIcon className="h-8 w-8 text-gray-400" />
+              <div className="text-center py-6 sm:py-8">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <PhotoIcon className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
                 </div>
-                <p className="text-gray-500">No images uploaded yet</p>
-                <p className="text-sm text-gray-400 mt-1">Go back to Step 3 to upload property images</p>
+                <p className="text-gray-500 text-sm sm:text-base">No images uploaded yet</p>
+                <p className="text-xs sm:text-sm text-gray-400 mt-1">Go back to Step 3 to upload property images</p>
               </div>
             );
           }
 
           return (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {Object.entries(allImages).map(([categoryKey, category]) => {
                 if (!category) return null;
                 
                 return (
-                  <div key={categoryKey} className="border border-gray-200 rounded-lg p-4 bg-white">
-                    <h4 className="font-medium text-gray-800 mb-3 capitalize">
+                  <div key={categoryKey} className="border border-gray-200 rounded-lg sm:rounded-xl p-3 sm:p-4 bg-white">
+                    <h4 className="font-medium text-gray-800 mb-2 sm:mb-3 capitalize text-sm sm:text-base">
                       {categoryKey.replace('_', ' ')} Images
                     </h4>
                     
@@ -1579,18 +1664,18 @@ export function PropertyForm({
                       if (!Array.isArray(subcategory) || subcategory.length === 0) return null;
                       
                       return (
-                        <div key={subcategoryKey} className="mb-4 last:mb-0">
-                          <h5 className="text-sm font-medium text-gray-700 mb-2 capitalize">
+                        <div key={subcategoryKey} className="mb-3 sm:mb-4 last:mb-0">
+                          <h5 className="text-xs sm:text-sm font-medium text-gray-700 mb-2 capitalize">
                             {subcategoryKey.replace('_', ' ')} ({subcategory.length})
                           </h5>
                           
                           <div className="flex overflow-x-auto space-x-2 pb-2">
                             {subcategory.map((fileInfo: any, index: number) => (
                               <div key={index} className="relative group flex-shrink-0">
-                                <div className="w-20 h-20 bg-white rounded-lg overflow-hidden border border-gray-200">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-lg overflow-hidden border border-gray-200">
                                   {fileInfo.name.includes('.pdf') || fileInfo.type?.includes('pdf') ? (
                                     <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                                      <DocumentIcon className="h-6 w-6 text-gray-400" />
+                                      <DocumentIcon className="h-4 w-4 sm:h-6 sm:w-6 text-gray-400" />
                                     </div>
                                   ) : (
                                     <Image
@@ -1604,8 +1689,8 @@ export function PropertyForm({
                                   )}
                                 </div>
                                 
-                                {/* File name tooltip */}
-                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20">
+                                {/* File name tooltip - Mobile responsive */}
+                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 max-w-32 truncate">
                                   {fileInfo.name}
                                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
                                 </div>
@@ -1623,15 +1708,16 @@ export function PropertyForm({
         })()}
       </div>
 
-      <div className="bg-blue-50 rounded-lg p-4">
-        <div className="flex items-center">
+      {/* Info Section - Mobile Responsive */}
+      <div className="bg-blue-50 rounded-lg sm:rounded-xl p-3 sm:p-4">
+        <div className="flex items-start">
           <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
             </svg>
           </div>
-          <div className="ml-3">
-            <p className="text-sm text-blue-700">
+          <div className="ml-2 sm:ml-3">
+            <p className="text-xs sm:text-sm text-blue-700 leading-relaxed">
               Please review all the information above. Once you submit, the property will be added to your portfolio.
             </p>
           </div>
@@ -1652,39 +1738,60 @@ export function PropertyForm({
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Step Navigation */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            {[1, 2, 3, 4, 5].map((step) => (
-              <div key={step} className="flex items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+      {/* Modern Step Navigation */}
+      <div className="mb-6 sm:mb-8">
+        {/* Progress Bar Style Steps */}
+        <div className="relative px-4">
+          {/* Background Progress Line - positioned behind circles */}
+          <div className="absolute top-4 left-8 right-8 h-0.5 bg-gray-200 z-0"></div>
+          
+          {/* Active Progress Line - positioned behind circles */}
+          <div 
+            className="absolute top-4 left-8 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600 z-0 transition-all duration-500 ease-out"
+            style={{ width: `calc(${((currentStep - 1) / 4) * 100}% - 16px)` }}
+          ></div>
+          
+          {/* Step Indicators */}
+          <div className="relative flex justify-between items-start">
+            {[
+              { step: 1, label: 'Basic', icon: '📝' },
+              { step: 2, label: 'Details', icon: '🏠' },
+              { step: 3, label: 'Images', icon: '📸' },
+              { step: 4, label: 'Amenities', icon: '⭐' },
+              { step: 5, label: 'Review', icon: '✅' }
+            ].map(({ step, label, icon }) => (
+              <div key={step} className="flex flex-col items-center relative z-10">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-300 transform bg-white ${
                   currentStep >= step 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-gray-200 text-gray-600'
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-110' 
+                    : 'text-gray-400 border-2 border-gray-200 hover:border-gray-300'
                 }`}>
-                  {step}
+                  {currentStep > step ? '✓' : step}
                 </div>
-                {step < 5 && (
-                  <div className={`w-16 h-1 mx-2 ${
-                    currentStep > step ? 'bg-blue-600' : 'bg-gray-200'
-                  }`} />
-                )}
+                <span className={`text-xs mt-1 font-medium transition-colors duration-300 ${
+                  currentStep >= step ? 'text-blue-600' : 'text-gray-500'
+                }`}>
+                  {label}
+                </span>
               </div>
             ))}
           </div>
-          <div className="text-sm text-gray-600">
-            Step {currentStep} of 5
-          </div>
         </div>
-        <div className="mt-4">
-          <div className="text-sm font-medium text-gray-700">
-            {currentStep === 1 && 'Basic Information'}
-            {currentStep === 2 && 'Property Details'}
-            {currentStep === 3 && 'Images & Documents'}
-            {currentStep === 4 && 'Amenities'}
-            {currentStep === 5 && 'Review & Submit'}
+        
+        {/* Current Step Title */}
+        <div className="mt-4 text-center">
+          <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-2 rounded-full">
+            <span className="text-sm font-semibold text-blue-700">
+              {currentStep === 1 && 'Basic Information'}
+              {currentStep === 2 && 'Property Details'}
+              {currentStep === 3 && 'Images & Documents'}
+              {currentStep === 4 && 'Amenities'}
+              {currentStep === 5 && 'Review & Submit'}
+            </span>
+            <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-medium">
+              {currentStep}/5
+            </span>
           </div>
         </div>
       </div>
@@ -1692,24 +1799,24 @@ export function PropertyForm({
       <form onSubmit={handleFormSubmit} className="space-y-8">
         {renderStepContent()}
       
-      {/* Navigation and Submit buttons */}
-      <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+      {/* Navigation and Submit buttons - Mobile Responsive */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 pt-6 border-t border-gray-200">
         {currentStep > 1 && (
           <button
             type="button"
             onClick={onPrevious}
-            className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+            className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors text-sm sm:text-base"
           >
             ← Previous
           </button>
         )}
         
         {currentStep < 5 && (
-          <div className="ml-auto">
+          <div className="w-full sm:w-auto sm:ml-auto">
             <button
               type="button"
               onClick={onNext}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm sm:text-base"
             >
               Next →
             </button>
@@ -1717,16 +1824,16 @@ export function PropertyForm({
         )}
         
         {currentStep === 5 && (
-          <div className="ml-auto">
+          <div className="w-full sm:w-auto sm:ml-auto">
             <button
               type="submit"
               disabled={isLoading}
               onClick={() => console.log('Submit button clicked!')}
-              className="px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-medium hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {isLoading ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white inline mr-2"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white inline mr-2"></div>
                   Submitting...
                 </>
               ) : (

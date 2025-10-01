@@ -269,22 +269,22 @@ export default function PropertyAmenitiesManager({
   };
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {Object.entries(AMENITY_CATEGORIES).map(([categoryKey, category]) => {
           const categoryAmenities = amenities[categoryKey as keyof PropertyAmenities] || {};
           const selectedCount = getSelectedCount(categoryKey as keyof PropertyAmenities);
           const totalCount = getTotalCount(categoryKey as keyof PropertyAmenities);
 
           return (
-            <div key={categoryKey} className="bg-white border border-gray-200 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-4">
+            <div key={categoryKey} className="bg-white border border-gray-200 rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-2 sm:gap-0">
                 <div className="flex items-center space-x-2">
-                  <span className="text-xl">{category.icon}</span>
-                  <h4 className="font-medium text-gray-900">{category.title}</h4>
+                  <span className="text-lg sm:text-xl">{category.icon}</span>
+                  <h4 className="font-medium text-gray-900 text-sm sm:text-base">{category.title}</h4>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <span className="text-sm text-gray-500">
+                <div className="flex items-center justify-between sm:space-x-3">
+                  <span className="text-xs sm:text-sm text-gray-500">
                     {selectedCount}/{totalCount}
                   </span>
                   <div className="flex items-center space-x-2">
@@ -302,23 +302,23 @@ export default function PropertyAmenitiesManager({
                 </div>
               </div>
 
-              <div className={`grid gap-3 ${
+              <div className={`grid gap-2 sm:gap-3 ${
                 categoryKey === 'furniture_amenities' || categoryKey === 'nearby_facilities' 
                   ? 'grid-cols-1 sm:grid-cols-2' 
                   : 'grid-cols-1'
               }`}>
                 {Object.entries(category.items).map(([itemKey, itemLabel]) => (
-                  <div key={itemKey} className="flex items-center">
+                  <div key={itemKey} className="flex items-center p-1 rounded hover:bg-gray-50 transition-colors">
                     <input
                       type="checkbox"
                       id={`${categoryKey}-${itemKey}`}
                       checked={(categoryAmenities as any)[itemKey] || false}
                       onChange={(e) => handleAmenityChange(categoryKey as keyof PropertyAmenities, itemKey, e.target.checked)}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded flex-shrink-0"
                     />
                     <label 
                       htmlFor={`${categoryKey}-${itemKey}`} 
-                      className="ml-3 text-sm text-gray-700 cursor-pointer"
+                      className="ml-2 sm:ml-3 text-xs sm:text-sm text-gray-700 cursor-pointer leading-relaxed"
                     >
                       {itemLabel}
                     </label>
@@ -330,11 +330,12 @@ export default function PropertyAmenitiesManager({
         })}
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h4 className="font-medium text-blue-900">Selected Amenities Summary</h4>
-            <p className="text-sm text-blue-700 mt-1">
+      {/* Summary Section - Mobile Responsive */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg sm:rounded-xl p-3 sm:p-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+          <div className="flex-1">
+            <h4 className="font-medium text-blue-900 text-sm sm:text-base">Selected Amenities Summary</h4>
+            <p className="text-xs sm:text-sm text-blue-700 mt-1">
               Total amenities selected: {Object.values(amenities).reduce((total, category) => {
                 if (category && typeof category === 'object') {
                   return total + Object.values(category).filter(Boolean).length;
@@ -353,7 +354,7 @@ export default function PropertyAmenitiesManager({
               setAmenities(emptyAmenities);
               onAmenitiesChange(emptyAmenities);
             }}
-            className="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-100 border border-blue-300 rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-blue-700 bg-blue-100 border border-blue-300 rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors whitespace-nowrap"
           >
             Clear All
           </button>

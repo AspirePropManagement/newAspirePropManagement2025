@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { PropertyForm } from '@/components/PropertyForm';
 import { PropertyFormSkeleton } from '@/components/skeletons';
 import PropertyListingsTable from '@/components/PropertyListingsTable';
+import ScrollArrow from '@/components/ScrollArrow';
 import { 
   createResaleProperty, 
   createRentalProperty, 
@@ -210,8 +211,13 @@ export default function PostPropertyPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-6 sm:space-y-8">
-          {/* Header */}
+          {/* Header - Mobile Responsive */}
           <div className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl sm:rounded-3xl mb-4 sm:mb-6 shadow-2xl">
+              <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
               Post Your Property
             </h1>
@@ -220,8 +226,8 @@ export default function PostPropertyPage() {
             </p>
           </div>
 
-          {/* Auth Form Card */}
-          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
+          {/* Auth Form Card - Mobile Responsive */}
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 md:p-8">
             <form onSubmit={handleAuthSubmit} className="space-y-4 sm:space-y-6">
               {/* Email Field */}
               <div>
@@ -327,6 +333,9 @@ export default function PostPropertyPage() {
               By continuing, you agree to our Terms of Service and Privacy Policy
             </p>
           </div>
+
+          {/* Scroll Arrow */}
+          <ScrollArrow />
         </div>
       </div>
     );
@@ -336,25 +345,25 @@ export default function PostPropertyPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50 to-red-100 py-8">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-3xl mb-6 shadow-2xl">
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {/* Header - Mobile Responsive */}
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl sm:rounded-3xl mb-4 sm:mb-6 shadow-2xl">
+            <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-3 sm:mb-4">
             Post Your Property
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
             List your property and reach thousands of potential buyers and renters across our platform
           </p>
         </div>
 
-        {/* Property Type Tabs */}
-        <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-gray-100 mb-8 overflow-hidden">
+        {/* Property Type Tabs - Mobile Responsive */}
+        <div className="bg-white/90 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100 mb-6 sm:mb-8 overflow-hidden">
           <div className="border-b border-gray-100">
-            <nav className="flex space-x-0 px-4" aria-label="Tabs">
+            <nav className="flex space-x-0 px-2 sm:px-4 overflow-x-auto" aria-label="Tabs">
               {[
                 { id: 'resale', name: 'Resale', icon: '🏠', gradient: 'from-blue-500 to-indigo-500' },
                 { id: 'rental', name: 'Rental', icon: '🔑', gradient: 'from-green-500 to-emerald-500' },
@@ -364,21 +373,21 @@ export default function PostPropertyPage() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`group relative flex-1 py-4 px-2 text-center transition-all duration-300 ${
+                  className={`group relative flex-1 min-w-[80px] sm:min-w-0 py-3 sm:py-4 px-1 sm:px-2 text-center transition-all duration-300 ${
                     activeTab === tab.id
                       ? 'text-white'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   {activeTab === tab.id && (
-                    <div className={`absolute inset-0 bg-gradient-to-r ${tab.gradient} rounded-t-xl shadow-lg`}></div>
+                    <div className={`absolute inset-0 bg-gradient-to-r ${tab.gradient} rounded-t-lg sm:rounded-t-xl shadow-lg`}></div>
                   )}
                   <div className="relative z-10 flex flex-col items-center space-y-1">
-                    <span className="text-lg group-hover:scale-110 transition-transform duration-300">{tab.icon}</span>
-                    <span className="font-semibold text-xs">{tab.name}</span>
+                    <span className="text-base sm:text-lg group-hover:scale-110 transition-transform duration-300">{tab.icon}</span>
+                    <span className="font-semibold text-xs sm:text-xs whitespace-nowrap">{tab.name}</span>
                   </div>
                   {activeTab !== tab.id && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-50 to-gray-100 opacity-0 group-hover:opacity-100 rounded-t-xl transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-50 to-gray-100 opacity-0 group-hover:opacity-100 rounded-t-lg sm:rounded-t-xl transition-opacity duration-300"></div>
                   )}
                 </button>
               ))}
@@ -386,18 +395,18 @@ export default function PostPropertyPage() {
           </div>
         </div>
 
-        {/* Property Form */}
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+        {/* Property Form - Mobile Responsive */}
+        <div className="bg-white/95 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
           {isSubmitting ? (
-            <div className="p-8">
+            <div className="p-4 sm:p-6 md:p-8">
               <PropertyFormSkeleton />
             </div>
           ) : activeTab === 'listings' ? (
-            <div className="p-8">
+            <div className="p-4 sm:p-6 md:p-8">
               <PropertyListingsTable />
             </div>
           ) : (
-            <div className="p-8">
+            <div className="p-4 sm:p-6 md:p-8">
               <PropertyForm
                 propertyType={activeTab as 'resale' | 'rental' | 'new_project'}
                 currentStep={currentStep}
@@ -410,9 +419,9 @@ export default function PostPropertyPage() {
             </div>
           )}
 
-          {/* Success Message */}
+          {/* Success Message - Mobile Responsive */}
           {submitSuccess && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 m-6">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 m-4 sm:m-6">
               <div className="flex">
                 <div className="flex-shrink-0">
                   <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
@@ -420,7 +429,7 @@ export default function PostPropertyPage() {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-green-800">
+                  <h3 className="text-sm sm:text-base font-medium text-green-800">
                     Property Posted Successfully!
                   </h3>
                   <div className="mt-2 text-sm text-green-700">
@@ -431,9 +440,9 @@ export default function PostPropertyPage() {
             </div>
           )}
 
-          {/* Error Message */}
+          {/* Error Message - Mobile Responsive */}
           {submitError && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 m-6">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 m-4 sm:m-6">
               <div className="flex">
                 <div className="flex-shrink-0">
                   <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -441,7 +450,7 @@ export default function PostPropertyPage() {
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">
+                  <h3 className="text-sm sm:text-base font-medium text-red-800">
                     Error Submitting Property
                   </h3>
                   <div className="mt-2 text-sm text-red-700">
@@ -452,6 +461,9 @@ export default function PostPropertyPage() {
             </div>
           )}
         </div>
+
+        {/* Scroll Arrow */}
+        <ScrollArrow />
       </div>
     </div>
   );
