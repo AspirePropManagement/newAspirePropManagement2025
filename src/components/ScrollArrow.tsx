@@ -2,11 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 
+interface ScrollArrowProps {
+  bottomOffset?: string;
+  rightOffset?: string;
+}
+
 /**
  * ScrollArrow component with smart direction detection
  * Shows down arrow at top, up arrow at bottom with smooth scroll functionality
  */
-export const ScrollArrow: React.FC = () => {
+export const ScrollArrow: React.FC<ScrollArrowProps> = ({ 
+  bottomOffset = 'bottom-24', 
+  rightOffset = 'right-4 sm:right-6 lg:right-8' 
+}) => {
   const [isAtTop, setIsAtTop] = useState(true);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -57,7 +65,7 @@ export const ScrollArrow: React.FC = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-24 right-4 sm:right-6 lg:right-8 z-40 max-w-full">
+    <div className={`fixed ${bottomOffset} ${rightOffset} z-40 max-w-full`}>
       <button
         onClick={handleScrollClick}
         className="group relative w-10 h-10 sm:w-11 sm:h-11 bg-white bg-opacity-90 hover:bg-opacity-100 rounded-md shadow-md hover:shadow-lg transition-all duration-300 backdrop-blur-sm border border-gray-200"

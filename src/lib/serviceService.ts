@@ -1,12 +1,12 @@
 import { supabase } from './supabase';
-import { ServiceItem, CreateServiceItem, UpdateServiceItem } from '@/types/Service';
+import { Service, ServiceCreateData, ServiceUpdateData } from '@/types/Service';
 
 /**
  * Service for managing Services (admin CRUD and public fetch)
  */
 export class ServicesService {
   /** Get all services (admin view), ordered */
-  static async getAll(): Promise<ServiceItem[]> {
+  static async getAll(): Promise<Service[]> {
     if (!supabase) throw new Error('Database connection not available');
     const { data, error } = await supabase
       .from('services')
@@ -18,7 +18,7 @@ export class ServicesService {
   }
 
   /** Get active services for public website */
-  static async getActive(): Promise<ServiceItem[]> {
+  static async getActive(): Promise<Service[]> {
     if (!supabase) throw new Error('Database connection not available');
     const { data, error } = await supabase
       .from('services')
@@ -30,7 +30,7 @@ export class ServicesService {
   }
 
   /** Create a new service */
-  static async create(payload: CreateServiceItem): Promise<ServiceItem> {
+  static async create(payload: ServiceCreateData): Promise<Service> {
     if (!supabase) throw new Error('Database connection not available');
     const { data, error } = await supabase
       .from('services')
@@ -38,11 +38,11 @@ export class ServicesService {
       .select()
       .single();
     if (error) throw error;
-    return data as ServiceItem;
+    return data as Service;
   }
 
   /** Update a service by id */
-  static async update(id: string, updates: UpdateServiceItem): Promise<ServiceItem> {
+  static async update(id: string, updates: ServiceUpdateData): Promise<Service> {
     if (!supabase) throw new Error('Database connection not available');
     const { data, error } = await supabase
       .from('services')
@@ -51,7 +51,7 @@ export class ServicesService {
       .select()
       .single();
     if (error) throw error;
-    return data as ServiceItem;
+    return data as Service;
   }
 
   /** Delete a service by id */

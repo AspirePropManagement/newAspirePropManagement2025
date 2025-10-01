@@ -6,7 +6,7 @@ import { FormInput } from './FormInput'
 import { Toast } from './Toast'
 import AuthService from '@/lib/authService'
 
-type UserRole = 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER'
+type UserRole = 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER' | 'OWNER'
 
 interface SupabaseAuthFormProps {
   mode: 'signin' | 'signup'
@@ -24,6 +24,8 @@ const getDashboardRoute = (role: UserRole): string => {
       return '/builder'
     case 'BUYER':
       return '/buyer'
+    case 'OWNER':
+      return '/owner'
     default:
       return '/dashboard'
   }

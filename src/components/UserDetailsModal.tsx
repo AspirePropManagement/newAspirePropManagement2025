@@ -60,10 +60,14 @@ export const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
 
     const fetchProfileData = async () => {
       setProfileLoading(true);
-      try {
-        let data = null;
-        if (user.role === 'AGENT') {
-          const { data: agentData } = await supabase
+    try {
+      let data = null;
+      if (!supabase) {
+        setProfileLoading(false);
+        return;
+      }
+      if (user.role === 'AGENT') {
+        const { data: agentData } = await supabase
             .from('agent_profiles')
             .select('*')
             .eq('user_id', user.id)

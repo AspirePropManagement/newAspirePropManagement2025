@@ -10,6 +10,10 @@ export class ServicesService {
    */
   static async getActiveServices(limit?: number): Promise<Service[]> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       let query = supabase
         .from('services')
         .select(`
@@ -50,6 +54,10 @@ export class ServicesService {
    */
   static async getAllServices(): Promise<Service[]> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('services')
         .select(`
@@ -83,6 +91,10 @@ export class ServicesService {
    */
   static async getServiceById(id: string): Promise<Service | null> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('services')
         .select(`
@@ -116,6 +128,10 @@ export class ServicesService {
    */
   static async getServiceBySlug(slug: string): Promise<Service | null> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('services')
         .select(`
@@ -150,6 +166,10 @@ export class ServicesService {
    */
   static async createService(serviceData: ServiceCreateData): Promise<Service> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('services')
         .insert([serviceData])
@@ -173,6 +193,10 @@ export class ServicesService {
    */
   static async updateService(id: string, serviceData: ServiceUpdateData): Promise<Service> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('services')
         .update(serviceData)
@@ -197,6 +221,10 @@ export class ServicesService {
    */
   static async deleteService(id: string): Promise<void> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { error } = await supabase
         .from('services')
         .update({ deleted_at: new Date().toISOString() })
@@ -217,6 +245,10 @@ export class ServicesService {
    */
   static async toggleServiceStatus(id: string, isActive: boolean): Promise<Service> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('services')
         .update({ is_active: isActive })
@@ -241,6 +273,10 @@ export class ServicesService {
    */
   static async getServicesCount(): Promise<number> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { count, error } = await supabase
         .from('services')
         .select('*', { count: 'exact', head: true })

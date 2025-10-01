@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase'
 import type { Database } from '@/lib/supabase'
 
 type User = Database['public']['Tables']['users']['Row']
-type UserRole = 'admin' | 'agent' | 'buyer' | 'builder'
+type UserRole = 'admin' | 'agent' | 'buyer' | 'builder' | 'owner'
 
 interface RoleAssignmentData {
   admin?: {
@@ -33,6 +33,12 @@ interface RoleAssignmentData {
     license_number?: string
     specialization?: string[]
     experience_years?: number
+    is_verified?: boolean
+  }
+  owner?: {
+    full_name?: string
+    phone?: string
+    address?: string
     is_verified?: boolean
   }
 }

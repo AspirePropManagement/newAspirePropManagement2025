@@ -18,6 +18,12 @@ export function usePropertyCount() {
       setLoading(true);
       setError(null);
 
+      if (!supabase) {
+        setError('Database connection not available');
+        setLoading(false);
+        return;
+      }
+
       // Count properties from all property tables
       const [
         { count: propertiesCount },

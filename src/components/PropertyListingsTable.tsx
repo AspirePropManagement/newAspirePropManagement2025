@@ -45,7 +45,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
 
   // Fetch properties based on active tab
   const fetchProperties = async (propertyType: 'resale' | 'rental' | 'new_project') => {
-    if (!user) return;
+    if (!user || !supabase) return;
     
     setLoading(true);
     try {

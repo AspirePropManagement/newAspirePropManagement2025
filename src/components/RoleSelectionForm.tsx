@@ -5,7 +5,7 @@ import { useSupabaseRoleAssignment } from '@/hooks/useSupabaseRoleAssignment'
 import { useSupabase } from './SupabaseProvider'
 import { FormInput } from './FormInput'
 
-type UserRole = 'admin' | 'agent' | 'buyer' | 'builder'
+type UserRole = 'admin' | 'agent' | 'buyer' | 'builder' | 'owner'
 
 interface RoleSelectionFormProps {
   onRoleSelected: (role: UserRole) => void

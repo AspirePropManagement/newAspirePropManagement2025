@@ -10,6 +10,10 @@ export class ResalePropertyService {
    */
   static async getActiveResaleProperties(limit?: number): Promise<ResaleProperty[]> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       let query = supabase
         .from('resale_properties')
         .select('*')
@@ -40,6 +44,10 @@ export class ResalePropertyService {
    */
   static async getResalePropertyById(id: string): Promise<ResaleProperty | null> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('resale_properties')
         .select('*')
@@ -64,6 +72,10 @@ export class ResalePropertyService {
    */
   static async getResalePropertiesByLocation(location: string, limit?: number): Promise<ResaleProperty[]> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       let query = supabase
         .from('resale_properties')
         .select('*')
@@ -95,6 +107,10 @@ export class ResalePropertyService {
    */
   static async createResaleProperty(propertyData: ResalePropertyCreateData): Promise<ResaleProperty> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('resale_properties')
         .insert([propertyData])
@@ -118,6 +134,10 @@ export class ResalePropertyService {
    */
   static async updateResaleProperty(id: string, propertyData: Partial<ResalePropertyCreateData>): Promise<ResaleProperty> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('resale_properties')
         .update(propertyData)
@@ -142,6 +162,10 @@ export class ResalePropertyService {
    */
   static async deleteResaleProperty(id: string): Promise<void> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { error } = await supabase
         .from('resale_properties')
         .update({ deleted_at: new Date().toISOString() })
@@ -162,6 +186,10 @@ export class ResalePropertyService {
    */
   static async getResalePropertiesCount(): Promise<number> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { count, error } = await supabase
         .from('resale_properties')
         .select('*', { count: 'exact', head: true })

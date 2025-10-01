@@ -9,10 +9,14 @@ export class AdsBannerService {
    * Fetches active ads banners for a specific location
    */
   static async getActiveBannersByLocation(location: BannerLocation): Promise<AdsBanner[]> {
-    try {
-      const now = new Date().toISOString();
-      
-      const { data, error } = await supabase
+  try {
+    const now = new Date().toISOString();
+    
+    if (!supabase) {
+      throw new Error('Database connection not available');
+    }
+    
+    const { data, error } = await supabase
         .from('ads_banners')
         .select('*')
         .eq('display_location', location)
@@ -39,6 +43,10 @@ export class AdsBannerService {
    */
   static async getAllBanners(): Promise<AdsBanner[]> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('ads_banners')
         .select('*')
@@ -62,6 +70,10 @@ export class AdsBannerService {
    */
   static async createBanner(bannerData: AdsBannerCreateData): Promise<AdsBanner> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('ads_banners')
         .insert([bannerData])
@@ -85,6 +97,10 @@ export class AdsBannerService {
    */
   static async updateBanner(id: string, bannerData: AdsBannerUpdateData): Promise<AdsBanner> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('ads_banners')
         .update(bannerData)
@@ -109,6 +125,10 @@ export class AdsBannerService {
    */
   static async deleteBanner(id: string): Promise<void> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { error } = await supabase
         .from('ads_banners')
         .delete()
@@ -129,6 +149,10 @@ export class AdsBannerService {
    */
   static async toggleBannerStatus(id: string, isActive: boolean): Promise<AdsBanner> {
     try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
       const { data, error } = await supabase
         .from('ads_banners')
         .update({ is_active: isActive })

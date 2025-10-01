@@ -5,7 +5,7 @@ import type { Database } from '@/lib/supabase'
 
 type User = Database['public']['Tables']['users']['Row']
 
-type UserRole = 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER'
+type UserRole = 'ADMIN' | 'AGENT' | 'BUYER' | 'BUILDER' | 'OWNER'
 
 interface UserProfile {
   user: User | null

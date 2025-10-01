@@ -14,6 +14,7 @@ import {
   UserIcon,
   ClockIcon
 } from '@heroicons/react/24/outline';
+import { ScrollArrow } from '@/components/ScrollArrow';
 
 /**
  * Properties Listing Page Content Component
@@ -419,7 +420,7 @@ function PropertiesListingContent() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
 
       {/* Main Content - Layout with Fixed Sidebar */}
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row">
         {/* Mobile Overlay */}
         {showFilters && (
           <div 
@@ -428,9 +429,9 @@ function PropertiesListingContent() {
           />
         )}
         
-        {/* Left Sidebar - Scrollable Filters */}
-        <div className={`w-80 lg:block ${showFilters ? 'block' : 'hidden'} bg-white/90 backdrop-blur-lg border-r border-gray-200/50 flex-shrink-0 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:z-30 fixed top-0 left-0 h-full z-30 overflow-y-auto shadow-2xl`}>
-          <div className="p-6 space-y-6">
+         {/* Left Sidebar - Scrollable Filters */}
+         <div className={`w-full max-w-[320px] lg:w-80 lg:block ${showFilters ? 'block' : 'hidden'} bg-white/95 backdrop-blur-lg border-r border-gray-200/50 flex-shrink-0 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:z-30 fixed top-0 left-0 h-full z-30 overflow-y-auto shadow-2xl transform transition-transform duration-300 ease-in-out ${showFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+          <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Mobile Close Button */}
             <div className="flex items-center justify-between lg:hidden">
               <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
@@ -637,68 +638,116 @@ function PropertiesListingContent() {
           </div>
         </div>
 
-        {/* Right Content - Properties Grid */}
-        <div className="flex-1 min-h-screen bg-white/30 backdrop-blur-sm">
-          <div className="p-6">
-            {/* Mobile Filter Button */}
-            <div className="lg:hidden mb-6">
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className="group flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-              >
-                <Bars3Icon className="w-5 h-5" />
-                <span>Filters</span>
-                {getActiveFilterCount() > 0 && (
-                  <span className="bg-white text-orange-600 text-xs rounded-full px-2.5 py-1 min-w-[24px] h-6 flex items-center justify-center font-bold shadow-md">
-                    {getActiveFilterCount()}
-                  </span>
-                )}
-                <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </button>
-            </div>
+         {/* Right Content - Properties Grid */}
+         <div className="flex-1 min-h-screen bg-white/30 backdrop-blur-sm">
+           {/* Sticky Floating Filter Button - Mobile & Tablet */}
+           <div className="lg:hidden fixed bottom-4 right-4 z-50">
+             <button
+               onClick={() => setShowFilters(!showFilters)}
+               className="group flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-full font-semibold shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110"
+               style={{
+                 boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4), 0 6px 20px rgba(239, 68, 68, 0.3)',
+                 backdropFilter: 'blur(10px)',
+                 animation: getActiveFilterCount() > 0 ? 'pulse 2s infinite' : 'none'
+               }}
+             >
+               <Bars3Icon className="w-5 h-5" />
+               <span className="font-bold">Filters</span>
+               {getActiveFilterCount() > 0 && (
+                 <span className="bg-white text-orange-600 text-xs rounded-full px-2.5 py-1 min-w-[24px] h-6 flex items-center justify-center font-bold shadow-md animate-bounce">
+                   {getActiveFilterCount()}
+                 </span>
+               )}
+               <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+               </svg>
+             </button>
+           </div>
+
+           {/* Desktop Floating Filter Button - Shows when scrolling */}
+           <div className="hidden lg:block fixed bottom-6 right-6 z-40">
+             <button
+               onClick={() => setShowFilters(!showFilters)}
+               className="group flex items-center space-x-3 px-6 py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-2xl font-semibold shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105"
+               style={{
+                 boxShadow: '0 15px 50px rgba(249, 115, 22, 0.4), 0 8px 25px rgba(239, 68, 68, 0.3)',
+                 backdropFilter: 'blur(15px)',
+                 animation: getActiveFilterCount() > 0 ? 'pulse 2s infinite' : 'none'
+               }}
+             >
+               <Bars3Icon className="w-6 h-6" />
+               <span className="font-bold text-lg">Filters</span>
+               {getActiveFilterCount() > 0 && (
+                 <span className="bg-white text-orange-600 text-sm rounded-full px-3 py-1 min-w-[28px] h-7 flex items-center justify-center font-bold shadow-md animate-bounce">
+                   {getActiveFilterCount()}
+                 </span>
+               )}
+               <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+               </svg>
+             </button>
+           </div>
+
+           <div className="p-3 sm:p-4 md:p-6">
+             {/* Mobile Filter Button - Static (for initial view) */}
+             <div className="lg:hidden mb-4 sm:mb-6">
+               <button
+                 onClick={() => setShowFilters(!showFilters)}
+                 className="group flex items-center justify-center w-full sm:w-auto space-x-2 sm:space-x-3 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-xl sm:rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 text-sm sm:text-base"
+               >
+                 <Bars3Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                 <span>Filters</span>
+                 {getActiveFilterCount() > 0 && (
+                   <span className="bg-white text-orange-600 text-xs rounded-full px-2 sm:px-2.5 py-0.5 sm:py-1 min-w-[20px] sm:min-w-[24px] h-5 sm:h-6 flex items-center justify-center font-bold shadow-md">
+                     {getActiveFilterCount()}
+                   </span>
+                 )}
+                 <svg className="w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                 </svg>
+               </button>
+             </div>
 
             {/* Results Header */}
-            <div className="flex items-center justify-between mb-8 p-6 bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-100">
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-2">{mainHeading}</h1>
-                <p className="text-gray-600 text-lg font-medium">
+            <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8 p-3 sm:p-4 md:p-6 bg-white/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100">
+              <div className="flex-1">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-1 sm:mb-2">{mainHeading}</h1>
+                <p className="text-gray-600 text-sm sm:text-base md:text-lg font-medium">
                   {subHeading}
                 </p>
               </div>
               <div className="hidden md:flex items-center space-x-4">
-                <div className="w-16 h-16 bg-gradient-to-r from-orange-100 to-red-100 rounded-2xl flex items-center justify-center">
-                  <HomeIcon className="w-8 h-8 text-orange-600" />
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-orange-100 to-red-100 rounded-xl md:rounded-2xl flex items-center justify-center">
+                  <HomeIcon className="w-6 h-6 md:w-8 md:h-8 text-orange-600" />
                 </div>
               </div>
             </div>
 
             {/* Location Search Bar */}
-            <div className="mb-8">
-              <div className="max-w-5xl bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl border border-gray-100 p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <div className="mb-4 sm:mb-6 md:mb-8">
+              <div className="max-w-5xl bg-white/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 p-3 sm:p-4 md:p-6">
+                <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <label className="block text-lg font-bold text-gray-900">
+                  <label className="block text-sm sm:text-base md:text-lg font-bold text-gray-900">
                     Search by Location
                   </label>
                 </div>
                 <GooglePlacesAutocomplete
                   value={selectedFilters.location}
                   onChange={(value) => handleFilterChange('location', value)}
-                  placeholder="Enter location (e.g., Pune, Maharashtra)"
-                  className="w-full px-6 py-4 border border-blue-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base bg-white/90 backdrop-blur-sm transition-all duration-300 hover:bg-white shadow-lg focus:shadow-xl"
+                  placeholder="Enter location (e.g., Pune)"
+                  className="w-full px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 md:py-4 border border-blue-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base bg-white/90 backdrop-blur-sm transition-all duration-300 hover:bg-white shadow-lg focus:shadow-xl"
                 />
               </div>
             </div>
 
             {/* Properties Grid */}
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                 {Array.from({ length: 8 }).map((_, index) => (
                   <PropertyCardSkeleton key={index} />
                 ))}
@@ -735,7 +784,7 @@ function PropertiesListingContent() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8">
                   {paginatedProperties.map((property) => (
                     <PropertyCard key={property.id} property={property} />
                   ))}
@@ -743,18 +792,19 @@ function PropertiesListingContent() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center border-t border-gray-200 bg-white px-4 py-6 sm:px-6 rounded-lg">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex items-center justify-center border-t border-gray-200 bg-white px-2 sm:px-4 py-4 sm:py-6 rounded-lg">
+                    <div className="flex items-center space-x-1 sm:space-x-2">
                       {/* Previous Button */}
                       <button
                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                         disabled={currentPage === 1}
-                        className="relative inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="relative inline-flex items-center px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
-                        Previous
+                        <span className="hidden sm:inline">Previous</span>
+                        <span className="sm:hidden">Prev</span>
                       </button>
 
                       {/* Page Numbers */}
@@ -769,7 +819,7 @@ function PropertiesListingContent() {
                               <button
                                 key={1}
                                 onClick={() => setCurrentPage(1)}
-                                className={`px-3 py-2 text-sm font-medium rounded-md ${
+                                className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-md ${
                                   currentPage === 1
                                     ? 'bg-orange-600 text-white'
                                     : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
@@ -785,7 +835,7 @@ function PropertiesListingContent() {
                                 <button
                                   key={2}
                                   onClick={() => setCurrentPage(2)}
-                                  className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                                  className="px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                                 >
                                   2
                                 </button>
@@ -795,7 +845,7 @@ function PropertiesListingContent() {
                             // Show ellipsis if current page is far from beginning
                             if (currentPage > 4) {
                               pages.push(
-                                <span key="ellipsis1" className="px-2 py-2 text-sm text-gray-500">
+                                <span key="ellipsis1" className="px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm text-gray-500">
                                   ...
                                 </span>
                               );
@@ -811,7 +861,7 @@ function PropertiesListingContent() {
                                   <button
                                     key={i}
                                     onClick={() => setCurrentPage(i)}
-                                    className={`px-3 py-2 text-sm font-medium rounded-md ${
+                                    className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-md ${
                                       currentPage === i
                                         ? 'bg-orange-600 text-white'
                                         : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
@@ -826,7 +876,7 @@ function PropertiesListingContent() {
                             // Show ellipsis if current page is far from end
                             if (currentPage < totalPages - 3) {
                               pages.push(
-                                <span key="ellipsis2" className="px-2 py-2 text-sm text-gray-500">
+                                <span key="ellipsis2" className="px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm text-gray-500">
                                   ...
                                 </span>
                               );
@@ -838,7 +888,7 @@ function PropertiesListingContent() {
                                 <button
                                   key={totalPages - 1}
                                   onClick={() => setCurrentPage(totalPages - 1)}
-                                  className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                                  className="px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                                 >
                                   {totalPages - 1}
                                 </button>
@@ -850,7 +900,7 @@ function PropertiesListingContent() {
                               <button
                                 key={totalPages}
                                 onClick={() => setCurrentPage(totalPages)}
-                                className={`px-3 py-2 text-sm font-medium rounded-md ${
+                                className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-md ${
                                   currentPage === totalPages
                                     ? 'bg-orange-600 text-white'
                                     : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
@@ -866,7 +916,7 @@ function PropertiesListingContent() {
                                 <button
                                   key={i}
                                   onClick={() => setCurrentPage(i)}
-                                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                                  className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-md ${
                                     currentPage === i
                                       ? 'bg-orange-600 text-white'
                                       : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
@@ -886,10 +936,11 @@ function PropertiesListingContent() {
                       <button
                         onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                         disabled={currentPage === totalPages}
-                        className="relative inline-flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="relative inline-flex items-center px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        Next
-                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span className="hidden sm:inline">Next</span>
+                        <span className="sm:hidden">Next</span>
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-0.5 sm:ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
@@ -902,6 +953,11 @@ function PropertiesListingContent() {
         </div>
       </div>
 
+      {/* Scroll Arrow - Positioned above chat button in same vertical line */}
+      <ScrollArrow 
+        bottomOffset="bottom-20" 
+        rightOffset="right-4 sm:right-6 lg:right-8" 
+      />
     </div>
   );
 }
