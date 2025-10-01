@@ -13,6 +13,7 @@ import { supabase } from '../../lib/supabase';
 import Link from 'next/link';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import DashboardPropertyForm from '../../components/DashboardPropertyForm';
+import { ScrollArrow } from '../../components/ScrollArrow';
 
 /**
  * Admin Dashboard page displaying comprehensive property management statistics
@@ -163,25 +164,25 @@ export default function AdminDashboardPage() {
 
   return (
     <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-6">
-        <div className="w-full max-w-none px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-6">
+        <div className="w-full max-w-none px-3 sm:px-4 md:px-6 lg:px-8">
           {/* Modern Page Header */}
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-              <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center mb-6 sm:mb-8 md:mb-10">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl sm:rounded-2xl mb-3 sm:mb-4 shadow-lg">
+              <svg className="h-6 w-6 sm:h-8 sm:w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-3">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-2 sm:mb-3 leading-tight">
               Welcome Back, {user.first_name || user.email}
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto mb-4 sm:mb-6 leading-relaxed px-2">
               Manage your properties, track analytics, and grow your real estate business
             </p>
             <button
               onClick={refreshData}
               disabled={isLoading}
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none"
+              className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg sm:rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none text-sm sm:text-base"
             >
               {isLoading ? (
                 <>
@@ -204,25 +205,25 @@ export default function AdminDashboardPage() {
 
           {/* Error Display */}
           {error && (
-            <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-3xl p-6 mb-8 shadow-lg">
+            <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-lg">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center">
-                    <svg className="h-6 w-6 text-red-600" viewBox="0 0 20 20" fill="currentColor">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-100 rounded-xl sm:rounded-2xl flex items-center justify-center">
+                    <svg className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>
                   </div>
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-lg font-semibold text-red-800">Error loading dashboard data</h3>
-                  <p className="mt-1 text-red-700">{error}</p>
+                <div className="ml-3 sm:ml-4">
+                  <h3 className="text-base sm:text-lg font-semibold text-red-800">Error loading dashboard data</h3>
+                  <p className="mt-1 text-sm sm:text-base text-red-700">{error}</p>
                 </div>
               </div>
             </div>
           )}
 
           {/* Bento Grid Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 xl:grid-cols-16 gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 xl:grid-cols-16 gap-4 sm:gap-6 max-w-7xl mx-auto">
             
             {/* Dashboard Statistics - Full Width */}
             <div className="lg:col-span-12 xl:col-span-16">
@@ -230,62 +231,62 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Quick Actions - Large Tile */}
-            <div className="lg:col-span-8 xl:col-span-11 bg-gradient-to-br from-white to-purple-50 rounded-3xl shadow-xl border border-purple-100 p-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-200 to-blue-200 rounded-full opacity-20 -translate-y-16 translate-x-16"></div>
+            <div className="lg:col-span-8 xl:col-span-11 bg-gradient-to-br from-white to-purple-50 rounded-2xl sm:rounded-3xl shadow-xl border border-purple-100 p-4 sm:p-6 md:p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-purple-200 to-blue-200 rounded-full opacity-20 -translate-y-12 sm:-translate-y-16 translate-x-12 sm:translate-x-16"></div>
               <div className="relative z-10">
-                <div className="flex items-center mb-8">
-                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4">
-                    <svg className="h-7 w-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center mb-6 sm:mb-8">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg sm:rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+                    <svg className="h-6 w-6 sm:h-7 sm:w-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
-                    <p className="text-gray-600">Manage your properties and grow your business</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Quick Actions</h2>
+                    <p className="text-sm sm:text-base text-gray-600">Manage your properties and grow your business</p>
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   <button
                     onClick={() => setShowPropertyForm(true)}
-                    className="group p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl border border-orange-200 hover:shadow-lg hover:scale-105 transition-all duration-300"
+                    className="group p-4 sm:p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl sm:rounded-2xl border border-orange-200 hover:shadow-lg hover:scale-105 transition-all duration-300"
                   >
                     <div className="flex flex-col items-center text-center">
-                      <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-orange-600 transition-colors shadow-lg">
-                        <PlusIcon className="w-8 h-8 text-white" />
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-orange-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-orange-600 transition-colors shadow-lg">
+                        <PlusIcon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                       </div>
-                      <h3 className="font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">Post New Property</h3>
-                      <p className="text-sm text-gray-600">Add resale, rental, or new project</p>
+                      <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-1 sm:mb-2 group-hover:text-orange-600 transition-colors">Post New Property</h3>
+                      <p className="text-xs sm:text-sm text-gray-600">Add resale, rental, or new project</p>
                     </div>
                   </button>
                   
                   <Link
                     href="/properties-listing"
-                    className="group p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 hover:shadow-lg hover:scale-105 transition-all duration-300"
+                    className="group p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl sm:rounded-2xl border border-blue-200 hover:shadow-lg hover:scale-105 transition-all duration-300"
                   >
                     <div className="flex flex-col items-center text-center">
-                      <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors shadow-lg">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-blue-600 transition-colors shadow-lg">
+                        <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
                       </div>
-                      <h3 className="font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">View All Properties</h3>
-                      <p className="text-sm text-gray-600">Browse and manage listings</p>
+                      <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-1 sm:mb-2 group-hover:text-blue-600 transition-colors">View All Properties</h3>
+                      <p className="text-xs sm:text-sm text-gray-600">Browse and manage listings</p>
                     </div>
                   </Link>
 
                   <Link
                     href="/profile"
-                    className="group p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200 hover:shadow-lg hover:scale-105 transition-all duration-300"
+                    className="group p-4 sm:p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl sm:rounded-2xl border border-green-200 hover:shadow-lg hover:scale-105 transition-all duration-300"
                   >
                     <div className="flex flex-col items-center text-center">
-                      <div className="w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-green-600 transition-colors shadow-lg">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-500 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-green-600 transition-colors shadow-lg">
+                        <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                       </div>
-                      <h3 className="font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">Manage Profile</h3>
-                      <p className="text-sm text-gray-600">Update account settings</p>
+                      <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-1 sm:mb-2 group-hover:text-green-600 transition-colors">Manage Profile</h3>
+                      <p className="text-xs sm:text-sm text-gray-600">Update account settings</p>
                     </div>
                   </Link>
                 </div>
@@ -311,82 +312,82 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* Recent Properties Section - Full Width */}
-            <div className="lg:col-span-12 xl:col-span-16 bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-              <div className="p-8 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-blue-50">
-                <div className="flex items-center justify-between">
+            <div className="lg:col-span-12 xl:col-span-16 bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+              <div className="p-4 sm:p-6 md:p-8 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-blue-50">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex items-center">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
-                      <svg className="h-7 w-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg sm:rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+                      <svg className="h-6 w-6 sm:h-7 sm:w-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                       </svg>
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">Recent Properties</h2>
-                      <p className="text-gray-600">Latest properties added to the platform</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Recent Properties</h2>
+                      <p className="text-sm sm:text-base text-gray-600">Latest properties added to the platform</p>
                     </div>
                   </div>
                   <Link
                     href="/properties-listing"
-                    className="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg sm:rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base"
                   >
                     View All Properties
-                    <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </Link>
                 </div>
               </div>
 
-              <div className="p-8">
+              <div className="p-4 sm:p-6 md:p-8">
                 {propertiesLoading ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {Array.from({ length: 6 }).map((_, index) => (
                       <div key={index} className="animate-pulse">
-                        <div className="bg-gray-200 rounded-2xl h-48 mb-4"></div>
-                        <div className="space-y-3">
-                          <div className="h-4 bg-gray-200 rounded-full w-3/4"></div>
-                          <div className="h-4 bg-gray-200 rounded-full w-1/2"></div>
-                          <div className="h-4 bg-gray-200 rounded-full w-1/4"></div>
+                        <div className="bg-gray-200 rounded-xl sm:rounded-2xl h-40 sm:h-48 mb-3 sm:mb-4"></div>
+                        <div className="space-y-2 sm:space-y-3">
+                          <div className="h-3 sm:h-4 bg-gray-200 rounded-full w-3/4"></div>
+                          <div className="h-3 sm:h-4 bg-gray-200 rounded-full w-1/2"></div>
+                          <div className="h-3 sm:h-4 bg-gray-200 rounded-full w-1/4"></div>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : propertiesError ? (
-                  <div className="text-center py-12">
-                    <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                  <div className="text-center py-8 sm:py-12">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                      <svg className="w-8 h-8 sm:w-10 sm:h-10 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
                       </svg>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Properties</h3>
-                    <p className="text-gray-600 mb-6">{propertiesError}</p>
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Error Loading Properties</h3>
+                    <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">{propertiesError}</p>
                     <button
                       onClick={refreshData}
-                      className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors"
+                      className="px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg sm:rounded-xl font-medium transition-colors text-sm sm:text-base"
                     >
                       Try Again
                     </button>
                   </div>
                 ) : recentProperties.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="text-center py-8 sm:py-12">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                      <svg className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"/>
                       </svg>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No Properties Found</h3>
-                    <p className="text-gray-600 mb-6">Start by adding your first property to the platform</p>
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">No Properties Found</h3>
+                    <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">Start by adding your first property to the platform</p>
                     <button
                       onClick={() => setShowPropertyForm(true)}
-                      className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                      className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg sm:rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base"
                     >
-                      <PlusIcon className="w-5 h-5 mr-2" />
+                      <PlusIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       Add First Property
                     </button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {recentProperties.map((property) => (
                       <PropertyCard key={property.id} property={property} />
                     ))}
@@ -397,6 +398,9 @@ export default function AdminDashboardPage() {
 
           </div>
         </div>
+
+        {/* Scroll Arrow */}
+        <ScrollArrow />
       </div>
       
       {/* Dashboard Property Form Modal */}

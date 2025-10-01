@@ -133,9 +133,8 @@ export default function Navbar() {
             </div>
                          {/* Logo Text */}
              <div className="flex flex-col">
-               <h1 className="text-base sm:text-lg font-bold">
-                 <span className="text-gray-800">ASPIRE</span>
-                 <span className="text-orange-500 hidden sm:inline">PROP MANAGEMENT</span>
+               <h1 className="text-sm sm:text-base md:text-lg font-bold">
+                 <span className="text-gray-800">ASPIRE PROP MANAGEMENT</span>
                </h1>
                <p className="text-xs text-gray-500 -mt-1 hidden sm:block">NO ONE TARGETS YOUR NEED BETTER</p>
              </div>
@@ -332,8 +331,8 @@ export default function Navbar() {
                </svg>
              </div>
              <div>
-               <h2 className="text-lg font-bold text-gray-800">ASPIRE</h2>
-               <p className="text-xs text-gray-500">Property Management</p>
+               <h2 className="text-lg font-bold text-gray-800">ASPIRE PROP MANAGEMENT</h2>
+               <p className="text-xs text-gray-500">NO ONE TARGETS YOUR NEED BETTER</p>
              </div>
            </div>
            <button
