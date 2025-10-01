@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { ScrollArrow } from './ScrollArrow';
 import { 
   CloudArrowUpIcon, 
   PhotoIcon, 
@@ -213,42 +214,42 @@ export function AdsBannersManager() {
 
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto">
+    <div className="space-y-6 sm:space-y-8 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-          <PhotoIcon className="w-8 h-8 text-white" />
+      <div className="text-center px-3 sm:px-0">
+        <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl sm:rounded-2xl mb-3 sm:mb-4 shadow-lg">
+          <PhotoIcon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
         </div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-2">
+        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-2">
           Ads Banners Manager
         </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">
           Upload and manage promotional banners with 4:1 aspect ratio. Create engaging visual content for your real estate platform.
         </p>
       </div>
 
       {/* Upload Form */}
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-8 py-6 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-            <PlusIcon className="w-6 h-6 mr-2 text-blue-600" />
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-4 sm:px-8 py-4 sm:py-6 border-b border-gray-100">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center">
+            <PlusIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" />
             Upload New Banner
           </h2>
-          <p className="text-gray-600 mt-1">Create a new promotional banner for your platform</p>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Create a new promotional banner for your platform</p>
         </div>
 
-        <form onSubmit={submitForm} className="p-8 space-y-8">
+        <form onSubmit={submitForm} className="p-4 sm:p-8 space-y-6 sm:space-y-8">
           {/* Status Messages */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center animate-in slide-in-from-top-2 duration-300">
-              <ExclamationTriangleIcon className="w-5 h-5 text-red-500 mr-3 flex-shrink-0" />
-              <p className="text-red-700 font-medium">{error}</p>
+            <div className="bg-red-50 border border-red-200 rounded-lg sm:rounded-xl p-3 sm:p-4 flex items-start sm:items-center animate-in slide-in-from-top-2 duration-300">
+              <ExclamationTriangleIcon className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mr-2 sm:mr-3 flex-shrink-0 mt-0.5 sm:mt-0" />
+              <p className="text-sm sm:text-base text-red-700 font-medium">{error}</p>
             </div>
           )}
           {success && (
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center animate-in slide-in-from-top-2 duration-300">
-              <CheckCircleIcon className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-              <p className="text-green-700 font-medium">{success}</p>
+            <div className="bg-green-50 border border-green-200 rounded-lg sm:rounded-xl p-3 sm:p-4 flex items-start sm:items-center animate-in slide-in-from-top-2 duration-300">
+              <CheckCircleIcon className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 flex-shrink-0 mt-0.5 sm:mt-0" />
+              <p className="text-sm sm:text-base text-green-700 font-medium">{success}</p>
             </div>
           )}
 
@@ -458,11 +459,11 @@ export function AdsBannersManager() {
           )}
 
           {/* Submit Button */}
-          <div className="flex justify-end pt-6 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row justify-end pt-4 sm:pt-6 border-t border-gray-100 gap-2 sm:gap-0">
             <button
               type="submit"
               disabled={loading || !form.title.trim() || !form.imageBase64}
-              className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center px-6 sm:px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:transform-none disabled:cursor-not-allowed text-sm sm:text-base w-full sm:w-auto"
             >
               {loading ? (
                 <>
@@ -471,7 +472,7 @@ export function AdsBannersManager() {
                 </>
               ) : (
                 <>
-                  <CloudArrowUpIcon className="w-5 h-5 mr-2" />
+                  <CloudArrowUpIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Upload Banner
                 </>
               )}
@@ -481,52 +482,52 @@ export function AdsBannersManager() {
       </div>
 
       {/* Existing Banners */}
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-8 py-6 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-            <PhotoIcon className="w-6 h-6 mr-2 text-gray-600" />
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-gray-50 to-blue-50 px-4 sm:px-8 py-4 sm:py-6 border-b border-gray-100">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center">
+            <PhotoIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-gray-600" />
             Existing Banners ({banners.length})
           </h2>
-          <p className="text-gray-600 mt-1">Manage your uploaded banners</p>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Manage your uploaded banners</p>
         </div>
 
-        <div className="p-8">
+        <div className="p-4 sm:p-8">
           {loading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading banners...</p>
+            <div className="text-center py-8 sm:py-12">
+              <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-blue-500 mx-auto mb-3 sm:mb-4"></div>
+              <p className="text-sm sm:text-base text-gray-600">Loading banners...</p>
             </div>
           ) : banners.length === 0 ? (
-            <div className="text-center py-12">
-              <PhotoIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">No banners uploaded yet</p>
-              <p className="text-sm text-gray-500">Upload your first banner using the form above</p>
+            <div className="text-center py-8 sm:py-12">
+              <PhotoIcon className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4" />
+              <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">No banners uploaded yet</p>
+              <p className="text-xs sm:text-sm text-gray-500">Upload your first banner using the form above</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {banners.map((banner) => (
-                <div key={banner.id} className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div key={banner.id} className="group bg-white border border-gray-200 rounded-lg sm:rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="relative">
                     <img
                       src={`data:${banner.image_mime};base64,${banner.image_base64}`}
                       alt={banner.alt_text || banner.title}
-                      className="w-full h-32 object-cover"
+                      className="w-full h-24 sm:h-32 object-cover"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                       <div className="opacity-0 group-hover:opacity-100 flex space-x-2 transition-all duration-300 transform scale-75 group-hover:scale-100">
-                        <button className="p-2 bg-white text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
-                          <EyeIcon className="w-4 h-4" />
+                        <button className="p-1.5 sm:p-2 bg-white text-gray-700 rounded-full hover:bg-gray-100 transition-colors">
+                          <EyeIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
-                        <button className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
-                          <PencilIcon className="w-4 h-4" />
+                        <button className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+                          <PencilIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
-                        <button className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
-                          <TrashIcon className="w-4 h-4" />
+                        <button className="p-1.5 sm:p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
+                          <TrashIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
                       </div>
                     </div>
-                    <div className="absolute top-2 right-2">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
+                    <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2">
+                      <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs rounded-full ${
                         banner.is_active 
                           ? 'bg-green-100 text-green-800' 
                           : 'bg-gray-100 text-gray-800'
@@ -535,9 +536,9 @@ export function AdsBannersManager() {
                       </span>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 mb-1 truncate">{banner.title}</h3>
-                    <p className="text-sm text-gray-600 mb-2">{banner.display_location.replace('_', ' ')}</p>
+                  <div className="p-3 sm:p-4">
+                    <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1 truncate">{banner.title}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-1.5 sm:mb-2 capitalize">{banner.display_location.replace('_', ' ')}</p>
                     <p className="text-xs text-gray-500">
                       {new Date(banner.created_at).toLocaleDateString()}
                     </p>
@@ -548,6 +549,9 @@ export function AdsBannersManager() {
           )}
         </div>
       </div>
+
+      {/* Scroll Arrow */}
+      <ScrollArrow />
     </div>
   );
 }
