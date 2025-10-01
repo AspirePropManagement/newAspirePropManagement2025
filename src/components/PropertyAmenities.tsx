@@ -72,26 +72,26 @@ export function PropertyAmenities({ amenities, className = '' }: PropertyAmeniti
   };
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`space-y-4 sm:space-y-6 ${className}`}>
       {/* All Amenities Overview */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">All Amenities</h3>
-          <span className="text-sm text-gray-500">{amenities.length} amenities available</span>
+      <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-2">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900">All Amenities</h3>
+          <span className="text-xs sm:text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{amenities.length} amenities available</span>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
           {amenities.map((amenity, index) => (
-            <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <span className="text-2xl mr-3">{getAmenityIcon(amenity)}</span>
-              <span className="text-sm font-medium text-gray-900">{amenity}</span>
+            <div key={index} className="flex items-center p-2 sm:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <span className="text-lg sm:text-xl md:text-2xl mr-2 sm:mr-3 flex-shrink-0">{getAmenityIcon(amenity)}</span>
+              <span className="text-xs sm:text-sm font-medium text-gray-900 line-clamp-2">{amenity}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Categorized Amenities */}
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {Object.entries(amenityCategories).map(([categoryName, categoryAmenities]) => {
           const availableAmenities = categoryAmenities.filter(amenity => 
             amenities.includes(amenity.name)
@@ -100,15 +100,15 @@ export function PropertyAmenities({ amenities, className = '' }: PropertyAmeniti
           if (availableAmenities.length === 0) return null;
 
           return (
-            <div key={categoryName} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">{categoryName}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div key={categoryName} className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">{categoryName}</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                 {availableAmenities.map((amenity, index) => (
-                  <div key={index} className="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <span className="text-2xl mr-3 mt-1">{amenity.icon}</span>
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-1">{amenity.name}</h4>
-                      <p className="text-sm text-gray-600">{amenity.description}</p>
+                  <div key={index} className="flex items-start p-3 sm:p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <span className="text-xl sm:text-2xl mr-2 sm:mr-3 mt-0.5 sm:mt-1 flex-shrink-0">{amenity.icon}</span>
+                    <div className="min-w-0">
+                      <h4 className="text-sm sm:text-base font-medium text-gray-900 mb-1">{amenity.name}</h4>
+                      <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">{amenity.description}</p>
                     </div>
                   </div>
                 ))}
@@ -119,31 +119,31 @@ export function PropertyAmenities({ amenities, className = '' }: PropertyAmeniti
       </div>
 
       {/* Amenities Summary */}
-      <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200 p-6">
-        <div className="flex items-center mb-4">
-          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg sm:rounded-xl border border-blue-200 p-3 sm:p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center mb-4 gap-3">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
             </svg>
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Premium Lifestyle</h3>
-            <p className="text-gray-600">Experience luxury living with world-class amenities</p>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Premium Lifestyle</h3>
+            <p className="text-xs sm:text-sm text-gray-600">Experience luxury living with world-class amenities</p>
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{amenities.length}</div>
-            <div className="text-sm text-gray-600">Total Amenities</div>
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
+          <div className="text-center p-2 sm:p-3 bg-white/50 rounded-lg">
+            <div className="text-xl sm:text-2xl font-bold text-blue-600">{amenities.length}</div>
+            <div className="text-[10px] sm:text-xs text-gray-600 mt-1">Total Amenities</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">24/7</div>
-            <div className="text-sm text-gray-600">Security & Maintenance</div>
+          <div className="text-center p-2 sm:p-3 bg-white/50 rounded-lg">
+            <div className="text-xl sm:text-2xl font-bold text-green-600">24/7</div>
+            <div className="text-[10px] sm:text-xs text-gray-600 mt-1">Security & Maintenance</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">100%</div>
-            <div className="text-sm text-gray-600">Power Backup</div>
+          <div className="text-center p-2 sm:p-3 bg-white/50 rounded-lg">
+            <div className="text-xl sm:text-2xl font-bold text-purple-600">100%</div>
+            <div className="text-[10px] sm:text-xs text-gray-600 mt-1">Power Backup</div>
           </div>
         </div>
       </div>
