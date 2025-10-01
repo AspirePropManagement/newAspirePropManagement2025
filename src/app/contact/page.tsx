@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { MapPinIcon, PhoneIcon, EnvelopeIcon, ClockIcon } from '@heroicons/react/24/outline';
 import GooglePlacesAutocomplete from '@/components/GooglePlacesAutocomplete';
+import { ScrollArrow } from '@/components/ScrollArrow';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -89,15 +90,22 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-        <div className="container mx-auto px-4 py-16">
+      <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-xl">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <div className="flex items-center justify-center mb-4 sm:mb-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+            </div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 md:mb-6 leading-tight">
               Enquiry
             </h1>
-            <p className="text-xl md:text-2xl text-orange-100 mb-8 leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-orange-100 mb-6 sm:mb-8 leading-relaxed px-2">
               Get in touch with our expert team. We&apos;re here to help you with all your real estate needs.
             </p>
           </div>
@@ -106,76 +114,84 @@ export default function ContactPage() {
 
 
       {/* Contact Information & Form */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
             
             {/* Contact Information */}
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Get in Touch</h2>
-                <p className="text-lg text-gray-600 mb-8">
+            <div className="space-y-6 sm:space-y-8">
+              <div className="bg-white/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 p-4 sm:p-6 md:p-8">
+                <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-4 sm:mb-6">Get in Touch</h2>
+                <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
                   Ready to start your real estate journey? Contact our team of experts who are dedicated to helping you find the perfect property or maximize your investment potential.
                 </p>
               </div>
 
               {/* Contact Cards */}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Phone */}
-                <div className="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-sm border border-gray-200">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <PhoneIcon className="w-6 h-6 text-orange-600" />
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 border border-gray-100 hover:border-orange-200 transform hover:-translate-y-1">
+                  <div className="flex items-start space-x-3 sm:space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-100 to-red-100 rounded-lg sm:rounded-xl flex items-center justify-center shadow-md">
+                        <PhoneIcon className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Phone</h3>
-                    <p className="text-gray-600 mb-1">+91 92262 54182</p>
-                    <p className="text-sm text-gray-500">Mon - Fri: 9:00 AM - 6:00 PM</p>
+                    <div>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Phone</h3>
+                      <p className="text-sm sm:text-base text-gray-600 mb-1 font-medium">+91 92262 54182</p>
+                      <p className="text-xs sm:text-sm text-gray-500">Mon - Fri: 9:00 AM - 6:00 PM</p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Email */}
-                <div className="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-sm border border-gray-200">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <EnvelopeIcon className="w-6 h-6 text-blue-600" />
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 border border-gray-100 hover:border-blue-200 transform hover:-translate-y-1">
+                  <div className="flex items-start space-x-3 sm:space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg sm:rounded-xl flex items-center justify-center shadow-md">
+                        <EnvelopeIcon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Email</h3>
-                    <p className="text-gray-600 mb-1">aspireprop07@gmail.com</p>
-                    <p className="text-sm text-gray-500">We&apos;ll respond within 24 hours</p>
+                    <div>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Email</h3>
+                      <p className="text-sm sm:text-base text-gray-600 mb-1 font-medium">aspireprop07@gmail.com</p>
+                      <p className="text-xs sm:text-sm text-gray-500">We&apos;ll respond within 24 hours</p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Address */}
-                <div className="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-sm border border-gray-200">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                      <MapPinIcon className="w-6 h-6 text-green-600" />
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 border border-gray-100 hover:border-green-200 transform hover:-translate-y-1">
+                  <div className="flex items-start space-x-3 sm:space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg sm:rounded-xl flex items-center justify-center shadow-md">
+                        <MapPinIcon className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Office Address</h3>
-                    <p className="text-gray-600 mb-1">Mumbai, Maharashtra, India</p>
-                    <p className="text-sm text-gray-500">Visit us for in-person consultations</p>
+                    <div>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Office Address</h3>
+                      <p className="text-sm sm:text-base text-gray-600 mb-1 font-medium">Mumbai, Maharashtra, India</p>
+                      <p className="text-xs sm:text-sm text-gray-500">Visit us for in-person consultations</p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Business Hours */}
-                <div className="flex items-start space-x-4 p-6 bg-white rounded-xl shadow-sm border border-gray-200">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <ClockIcon className="w-6 h-6 text-purple-600" />
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 border border-gray-100 hover:border-purple-200 transform hover:-translate-y-1">
+                  <div className="flex items-start space-x-3 sm:space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-100 to-violet-100 rounded-lg sm:rounded-xl flex items-center justify-center shadow-md">
+                        <ClockIcon className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Business Hours</h3>
-                    <div className="text-gray-600 space-y-1">
-                      <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
-                      <p>Saturday: 10:00 AM - 4:00 PM</p>
-                      <p>Sunday: Closed</p>
+                    <div>
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Business Hours</h3>
+                      <div className="text-sm sm:text-base text-gray-600 space-y-1">
+                        <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                        <p>Saturday: 10:00 AM - 4:00 PM</p>
+                        <p>Sunday: Closed</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -183,19 +199,19 @@ export default function ContactPage() {
             </div>
 
             {/* Unified Contact & Enquiry Form */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 p-4 sm:p-6 md:p-8">
+              <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-3 sm:mb-4 md:mb-6">
                 Get in Touch
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 leading-relaxed">
                 Whether you have a general question or are looking for a specific property, we&apos;re here to help. 
                 Fill out the form below and our team will get back to you within 24 hours.
               </p>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {/* Name */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Full Name *
                   </label>
                   <input
@@ -205,14 +221,14 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
                     placeholder="Enter your full name"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Email Address *
                   </label>
                   <input
@@ -222,14 +238,14 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
                     placeholder="Enter your email address"
                   />
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Phone Number
                   </label>
                   <input
@@ -238,14 +254,14 @@ export default function ContactPage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
                     placeholder="Enter your phone number"
                   />
                 </div>
 
                 {/* Subject */}
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Subject *
                   </label>
                   <select
@@ -254,7 +270,7 @@ export default function ContactPage() {
                     value={formData.subject}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg bg-white"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg bg-white"
                   >
                     <option value="">Select a subject</option>
                     <optgroup label="Property Related">
@@ -275,16 +291,16 @@ export default function ContactPage() {
                 </div>
 
                 {/* Property Details (Optional) */}
-                <div className="border-t border-gray-200 pt-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Details (Optional)</h3>
-                  <p className="text-sm text-gray-600 mb-4">
+                <div className="border-t border-gray-200 pt-4 sm:pt-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-4">Property Details (Optional)</h3>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
                     If you&apos;re looking for a specific property, please fill out these details to help us assist you better.
                   </p>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {/* Property Type */}
                     <div>
-                      <label htmlFor="propertyType" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="propertyType" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                         Property Type
                       </label>
                       <select
@@ -292,7 +308,7 @@ export default function ContactPage() {
                         name="propertyType"
                         value={formData.propertyType}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg bg-white"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg bg-white"
                       >
                         <option value="">Select Property Type</option>
                         <option value="apartment">Apartment</option>
@@ -307,7 +323,7 @@ export default function ContactPage() {
 
                     {/* BHK Type */}
                     <div>
-                      <label htmlFor="bhkType" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="bhkType" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                         BHK Type
                       </label>
                       <select
@@ -315,7 +331,7 @@ export default function ContactPage() {
                         name="bhkType"
                         value={formData.bhkType}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg bg-white"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg bg-white"
                       >
                         <option value="">Select BHK Type</option>
                         <option value="1_rk">1 RK</option>
@@ -333,7 +349,7 @@ export default function ContactPage() {
 
                     {/* Budget */}
                     <div>
-                      <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="budget" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                         Budget Range
                       </label>
                       <select
@@ -341,7 +357,7 @@ export default function ContactPage() {
                         name="budget"
                         value={formData.budget}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg bg-white"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg bg-white"
                       >
                         <option value="">Select Budget Range</option>
                         <option value="under-40-lakhs">Under ₹40 Lakhs</option>
@@ -355,14 +371,14 @@ export default function ContactPage() {
 
                     {/* Location */}
                     <div>
-                      <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="location" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                         Preferred Location
                       </label>
                       <GooglePlacesAutocomplete
                         value={formData.location}
                         onChange={handleLocationChange}
                         placeholder="Enter preferred location (e.g., Pune, Maharashtra)"
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
                         id="location"
                         name="location"
                       />
@@ -370,8 +386,8 @@ export default function ContactPage() {
                   </div>
 
                   {/* Preferred Contact Method */}
-                  <div className="mt-4">
-                    <label htmlFor="preferredContact" className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="mt-3 sm:mt-4">
+                    <label htmlFor="preferredContact" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                       Preferred Contact Method
                     </label>
                     <select
@@ -379,7 +395,7 @@ export default function ContactPage() {
                       name="preferredContact"
                       value={formData.preferredContact}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg bg-white"
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg bg-white"
                     >
                       <option value="email">Email</option>
                       <option value="phone">Phone Call</option>
@@ -391,7 +407,7 @@ export default function ContactPage() {
 
                 {/* Message */}
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Message *
                   </label>
                   <textarea
@@ -400,8 +416,8 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleInputChange}
                     required
-                    rows={5}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-lg resize-none"
+                    rows={4}
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg resize-none"
                     placeholder="Tell us how we can help you..."
                   />
                 </div>
@@ -410,7 +426,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center">
@@ -469,46 +485,46 @@ export default function ContactPage() {
       </div>
 
       {/* FAQ Section */}
-      <div className="bg-white py-16">
-        <div className="container mx-auto px-4">
+      <div className="bg-white/80 backdrop-blur-lg py-12 sm:py-16 shadow-lg">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent text-center mb-8 sm:mb-12">
               Frequently Asked Questions
             </h2>
             
-            <div className="space-y-6">
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="bg-gray-50/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 border border-gray-100">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">
                   How quickly do you respond to inquiries?
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                   We typically respond to all inquiries within 24 hours during business days. For urgent matters, please call us directly at +91 92262 54182.
                 </p>
               </div>
 
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              <div className="bg-gray-50/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 border border-gray-100">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">
                   Do I need to fill out all the property details?
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                   No, the property details section is optional. If you&apos;re just asking a general question, you only need to fill out the basic contact information and message. Property details help us provide more targeted assistance for property-related inquiries.
                 </p>
               </div>
 
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              <div className="bg-gray-50/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 border border-gray-100">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">
                   What areas do you serve?
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                   We primarily serve Mumbai and surrounding areas, but we also have partnerships across Maharashtra for property investments and consultations.
                 </p>
               </div>
 
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              <div className="bg-gray-50/80 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 border border-gray-100">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">
                   Can I schedule a site visit or property tour?
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                   Absolutely! Select &quot;Site Visit Request&quot; or &quot;Virtual Tour Request&quot; as your subject and provide your property preferences. We&apos;ll coordinate with you to arrange the best time for your visit.
                 </p>
               </div>
@@ -516,6 +532,9 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+
+      {/* Scroll Arrow */}
+      <ScrollArrow />
     </div>
   );
 }
