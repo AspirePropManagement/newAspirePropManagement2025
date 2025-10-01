@@ -6,7 +6,6 @@ import { PropertyImageGallery } from './PropertyImageGallery';
 import { FloorPlanViewer } from './FloorPlanViewer';
 import { PropertyDetails } from './PropertyDetails';
 import { PropertyAmenities } from './PropertyAmenities';
-import { VirtualTourSection } from './VirtualTourSection';
 import { ShareButton } from './ShareButton';
 import { ShareButtonDropdown } from './ShareButtonDropdown';
 import { ShareModal } from './ShareModal';
@@ -44,7 +43,7 @@ export function PropertyLayout({
   specifications,
   className = ''
 }: PropertyLayoutProps) {
-  const [activeTab, setActiveTab] = useState<'gallery' | 'floorplans' | 'details' | 'amenities' | 'virtual'>('gallery');
+  const [activeTab, setActiveTab] = useState<'gallery' | 'floorplans' | 'details' | 'amenities'>('gallery');
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { toasts, removeToast, showSuccess, showError, showInfo } = useToast();
 
@@ -52,8 +51,7 @@ export function PropertyLayout({
     { id: 'gallery', label: 'Gallery', icon: '🖼️' },
     { id: 'floorplans', label: 'Floor Plans', icon: '📐' },
     { id: 'details', label: 'Details', icon: '📋' },
-    { id: 'amenities', label: 'Amenities', icon: '🏊' },
-    { id: 'virtual', label: 'Virtual Tour', icon: '🎥' }
+    { id: 'amenities', label: 'Amenities', icon: '🏊' }
   ];
 
   return (
@@ -142,10 +140,6 @@ export function PropertyLayout({
         
         {activeTab === 'amenities' && (
           <PropertyAmenities amenities={amenities} />
-        )}
-        
-        {activeTab === 'virtual' && (
-          <VirtualTourSection images={propertyImages} />
         )}
       </div>
 
