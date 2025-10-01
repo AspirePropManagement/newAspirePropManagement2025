@@ -21,13 +21,31 @@ interface RecommendedPropertiesCarouselProps {
 
 /**
  * RecommendedPropertiesCarousel
- * Minimal carousel showing 5 items per slide (image + name) with auto-scroll.
+ * Minimal carousel showing 2 items per slide on mobile, 5 on desktop (image + name) with auto-scroll.
  */
 export function RecommendedPropertiesCarousel({ projects }: RecommendedPropertiesCarouselProps) {
   const [index, setIndex] = useState(0);
-  const slideCount = Math.max(1, Math.ceil(projects.length / 5));
+  const [itemsPerSlide, setItemsPerSlide] = useState(2);
+  const slideCount = Math.max(1, Math.ceil(projects.length / itemsPerSlide));
   const maxIndex = Math.max(0, slideCount - 1);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+	// Update items per slide based on screen size
+	useEffect(() => {
+		const updateItemsPerSlide = () => {
+			if (window.innerWidth < 768) {
+				setItemsPerSlide(2); // Mobile: 2 items
+			} else if (window.innerWidth < 1024) {
+				setItemsPerSlide(3); // Tablet: 3 items
+			} else {
+				setItemsPerSlide(5); // Desktop: 5 items
+			}
+		};
+
+		updateItemsPerSlide();
+		window.addEventListener('resize', updateItemsPerSlide);
+		return () => window.removeEventListener('resize', updateItemsPerSlide);
+	}, []);
 
 	useEffect(() => {
 		// Auto-scroll every 4 seconds
@@ -66,16 +84,22 @@ export function RecommendedPropertiesCarousel({ projects }: RecommendedPropertie
         >
           {Array.from({ length: slideCount }, (_, slideIdx) => (
             <div key={slideIdx} className="w-full flex-shrink-0">
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                {Array.from({ length: 5 }, (_, k) => {
-                  const proj = projects[(slideIdx * 5 + k) % projects.length];
+              <div className={`grid gap-3 sm:gap-4 ${
+                itemsPerSlide === 2 ? 'grid-cols-2' :
+                itemsPerSlide === 3 ? 'grid-cols-3' :
+                'grid-cols-5'
+              }`}>
+                {Array.from({ length: itemsPerSlide }, (_, k) => {
+                  const projIndex = slideIdx * itemsPerSlide + k;
+                  if (projIndex >= projects.length) return null;
+                  const proj = projects[projIndex];
                   return (
                     <Link
                       key={`${slideIdx}-${k}-${proj.id}`}
                       href={`/properties/new_project/${proj.id}`}
                       className="group rounded-lg overflow-hidden border border-gray-100 hover:shadow-md transition-shadow bg-white"
                     >
-                      <div className="relative h-28 sm:h-32 bg-gray-100">
+                      <div className="relative h-24 sm:h-28 md:h-32 bg-gray-100">
                         <Image
                           src={getPrimaryImage(proj)}
                           alt={proj.project_name}
@@ -86,21 +110,21 @@ export function RecommendedPropertiesCarousel({ projects }: RecommendedPropertie
                             target.src = '/placeholder-property.svg';
                           }}
                         />
-                        <div className="absolute bottom-2 left-2">
-                          <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium flex items-center shadow">
-                            <CheckBadgeIcon className="w-3.5 h-3.5 mr-1" />
-                            100% Verified
+                        <div className="absolute bottom-1.5 left-1.5 sm:bottom-2 sm:left-2">
+                          <span className="bg-green-600 text-white text-[8px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-medium flex items-center shadow">
+                            <CheckBadgeIcon className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 mr-0.5 sm:mr-1" />
+                            <span className="hidden sm:inline">100% </span>Verified
                           </span>
                         </div>
                       </div>
-                      <div className="p-2">
-                        <p className="text-xs sm:text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-orange-600">
+                      <div className="p-1.5 sm:p-2">
+                        <p className="text-[10px] sm:text-xs md:text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-orange-600">
                           {proj.project_name}
                         </p>
                       </div>
                     </Link>
                   );
-                })}
+                }).filter(Boolean)}
               </div>
             </div>
           ))}
