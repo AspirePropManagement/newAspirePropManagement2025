@@ -8,6 +8,7 @@ import { UserEditModal } from '@/components/UserEditModal';
 import { UserDetailsModal } from '@/components/UserDetailsModal';
 import { InlinePreloader } from '@/components/Preloader';
 import { Pagination } from '@/components/Pagination';
+import { ScrollArrow } from '@/components/ScrollArrow';
 import DashboardLayout from '@/components/DashboardLayout';
 import { User } from '@/types/User';
 import { UserUpdateData } from '@/types/User';
@@ -24,7 +25,7 @@ export default function AdminBuyersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(25);
+  const [pageSize, setPageSize] = useState(10);
 
   // Filter users based on search and status
   const filteredUsers = useMemo(() => {
@@ -124,10 +125,10 @@ export default function AdminBuyersPage() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Buyer Management</h1>
-            <p className="text-gray-600 mt-2">Manage all buyer accounts in the system</p>
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+          <div className="mb-4 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Buyer Management</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">Manage all buyer accounts in the system</p>
           </div>
           <InlinePreloader text="Fetching buyers..." />
         </div>
@@ -138,14 +139,14 @@ export default function AdminBuyersPage() {
   if (error) {
     return (
       <DashboardLayout>
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="text-center py-12">
-            <div className="text-red-600 text-6xl mb-4">⚠️</div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Buyers</h1>
-            <p className="text-gray-600 mb-4">{error}</p>
+            <div className="text-red-600 text-4xl sm:text-6xl mb-4">⚠️</div>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Error Loading Buyers</h1>
+            <p className="text-sm sm:text-base text-gray-600 mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
+              className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 text-sm sm:text-base"
             >
               Try Again
             </button>
@@ -157,7 +158,7 @@ export default function AdminBuyersPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <UserTableHeader
           title="Buyer Management"
           totalUsers={users.length}
@@ -167,11 +168,11 @@ export default function AdminBuyersPage() {
 
         {filteredUsers.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">👥</div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            <div className="text-gray-400 text-4xl sm:text-6xl mb-4">👥</div>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
               {users.length === 0 ? 'No Buyers Found' : 'No Buyers Match Your Search'}
             </h2>
-            <p className="text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               {users.length === 0 
                 ? 'There are currently no buyer accounts in the system.'
                 : 'Try adjusting your search criteria or filters.'
@@ -180,42 +181,44 @@ export default function AdminBuyersPage() {
           </div>
         ) : (
           <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    User
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Phone
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Joined
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {paginatedUsers.map((user) => (
-                  <UserTableRow
-                    key={user.id}
-                    user={user}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    onToggleStatus={handleToggleStatus}
-                    onClick={handleUserClick}
-                  />
-                ))}
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                      User
+                    </th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                      Role
+                    </th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                      Status
+                    </th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                      Phone
+                    </th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                      Joined
+                    </th>
+                    <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {paginatedUsers.map((user) => (
+                    <UserTableRow
+                      key={user.id}
+                      user={user}
+                      onEdit={handleEdit}
+                      onDelete={handleDelete}
+                      onToggleStatus={handleToggleStatus}
+                      onClick={handleUserClick}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
             
             {/* Pagination */}
             <Pagination
@@ -246,6 +249,9 @@ export default function AdminBuyersPage() {
         }}
         user={selectedUser}
       />
+
+      {/* Scroll Arrow */}
+      <ScrollArrow />
     </DashboardLayout>
   );
 }
