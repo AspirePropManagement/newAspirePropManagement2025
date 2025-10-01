@@ -75,47 +75,47 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({
       className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${onClick ? 'cursor-pointer' : ''}`}
       onClick={handleRowClick}
     >
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
-          <div className="flex-shrink-0 h-10 w-10">
-            <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-              <span className="text-sm font-medium text-gray-700">
+          <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10">
+            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gray-300 flex items-center justify-center">
+              <span className="text-xs sm:text-sm font-medium text-gray-700">
                 {user.first_name?.[0] || user.email[0].toUpperCase()}
               </span>
             </div>
           </div>
-          <div className="ml-4">
-            <div className="text-sm font-medium text-gray-900">
+          <div className="ml-2 sm:ml-4 min-w-0">
+            <div className="text-xs sm:text-sm font-medium text-gray-900 truncate">
               {user.first_name && user.last_name
                 ? `${user.first_name} ${user.last_name}`
                 : 'N/A'}
             </div>
-            <div className="text-sm text-gray-500">{user.email}</div>
+            <div className="text-xs sm:text-sm text-gray-500 truncate">{user.email}</div>
           </div>
         </div>
       </td>
       
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRoleBadgeColor(user.role)}`}>
           {user.role}
         </span>
       </td>
       
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeColor(user.is_active)}`}>
           {user.is_active ? 'Active' : 'Inactive'}
         </span>
       </td>
       
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">
         {user.phone || 'N/A'}
       </td>
       
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
         {formatDate(user.created_at)}
       </td>
       
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setShowMenu(!showMenu)}
@@ -125,13 +125,13 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({
           </button>
           
           {showMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200">
+            <div className="absolute right-0 mt-2 w-40 sm:w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200">
               <button
                 onClick={() => {
                   onEdit(user);
                   setShowMenu(false);
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
               >
                 Edit User
               </button>
@@ -141,7 +141,7 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({
                   onToggleStatus(user.id, !user.is_active);
                   setShowMenu(false);
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
               >
                 {user.is_active ? 'Deactivate' : 'Activate'}
               </button>
@@ -151,7 +151,7 @@ export const UserTableRow: React.FC<UserTableRowProps> = ({
                   onDelete(user.id);
                   setShowMenu(false);
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                className="block w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm text-red-600 hover:bg-red-50"
               >
                 Delete User
               </button>

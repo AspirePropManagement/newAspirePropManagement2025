@@ -106,21 +106,21 @@ export default function DashboardLayout({ children, onPropertyListingClick }: Da
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto">
         {/* Mobile Header */}
-        <div className="lg:hidden bg-white shadow-sm border-b border-gray-200 px-4 py-3">
+        <div className="lg:hidden bg-white/80 backdrop-blur-lg shadow-sm border-b border-gray-200 px-3 sm:px-4 py-2.5 sm:py-3">
           <div className="flex items-center justify-between">
             <button
               onClick={() => setMobileSidebarOpen(true)}
-              className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+              className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
             >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">A</span>
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm sm:text-lg">A</span>
               </div>
-              <span className="ml-2 text-lg font-semibold text-gray-900">ASPIRE</span>
+              <span className="ml-2 text-base sm:text-lg font-semibold text-gray-900">ASPIRE PROP MANAGEMENT</span>
             </div>
             <div className="w-8"></div> {/* Spacer for centering */}
           </div>

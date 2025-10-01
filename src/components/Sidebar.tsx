@@ -190,10 +190,10 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
       return (
         <button
           onClick={item.onClick}
-          className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+          className="w-full flex items-center px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium rounded-lg sm:rounded-md transition-all duration-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:shadow-sm"
         >
-          <item.icon className={`h-5 w-5 ${(isMobile || !collapsed) ? 'mr-3' : 'mx-auto'}`} />
-          {(isMobile || !collapsed) && <span>{item.name}</span>}
+          <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${(isMobile || !collapsed) ? 'mr-2 sm:mr-3' : 'mx-auto'}`} />
+          {(isMobile || !collapsed) && <span className="truncate">{item.name}</span>}
         </button>
       );
     }
@@ -201,14 +201,14 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
     return (
       <Link
         href={item.href}
-        className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-center px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium rounded-lg sm:rounded-md transition-all duration-300 ${
           isActive(item.href)
-            ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-700'
-            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+            ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-700 shadow-sm'
+            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:shadow-sm'
         }`}
       >
-        <item.icon className={`h-5 w-5 ${(isMobile || !collapsed) ? 'mr-3' : 'mx-auto'}`} />
-        {(isMobile || !collapsed) && <span>{item.name}</span>}
+        <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${(isMobile || !collapsed) ? 'mr-2 sm:mr-3' : 'mx-auto'}`} />
+        {(isMobile || !collapsed) && <span className="truncate">{item.name}</span>}
       </Link>
     );
   };
@@ -218,13 +218,13 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
       return (
         <button
           onClick={item.onClick}
-          className={`w-full flex items-start px-4 py-3 text-sm font-medium rounded-md transition-colors text-gray-700 hover:bg-gray-100 hover:text-gray-900`}
+          className={`w-full flex items-start px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium rounded-lg sm:rounded-md transition-all duration-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:shadow-sm`}
         >
-          <item.icon className={`h-5 w-5 mt-0.5 ${(isMobile || !collapsed) ? 'mr-3' : 'mx-auto'}`} />
+          <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 mt-0.5 ${(isMobile || !collapsed) ? 'mr-2 sm:mr-3' : 'mx-auto'}`} />
           {(isMobile || !collapsed) && (
-            <div className="flex-1 text-left">
-              <div className="font-medium">{item.name}</div>
-              <div className="text-xs text-gray-500 mt-1">{item.description}</div>
+            <div className="flex-1 text-left min-w-0">
+              <div className="font-medium truncate">{item.name}</div>
+              <div className="text-xs text-gray-500 mt-0.5 sm:mt-1 truncate">{item.description}</div>
             </div>
           )}
         </button>
@@ -234,17 +234,17 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
     return (
       <Link
         href={item.href}
-        className={`flex items-start px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+        className={`flex items-start px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium rounded-lg sm:rounded-md transition-all duration-300 ${
           isActive(item.href)
-            ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-700'
-            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+            ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-700 shadow-sm'
+            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:shadow-sm'
         }`}
       >
-        <item.icon className={`h-5 w-5 mt-0.5 ${(isMobile || !collapsed) ? 'mr-3' : 'mx-auto'}`} />
+        <item.icon className={`h-4 w-4 sm:h-5 sm:w-5 mt-0.5 ${(isMobile || !collapsed) ? 'mr-2 sm:mr-3' : 'mx-auto'}`} />
         {(isMobile || !collapsed) && (
-          <div className="flex-1">
-            <div className="font-medium">{item.name}</div>
-            <div className="text-xs text-gray-500 mt-1">{item.description}</div>
+          <div className="flex-1 min-w-0">
+            <div className="font-medium truncate">{item.name}</div>
+            <div className="text-xs text-gray-500 mt-0.5 sm:mt-1 truncate">{item.description}</div>
           </div>
         )}
       </Link>
@@ -291,7 +291,7 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
         ))}
 
         {/* Property Management Section */}
-        <div className={`px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider ${
+        <div className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider ${
           isMobile ? '' : (collapsed ? 'text-center' : '')
         }`}>
           {(isMobile || !collapsed) && 'Property Management'}
@@ -305,7 +305,7 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
         {/* Admin Menu Items */}
         {userRole === 'ADMIN' && (
           <>
-            <div className={`px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider ${
+            <div className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider ${
               isMobile ? '' : (collapsed ? 'text-center' : '')
             }`}>
               {(isMobile || !collapsed) && 'Admin Panel'}
@@ -317,7 +317,7 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
         )}
 
         {/* User Account Menu Items */}
-        <div className={`px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider ${
+        <div className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider ${
           isMobile ? '' : (collapsed ? 'text-center' : '')
         }`}>
           {(isMobile || !collapsed) && 'Account'}
@@ -329,24 +329,24 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
 
       {/* Logout Confirmation Modal */}
       {showLogoutModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">Confirm Logout</h3>
-            <p className="text-gray-700 mb-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-lg shadow-xl max-w-md w-full">
+            <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-gray-900">Confirm Logout</h3>
+            <p className="text-gray-700 mb-4 sm:mb-6 text-sm sm:text-base">
               Are you sure you want to sign out?
               <br />
-              <span className="text-sm text-gray-500">You will need to sign in again to access your account.</span>
+              <span className="text-xs sm:text-sm text-gray-500">You will need to sign in again to access your account.</span>
             </p>
-            <div className="flex justify-end space-x-3">
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
               <button
                 onClick={cancelLogout}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="px-4 sm:px-6 py-2.5 sm:py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmLogout}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="px-4 sm:px-6 py-2.5 sm:py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base font-medium"
               >
                 Sign Out
               </button>

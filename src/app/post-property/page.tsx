@@ -7,7 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { PropertyForm } from '@/components/PropertyForm';
 import { PropertyFormSkeleton } from '@/components/skeletons';
 import PropertyListingsTable from '@/components/PropertyListingsTable';
-import ScrollArrow from '@/components/ScrollArrow';
+import { ScrollArrow } from '@/components/ScrollArrow';
 import { 
   createResaleProperty, 
   createRentalProperty, 
