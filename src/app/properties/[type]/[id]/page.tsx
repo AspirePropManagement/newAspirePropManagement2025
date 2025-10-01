@@ -28,6 +28,7 @@ import { ToastContainer } from '@/components/ToastContainer';
 import { PropertyEnquiryForm } from '@/components/PropertyEnquiryForm';
 import { useNewProjects } from '@/hooks/useNewProjects';
 import { RecommendedPropertiesCarousel } from '@/components/RecommendedPropertiesCarousel';
+import { ScrollArrow } from '@/components/ScrollArrow';
 
 interface PropertyDetailPageProps {}
 
@@ -332,10 +333,10 @@ export default function PropertyDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading property details...</p>
+          <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-orange-500 mx-auto mb-3 sm:mb-4"></div>
+          <p className="text-sm sm:text-base text-gray-600">Loading property details...</p>
         </div>
       </div>
     );
@@ -343,16 +344,16 @@ export default function PropertyDetailPage() {
 
   if (error || !property) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <HomeIcon className="w-8 h-8 text-red-500" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+            <HomeIcon className="w-7 h-7 sm:w-8 sm:h-8 text-red-500" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Property Not Found</h2>
-          <p className="text-gray-600 mb-4">{error || 'The property you are looking for does not exist.'}</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Property Not Found</h2>
+          <p className="text-sm sm:text-base text-gray-600 mb-4">{error || 'The property you are looking for does not exist.'}</p>
           <button
             onClick={() => router.back()}
-            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+            className="px-4 sm:px-6 py-2.5 sm:py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm sm:text-base w-full sm:w-auto"
           >
             Go Back
           </button>
@@ -367,27 +368,27 @@ export default function PropertyDetailPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <button
               onClick={() => router.back()}
-              className="flex items-center text-gray-600 hover:text-gray-900"
+              className="flex items-center text-gray-600 hover:text-gray-900 text-sm sm:text-base"
             >
-              <ArrowLeftIcon className="w-5 h-5 mr-2" />
-              Back
+              <ArrowLeftIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Back</span>
             </button>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={handleFavoriteToggle}
-                className="flex items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="flex items-center px-2 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-xs sm:text-sm"
               >
                 {isFavorite ? (
-                  <HeartIconSolid className="w-5 h-5 text-red-500 mr-2" />
+                  <HeartIconSolid className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-2 text-red-500" />
                 ) : (
-                  <HeartIcon className="w-5 h-5 text-gray-600 mr-2" />
+                  <HeartIcon className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-2 text-gray-600" />
                 )}
-                {isFavorite ? 'Saved' : 'Save'}
+                <span className="hidden sm:inline">{isFavorite ? 'Saved' : 'Save'}</span>
               </button>
               
                {property && (
@@ -403,11 +404,11 @@ export default function PropertyDetailPage() {
       </div>
 
       {/* Quick Overview Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {/* Property Images */}
-          <div className="space-y-4 lg:col-span-2">
-            <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden">
+          <div className="space-y-3 sm:space-y-4 lg:col-span-2">
+            <div className="relative h-64 sm:h-80 md:h-96 bg-gray-200 rounded-lg overflow-hidden">
               {images.length > 0 ? (
                 <Image
                   src={getImageSrc(images[currentImageIndex])}
@@ -423,20 +424,20 @@ export default function PropertyDetailPage() {
                 />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200">
-                  <HomeIcon className="w-16 h-16 text-gray-400 mb-4" />
-                  <span className="text-lg text-gray-500">No Images Available</span>
+                  <HomeIcon className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mb-3 sm:mb-4" />
+                  <span className="text-base sm:text-lg text-gray-500">No Images Available</span>
                 </div>
               )}
             </div>
 
             {/* Image Thumbnails */}
             {images.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
                 {images.slice(0, 8).map((image: string, index: number) => (
                   <button
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
-                    className={`relative h-20 bg-gray-200 rounded-lg overflow-hidden ${
+                    className={`relative h-16 sm:h-20 bg-gray-200 rounded-lg overflow-hidden ${
                       index === currentImageIndex ? 'ring-2 ring-orange-500' : ''
                     }`}
                   >
@@ -454,30 +455,30 @@ export default function PropertyDetailPage() {
             )}
 
             {/* Property Overview (moved below images) */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Property Type Badge */}
               <div>
-                <span className="bg-orange-500 text-white text-sm px-3 py-1 rounded-full font-medium">
+                <span className="bg-orange-500 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full font-medium">
                   {getPropertyTypeLabel()}
                 </span>
               </div>
 
               {/* Property Title */}
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
                 {getPropertyTitle()}
               </h1>
 
               {/* Location */}
-              <div className="flex items-center text-gray-600">
-                <MapPinIcon className="w-5 h-5 mr-2" />
-                <span className="text-lg">{property.location || 'Location not specified'}</span>
+              <div className="flex items-start text-gray-600">
+                <MapPinIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0 mt-0.5" />
+                <span className="text-sm sm:text-base md:text-lg">{property.location || 'Location not specified'}</span>
               </div>
 
               {/* Price */}
               {getPropertyPrice() && (
                 <div className="flex items-center">
-                  <CurrencyRupeeIcon className="w-8 h-8 text-orange-500 mr-2" />
-                  <span className="text-4xl font-bold text-gray-900">
+                  <CurrencyRupeeIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-orange-500 mr-2" />
+                  <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
                     {getPropertyPrice()}
                   </span>
                 </div>
@@ -491,11 +492,13 @@ export default function PropertyDetailPage() {
               </div>
 
               {/* Configuration */}
-              <div className="flex items-center text-gray-600">
-                <HomeIcon className="w-5 h-5 mr-2" />
-                <span className="text-lg">{getBHKConfig()}</span>
+              <div className="flex flex-wrap items-center text-gray-600 gap-2">
+                <div className="flex items-center">
+                  <HomeIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                  <span className="text-sm sm:text-base md:text-lg">{getBHKConfig()}</span>
+                </div>
                 {property.carpet_area && (
-                  <span className="ml-4">• {property.carpet_area} sq.ft</span>
+                  <span className="text-sm sm:text-base">• {property.carpet_area} sq.ft</span>
                 )}
               </div>
 
@@ -503,22 +506,22 @@ export default function PropertyDetailPage() {
               <div className="flex justify-center">
                 <button 
                   onClick={handleCallNow}
-                  className="bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-lg font-medium transition-colors flex items-center justify-center"
+                  className="bg-orange-500 hover:bg-orange-600 text-white py-2.5 sm:py-3 px-6 sm:px-8 rounded-lg font-medium transition-colors flex items-center justify-center text-sm sm:text-base w-full sm:w-auto"
                 >
-                  <PhoneIcon className="w-5 h-5 mr-2" />
+                  <PhoneIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Call Now
                 </button>
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-3 sm:pt-4 border-t border-gray-200">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">{images.length}</div>
-                  <div className="text-sm text-gray-600">Photos</div>
+                  <div className="text-xl sm:text-2xl font-bold text-blue-600">{images.length}</div>
+                  <div className="text-xs sm:text-sm text-gray-600">Photos</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">{getPropertyAmenities().length}</div>
-                  <div className="text-sm text-gray-600">Amenities</div>
+                  <div className="text-xl sm:text-2xl font-bold text-green-600">{getPropertyAmenities().length}</div>
+                  <div className="text-xs sm:text-sm text-gray-600">Amenities</div>
                 </div>
               </div>
             </div>
@@ -560,6 +563,8 @@ export default function PropertyDetailPage() {
 
       {/* Removed bottom enquiry form to avoid duplication on detail page */}
 
+      {/* Scroll Arrow */}
+      <ScrollArrow />
 
       {/* Toast Container */}
       <ToastContainer
