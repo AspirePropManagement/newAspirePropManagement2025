@@ -42,6 +42,8 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState<PropertyData | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [editingProperty, setEditingProperty] = useState<PropertyData | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   // Fetch properties based on active tab
   const fetchProperties = async (propertyType: 'resale' | 'rental' | 'new_project') => {
@@ -174,6 +176,130 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
   const handleRowClick = (property: PropertyData) => {
     setSelectedProperty(property);
     setShowDetailModal(true);
+  };
+
+  // Handle edit property
+  const handleEditProperty = (property: PropertyData) => {
+    setEditingProperty(property);
+    setShowEditModal(true);
+  };
+
+  // Handle delete property
+  const handleDeleteProperty = async (propertyId: string) => {
+    if (!user || !supabase) return;
+    
+    const confirmed = window.confirm('Are you sure you want to delete this property? This action cannot be undone.');
+    if (!confirmed) return;
+
+    try {
+      let tableName;
+      switch (activeTab) {
+        case 'resale':
+          tableName = 'resale_properties';
+          break;
+        case 'rental':
+          tableName = 'rental_properties';
+          break;
+        case 'new_project':
+          tableName = 'new_projects';
+          break;
+        default:
+          throw new Error('Invalid property type');
+      }
+
+      const { error } = await supabase
+        .from(tableName)
+        .delete()
+        .eq('id', propertyId);
+
+      if (error) {
+        console.error('Error deleting property:', error);
+        alert('Failed to delete property. Please try again.');
+        return;
+      }
+
+      // Remove property from local state
+      setProperties(prev => prev.filter(p => p.id !== propertyId));
+      alert('Property deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      alert('Failed to delete property. Please try again.');
+    }
+  };
+
+  // Handle save edit
+  const handleSaveEdit = async (updatedProperty: PropertyData) => {
+    if (!user || !supabase) return;
+
+    try {
+      let tableName;
+      let updateData: any = {};
+
+      switch (activeTab) {
+        case 'resale':
+          tableName = 'resale_properties';
+          updateData = {
+            seller_name: updatedProperty.seller_name,
+            seller_email: updatedProperty.seller_email,
+            seller_contact_no: updatedProperty.seller_contact_no,
+            property_type: updatedProperty.property_type,
+            bhk_type: updatedProperty.bhk_type,
+            location: updatedProperty.location,
+            asking_price: updatedProperty.asking_price,
+            status: updatedProperty.status,
+            updated_at: new Date().toISOString()
+          };
+          break;
+        case 'rental':
+          tableName = 'rental_properties';
+          updateData = {
+            owner_name: updatedProperty.seller_name,
+            owner_email: updatedProperty.seller_email,
+            owner_contact_no: updatedProperty.seller_contact_no,
+            property_type: updatedProperty.property_type,
+            bhk_type: updatedProperty.bhk_type,
+            location: updatedProperty.location,
+            rent_amount: updatedProperty.asking_price,
+            status: updatedProperty.status,
+            updated_at: new Date().toISOString()
+          };
+          break;
+        case 'new_project':
+          tableName = 'new_projects';
+          updateData = {
+            project_name: updatedProperty.title,
+            project_location: updatedProperty.location,
+            status: updatedProperty.status,
+            updated_at: new Date().toISOString()
+          };
+          break;
+        default:
+          throw new Error('Invalid property type');
+      }
+
+      const { error } = await supabase
+        .from(tableName)
+        .update(updateData)
+        .eq('id', updatedProperty.id);
+
+      if (error) {
+        console.error('Error updating property:', error);
+        alert('Failed to update property. Please try again.');
+        return;
+      }
+
+      // Update property in local state
+      setProperties(prev => prev.map(p => 
+        p.id === updatedProperty.id ? updatedProperty : p
+      ));
+      
+      setShowEditModal(false);
+      setEditingProperty(null);
+      alert('Property updated successfully!');
+    } catch (error) {
+      console.error('Error updating property:', error);
+      alert('Failed to update property. Please try again.');
+    }
   };
 
   useEffect(() => {
@@ -330,7 +456,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              // TODO: Implement edit functionality
+                              handleEditProperty(property);
                             }}
                             className="p-1.5 text-green-600 hover:bg-green-100 rounded-lg transition-colors"
                             title="Edit Property"
@@ -340,7 +466,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              // TODO: Implement delete functionality
+                              handleDeleteProperty(property.id);
                             }}
                             className="p-1.5 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
                             title="Delete Property"
@@ -430,7 +556,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        // TODO: Implement edit functionality
+                        handleEditProperty(property);
                       }}
                       className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors"
                       title="Edit Property"
@@ -440,7 +566,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        // TODO: Implement delete functionality
+                        handleDeleteProperty(property.id);
                       }}
                       className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
                       title="Delete Property"
@@ -463,6 +589,18 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             setShowDetailModal(false);
             setSelectedProperty(null);
           }}
+        />
+      )}
+
+      {/* Property Edit Modal */}
+      {showEditModal && editingProperty && (
+        <PropertyEditModal 
+          property={editingProperty}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditingProperty(null);
+          }}
+          onSave={handleSaveEdit}
         />
       )}
     </div>
@@ -574,6 +712,167 @@ function PropertyDetailModal({ property, onClose }: PropertyDetailModalProps) {
               <div className="text-sm sm:text-base text-gray-900 break-words">{property.notes}</div>
             </div>
           )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Property Edit Modal Component
+interface PropertyEditModalProps {
+  property: PropertyData;
+  onClose: () => void;
+  onSave: (property: PropertyData) => void;
+}
+
+function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps) {
+  const [formData, setFormData] = useState<PropertyData>(property);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  const handleInputChange = (field: keyof PropertyData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">Edit Property</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <XMarkIcon className="w-6 h-6" />
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Property Title
+                </label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  BHK Type
+                </label>
+                <input
+                  type="text"
+                  value={formData.bhkType}
+                  onChange={(e) => handleInputChange('bhkType', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Price/Amount
+                </label>
+                <input
+                  type="number"
+                  value={formData.askingPrice}
+                  onChange={(e) => handleInputChange('askingPrice', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Seller/Owner Name
+                </label>
+                <input
+                  type="text"
+                  value={formData.seller_name}
+                  onChange={(e) => handleInputChange('seller_name', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={formData.seller_email}
+                  onChange={(e) => handleInputChange('seller_email', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Contact Number
+                </label>
+                <input
+                  type="tel"
+                  value={formData.seller_contact_no}
+                  onChange={(e) => handleInputChange('seller_contact_no', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Status
+                </label>
+                <select
+                  value={formData.status}
+                  onChange={(e) => handleInputChange('status', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="available">Available</option>
+                  <option value="sold">Sold</option>
+                  <option value="rented">Rented</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
