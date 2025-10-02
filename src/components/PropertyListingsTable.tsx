@@ -12,7 +12,8 @@ import {
   KeyIcon,
   CalendarIcon,
   CurrencyRupeeIcon,
-  MapPinIcon
+  MapPinIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 
 interface PropertyListingsTableProps {
@@ -54,30 +55,45 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
       let query;
       let tableName;
       
+      // Check if user is admin - admins can see all properties
+      const isAdmin = user.role === 'ADMIN';
+      
       switch (propertyType) {
         case 'resale':
           tableName = 'resale_properties';
           query = supabase
             .from('resale_properties')
             .select('*')
-            .eq('created_by', user.id)
             .order('created_at', { ascending: false });
+          
+          // Only filter by created_by if user is not admin
+          if (!isAdmin) {
+            query = query.eq('created_by', user.id);
+          }
           break;
         case 'rental':
           tableName = 'rental_properties';
           query = supabase
             .from('rental_properties')
             .select('*')
-            .eq('created_by', user.id)
             .order('created_at', { ascending: false });
+          
+          // Only filter by created_by if user is not admin
+          if (!isAdmin) {
+            query = query.eq('created_by', user.id);
+          }
           break;
         case 'new_project':
           tableName = 'new_projects';
           query = supabase
             .from('new_projects')
             .select('*')
-            .eq('created_by', user.id)
             .order('created_at', { ascending: false });
+          
+          // Only filter by created_by if user is not admin
+          if (!isAdmin) {
+            query = query.eq('created_by', user.id);
+          }
           break;
       }
 
@@ -180,6 +196,14 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
 
   // Handle edit property
   const handleEditProperty = (property: PropertyData) => {
+    // Check if user is admin or owns the property
+    const isAdmin = user?.role === 'ADMIN';
+    
+    if (!isAdmin && property.created_by !== user?.id) {
+      alert('You can only edit properties that you created.');
+      return;
+    }
+    
     setEditingProperty(property);
     setShowEditModal(true);
   };
@@ -205,6 +229,15 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
           break;
         default:
           throw new Error('Invalid property type');
+      }
+
+      // Check if user is admin or owns the property
+      const isAdmin = user.role === 'ADMIN';
+      const property = properties.find(p => p.id === propertyId);
+      
+      if (!isAdmin && property && property.created_by !== user.id) {
+        alert('You can only delete properties that you created.');
+        return;
       }
 
       const { error } = await supabase
@@ -385,6 +418,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">BHK</th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created By</th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Listed</th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                   </tr>
@@ -434,6 +468,23 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
                         }`}>
                           {property.status}
                         </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-6 h-6 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full flex items-center justify-center">
+                            <span className="text-xs font-semibold text-purple-600">
+                              {property.seller_name ? property.seller_name.charAt(0).toUpperCase() : 'U'}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {property.seller_name || property.owner_name || 'Unknown'}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {property.created_by === user?.id ? 'You' : 'Other'}
+                            </div>
+                          </div>
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-1">
