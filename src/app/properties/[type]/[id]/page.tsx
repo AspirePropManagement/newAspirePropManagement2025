@@ -137,18 +137,28 @@ export default function PropertyDetailPage() {
   const getPropertyDetails = () => {
     if (!property) return null;
     
+    // Get price based on property type
+    let price = 0;
+    if (type === 'resale') {
+      price = property.asking_price || 0;
+    } else if (type === 'rental') {
+      price = property.rent_amount || 0;
+    } else if (type === 'new_project') {
+      price = property.min_price || property.starting_price || 0;
+    }
+    
     return {
       title: getPropertyTitle(),
-      price: property.asking_price || property.rent_amount || property.starting_price || 0,
-      location: property.location || 'Location not specified',
+      price: price,
+      location: property.location || property.project_location || 'Location not specified',
       bhkType: getBHKConfig(),
       carpetArea: property.carpet_area || property.square_feet || 0,
       squareFeet: property.square_feet || property.carpet_area || 0,
-      propertyType: property.property_type || 'Property',
+      propertyType: property.property_type || property.project_type || 'Property',
       status: property.status || 'Available',
-      description: property.description || property.notes || 'No description available',
+      description: property.description || property.notes || property.other_notes || 'No description available',
       id: property.id,
-      type: property.type
+      type: type as string
     };
   };
 
@@ -275,12 +285,12 @@ export default function PropertyDetailPage() {
   const getPropertyTitle = () => {
     if (!property) return '';
     
-    if (property.type === 'resale') {
-      return property.title || property.society_name || 'Resale Property';
-    } else if (property.type === 'rental') {
-      return property.title || property.society_name || 'Rental Property';
-    } else if (property.type === 'new_project') {
-      return property.title || property.project_name || 'New Project';
+    if (type === 'resale') {
+      return property.society_name || property.title || 'Resale Property';
+    } else if (type === 'rental') {
+      return property.society_name || property.title || 'Rental Property';
+    } else if (type === 'new_project') {
+      return property.project_name || property.title || 'New Project';
     }
     return property.title || 'Property';
   };
@@ -289,12 +299,12 @@ export default function PropertyDetailPage() {
   const getPropertyPrice = () => {
     if (!property) return '';
     
-    if (property.type === 'resale') {
+    if (type === 'resale') {
       return formatPrice(property.asking_price);
-    } else if (property.type === 'rental') {
+    } else if (type === 'rental') {
       return `${formatPrice(property.rent_amount)}/month`;
-    } else if (property.type === 'new_project') {
-      return formatPrice(property.starting_price);
+    } else if (type === 'new_project') {
+      return formatPrice(property.min_price || property.starting_price);
     }
     return '';
   };
@@ -304,22 +314,21 @@ export default function PropertyDetailPage() {
     if (!property?.bhk_type) return 'BHK not specified';
     
     const bhkMap: { [key: string]: string } = {
-      '1_rk': '1 RK',
-      '1_bhk': '1 BHK',
+      '1_rk_1_bhk': '1 RK/1 BHK',
       '2_bhk': '2 BHK',
       '3_bhk': '3 BHK',
       '4_bhk': '4 BHK',
       '5_bhk': '5 BHK',
       '5_plus_bhk': '5+ BHK'
     };
-    return bhkMap[property.bhk_type] || 'BHK not specified';
+    return bhkMap[property.bhk_type] || property.bhk_type || 'BHK not specified';
   };
 
   // Get property type label
   const getPropertyTypeLabel = () => {
     if (!property) return 'Property';
     
-    switch (property.type) {
+    switch (type) {
       case 'resale':
         return 'For Sale';
       case 'rental':
@@ -542,7 +551,13 @@ export default function PropertyDetailPage() {
 
       {/* Comprehensive Property Layout */}
       <PropertyLayout
-        propertyImages={property.property_images || {}}
+        propertyImages={{
+          general_photos: property.property_images?.general_photos || {},
+          floor_plans: property.property_images?.floor_plans || {},
+          project_images: property.property_images?.project_images || {},
+          legal_docs: property.property_images?.legal_docs || {},
+          virtual_content: property.property_images?.virtual_content || {}
+        }}
         propertyDetails={getPropertyDetails() || {
           title: 'Property',
           price: 0,
