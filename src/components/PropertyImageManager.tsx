@@ -355,9 +355,11 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
           </h4>
           <div className="overflow-x-auto">
             <div className="flex space-x-2 sm:space-x-3 pb-2 min-w-max">
-              {(localImages[activeCategory] as any)[activeSubcategory].map((imageData: string, index: number) => {
-                const isPDF = imageData.includes('data:application/pdf') || imageData.includes('data:application/octet-stream');
-                const isBase64Image = imageData.startsWith('data:image/');
+              {(localImages[activeCategory] as any)[activeSubcategory].map((imageData: any, index: number) => {
+                // Ensure imageData is a string before calling string methods
+                const imageString = typeof imageData === 'string' ? imageData : String(imageData || '');
+                const isPDF = imageString.includes('data:application/pdf') || imageString.includes('data:application/octet-stream');
+                const isBase64Image = imageString.startsWith('data:image/');
                 
                 return (
                   <div key={index} className="relative group flex-shrink-0">
@@ -369,7 +371,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
                       ) : isBase64Image ? (
                         <div className="relative">
                           <Image
-                            src={imageData}
+                            src={imageString}
                             alt={`Uploaded ${safeSubcategory?.name || 'image'} ${index + 1}`}
                             width={128}
                             height={128}
