@@ -376,23 +376,27 @@ export default function PropertyDetailPage() {
   const images = getPropertyImages();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      {/* Modern Header with Gradient */}
+      <div className="bg-gradient-to-r from-white to-blue-50 shadow-lg border-b border-blue-100">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex items-center justify-between">
             <button
               onClick={() => router.back()}
-              className="flex items-center text-gray-600 hover:text-gray-900 text-sm sm:text-base"
+              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200 text-sm sm:text-base group"
             >
-              <ArrowLeftIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Back</span>
+              <ArrowLeftIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
+              <span className="hidden sm:inline font-medium">Back</span>
             </button>
             
-            <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <button
                 onClick={handleFavoriteToggle}
-                className="flex items-center px-2 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-xs sm:text-sm"
+                className={`flex items-center px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition-all duration-200 text-xs sm:text-sm font-medium ${
+                  isFavorite 
+                    ? 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100' 
+                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 shadow-sm'
+                }`}
               >
                 {isFavorite ? (
                   <HeartIconSolid className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-2 text-red-500" />
@@ -414,42 +418,86 @@ export default function PropertyDetailPage() {
         </div>
       </div>
 
-      {/* Quick Overview Section */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-          {/* Property Images */}
-          <div className="space-y-3 sm:space-y-4 lg:col-span-2">
-            <div className="relative h-64 sm:h-80 md:h-96 bg-gray-200 rounded-lg overflow-hidden">
-              {images.length > 0 ? (
-                <Image
-                  src={getImageSrc(images[currentImageIndex])}
-                  alt={getPropertyTitle()}
-                  fill
-                  className="object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/api/placeholder/600/400';
-                  }}
-                  // For base64 images, we don't need to configure domains
-                  unoptimized={isBase64Image(images[currentImageIndex])}
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center bg-gray-200">
-                  <HomeIcon className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mb-3 sm:mb-4" />
-                  <span className="text-base sm:text-lg text-gray-500">No Images Available</span>
-                </div>
+      {/* Hero Property Section */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10">
+          {/* Main Property Showcase */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Property Hero Image */}
+            <div className="relative group">
+              <div className="relative h-80 sm:h-96 md:h-[500px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-2xl">
+                {images.length > 0 ? (
+                  <>
+                    <Image
+                      src={getImageSrc(images[currentImageIndex])}
+                      alt={getPropertyTitle()}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/api/placeholder/600/400';
+                      }}
+                      unoptimized={isBase64Image(images[currentImageIndex])}
+                    />
+                    {/* Image Overlay Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                    
+                    {/* Property Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-lg">
+                        {getPropertyTypeLabel()}
+                      </span>
+                    </div>
+                    
+                    {/* Image Counter */}
+                    {images.length > 1 && (
+                      <div className="absolute top-4 right-4">
+                        <span className="bg-black/50 backdrop-blur-sm text-white text-sm font-medium px-3 py-1.5 rounded-full">
+                          {currentImageIndex + 1} / {images.length}
+                        </span>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-full p-6 mb-4">
+                      <HomeIcon className="w-16 h-16 sm:w-20 sm:h-20 text-gray-400" />
+                    </div>
+                    <span className="text-lg sm:text-xl text-gray-600 font-medium">No Images Available</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Navigation Arrows */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-700 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+                  >
+                    <ArrowLeftIcon className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentImageIndex((prev) => (prev + 1) % images.length)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-700 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+                  >
+                    <ArrowLeftIcon className="w-5 h-5 rotate-180" />
+                  </button>
+                </>
               )}
             </div>
 
             {/* Image Thumbnails */}
             {images.length > 1 && (
-              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+              <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-hide">
                 {images.slice(0, 8).map((image: string, index: number) => (
                   <button
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
-                    className={`relative h-16 sm:h-20 bg-gray-200 rounded-lg overflow-hidden ${
-                      index === currentImageIndex ? 'ring-2 ring-orange-500' : ''
+                    className={`relative flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 bg-gray-200 rounded-xl overflow-hidden transition-all duration-200 ${
+                      index === currentImageIndex 
+                        ? 'ring-4 ring-orange-500 shadow-lg scale-105' 
+                        : 'hover:scale-105 shadow-md'
                     }`}
                   >
                     <Image
@@ -457,7 +505,6 @@ export default function PropertyDetailPage() {
                       alt={`Property image ${index + 1}`}
                       fill
                       className="object-cover"
-                      // For base64 images, we don't need to configure domains
                       unoptimized={isBase64Image(image)}
                     />
                   </button>
@@ -465,88 +512,100 @@ export default function PropertyDetailPage() {
               </div>
             )}
 
-            {/* Property Overview (moved below images) */}
-            <div className="space-y-4 sm:space-y-6">
-              {/* Property Type Badge */}
-              <div>
-                <span className="bg-orange-500 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full font-medium">
-                  {getPropertyTypeLabel()}
-                </span>
-              </div>
-
-              {/* Property Title */}
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                {getPropertyTitle()}
-              </h1>
-
-              {/* Location */}
-              <div className="flex items-start text-gray-600">
-                <MapPinIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0 mt-0.5" />
-                <span className="text-sm sm:text-base md:text-lg">{property.location || 'Location not specified'}</span>
-              </div>
-
-              {/* Price */}
-              {getPropertyPrice() && (
-                <div className="flex items-center">
-                  <CurrencyRupeeIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-orange-500 mr-2" />
-                  <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
-                    {getPropertyPrice()}
-                  </span>
+            {/* Property Information Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Basic Info Card */}
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                  <HomeIcon className="w-5 h-5 mr-2 text-blue-600" />
+                  Property Details
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">BHK Type</span>
+                    <span className="font-semibold text-gray-900">{getBHKConfig()}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Carpet Area</span>
+                    <span className="font-semibold text-gray-900">{property.carpet_area || 'N/A'} sq.ft</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Property Type</span>
+                    <span className="font-semibold text-gray-900">{property.property_type || 'N/A'}</span>
+                  </div>
                 </div>
-              )}
-
-              {/* Meta: Type + ID */}
-              <div className="text-xs text-gray-500">
-                <span>Type: {getPropertyTypeLabel()}</span>
-                <span className="mx-2">•</span>
-                <span>ID: {property.id}</span>
               </div>
 
-              {/* Configuration */}
-              <div className="flex flex-wrap items-center text-gray-600 gap-2">
-                <div className="flex items-center">
-                  <HomeIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                  <span className="text-sm sm:text-base md:text-lg">{getBHKConfig()}</span>
-                </div>
-                {property.carpet_area && (
-                  <span className="text-sm sm:text-base">• {property.carpet_area} sq.ft</span>
-                )}
-              </div>
-
-              {/* Contact Button */}
-              <div className="flex justify-center">
-                <button 
-                  onClick={handleCallNow}
-                  className="bg-orange-500 hover:bg-orange-600 text-white py-2.5 sm:py-3 px-6 sm:px-8 rounded-lg font-medium transition-colors flex items-center justify-center text-sm sm:text-base w-full sm:w-auto"
-                >
-                  <PhoneIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  Call Now
-                </button>
-              </div>
-
-              {/* Quick Stats */}
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-3 sm:pt-4 border-t border-gray-200">
-                <div className="text-center">
-                  <div className="text-xl sm:text-2xl font-bold text-blue-600">{images.length}</div>
-                  <div className="text-xs sm:text-sm text-gray-600">Photos</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl sm:text-2xl font-bold text-green-600">{getPropertyAmenities().length}</div>
-                  <div className="text-xs sm:text-sm text-gray-600">Amenities</div>
+              {/* Price Card */}
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-100 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                  <CurrencyRupeeIcon className="w-5 h-5 mr-2 text-green-600" />
+                  Pricing
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Price</span>
+                    <span className="font-bold text-2xl text-green-600">{getPropertyPrice()}</span>
+                  </div>
+                  {property.carpet_area && property.asking_price && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Price/sq.ft</span>
+                      <span className="font-semibold text-gray-900">
+                        ₹{Math.round(property.asking_price / property.carpet_area).toLocaleString()}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right-side Enquiry Form */}
-          <div className="lg:col-span-1 lg:sticky lg:top-24 self-start">
-            <PropertyEnquiryForm 
-              propertyTitle={getPropertyTitle()} 
-              propertyId={property.id}
-              propertyType={property.type}
-              propertyPrice={getPropertyPrice()}
-              propertyLocation={property.location || 'Location not specified'}
-            />
+          {/* Property Summary & Enquiry */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Property Summary Card */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sticky top-6">
+              <div className="mb-6">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 leading-tight">
+                  {getPropertyTitle()}
+                </h1>
+                <div className="flex items-center text-gray-600 mb-4">
+                  <MapPinIcon className="w-5 h-5 mr-2 flex-shrink-0" />
+                  <span className="text-base">{property.location || 'Location not specified'}</span>
+                </div>
+                
+                {/* Key Stats */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="text-center p-3 bg-blue-50 rounded-xl">
+                    <div className="text-2xl font-bold text-blue-600">{images.length}</div>
+                    <div className="text-sm text-gray-600">Photos</div>
+                  </div>
+                  <div className="text-center p-3 bg-green-50 rounded-xl">
+                    <div className="text-2xl font-bold text-green-600">{getPropertyAmenities().length}</div>
+                    <div className="text-sm text-gray-600">Amenities</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Call Now Button */}
+              <button 
+                onClick={handleCallNow}
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                <PhoneIcon className="w-5 h-5 mr-3" />
+                Call Now
+              </button>
+            </div>
+
+            {/* Enquiry Form */}
+            <div className="sticky top-80">
+              <PropertyEnquiryForm 
+                propertyTitle={getPropertyTitle()} 
+                propertyId={property.id}
+                propertyType={property.type}
+                propertyPrice={getPropertyPrice()}
+                propertyLocation={property.location || 'Location not specified'}
+              />
+            </div>
           </div>
         </div>
       </div>
