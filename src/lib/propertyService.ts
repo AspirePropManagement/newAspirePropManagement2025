@@ -185,13 +185,22 @@ export async function createResaleProperty(data: ResalePropertyData, userId?: st
     if ((data as any).maintenanceCharge) insertData.maintenance_charge = parseFloat((data as any).maintenanceCharge);
     if ((data as any).maintenanceFrequency) insertData.maintenance_frequency = (data as any).maintenanceFrequency;
     
-    // JSON fields
+    // JSON fields - Extract from propertyImages structure
     insertData.property_images = data.propertyImages ? data.propertyImages : {};
     insertData.amenities = data.amenities || {};
-    insertData.general_photos = (data as any).generalPhotos || {};
-    insertData.floor_plans = (data as any).floorPlans || {};
-    insertData.legal_docs = (data as any).legalDocs || {};
-    insertData.virtual_content = (data as any).virtualContent || {};
+    
+    // Map individual image fields from propertyImages
+    if (data.propertyImages) {
+      insertData.general_photos = data.propertyImages.general_photos || {};
+      insertData.floor_plans = data.propertyImages.floor_plans || {};
+      insertData.legal_docs = data.propertyImages.legal_docs || [];
+      insertData.virtual_content = data.propertyImages.virtual_content || [];
+    } else {
+      insertData.general_photos = {};
+      insertData.floor_plans = {};
+      insertData.legal_docs = [];
+      insertData.virtual_content = [];
+    }
     insertData.documents = [];
     
     console.log('Insert data prepared:', insertData);
@@ -269,13 +278,22 @@ export async function createRentalProperty(data: RentalPropertyData, userId?: st
     }
     if ((data as any).listedBy) insertData.listed_by = (data as any).listedBy;
     
-    // JSON fields
+    // JSON fields - Extract from propertyImages structure
     insertData.property_images = data.propertyImages ? data.propertyImages : {};
     insertData.amenities = data.amenities || {};
-    insertData.general_photos = (data as any).generalPhotos || {};
-    insertData.floor_plans = (data as any).floorPlans || {};
-    insertData.legal_docs = (data as any).legalDocs || {};
-    insertData.virtual_content = (data as any).virtualContent || {};
+    
+    // Map individual image fields from propertyImages
+    if (data.propertyImages) {
+      insertData.general_photos = data.propertyImages.general_photos || {};
+      insertData.floor_plans = data.propertyImages.floor_plans || {};
+      insertData.legal_docs = data.propertyImages.legal_docs || [];
+      insertData.virtual_content = data.propertyImages.virtual_content || [];
+    } else {
+      insertData.general_photos = {};
+      insertData.floor_plans = {};
+      insertData.legal_docs = [];
+      insertData.virtual_content = [];
+    }
     insertData.documents = [];
 
     console.log('Rental property insert data:', insertData);
@@ -370,14 +388,24 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     if ((data as any).visitorParking !== undefined) insertData.visitor_parking = (data as any).visitorParking;
     if ((data as any).fireSafety !== undefined) insertData.fire_safety = (data as any).fireSafety;
     
-    // JSON fields
+    // JSON fields - Extract from propertyImages structure
     insertData.property_images = data.propertyImages ? data.propertyImages : {};
     insertData.amenities = data.amenities || {};
-    insertData.general_photos = (data as any).generalPhotos || {};
-    insertData.floor_plans = (data as any).floorPlans || {};
-    insertData.project_images = (data as any).projectImages || {};
-    insertData.legal_docs = (data as any).legalDocs || {};
-    insertData.virtual_content = (data as any).virtualContent || {};
+    
+    // Map individual image fields from propertyImages
+    if (data.propertyImages) {
+      insertData.general_photos = data.propertyImages.general_photos || {};
+      insertData.floor_plans = data.propertyImages.floor_plans || {};
+      insertData.project_images = data.propertyImages.project_images || [];
+      insertData.legal_docs = data.propertyImages.legal_docs || [];
+      insertData.virtual_content = data.propertyImages.virtual_content || [];
+    } else {
+      insertData.general_photos = {};
+      insertData.floor_plans = {};
+      insertData.project_images = [];
+      insertData.legal_docs = [];
+      insertData.virtual_content = [];
+    }
     insertData.documents = [];
 
     console.log('New project insert data:', insertData);
