@@ -328,8 +328,12 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             maintenance_charge: updatedProperty.maintenance_charge,
             maintenance_frequency: updatedProperty.maintenance_frequency,
             
-            // Images and amenities as JSONB
+            // Images and amenities as JSONB - Map from PropertyImageManager format
             property_images: updatedProperty.property_images,
+            general_photos: updatedProperty.property_images?.general_photos || {},
+            floor_plans: updatedProperty.property_images?.floor_plans || {},
+            legal_docs: updatedProperty.property_images?.legal_docs || [],
+            virtual_content: updatedProperty.property_images?.virtual_content || [],
             amenities: {
               club_house: updatedProperty.club_house || false,
               swimming_pool: updatedProperty.swimming_pool || false,
@@ -346,10 +350,6 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
               visitor_parking: updatedProperty.visitor_parking || false,
               fire_safety: updatedProperty.fire_safety || false
             },
-            general_photos: updatedProperty.general_photos,
-            floor_plans: updatedProperty.floor_plans,
-            legal_docs: updatedProperty.legal_docs,
-            virtual_content: updatedProperty.virtual_content,
             
             updated_at: new Date().toISOString()
           };
@@ -392,8 +392,12 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             visit_timing_weekdays: updatedProperty.visit_timing_weekdays,
             listed_by: updatedProperty.listed_by,
             
-            // Images and amenities as JSONB
+            // Images and amenities as JSONB - Map from PropertyImageManager format
             property_images: updatedProperty.property_images,
+            general_photos: updatedProperty.property_images?.general_photos || {},
+            floor_plans: updatedProperty.property_images?.floor_plans || {},
+            legal_docs: updatedProperty.property_images?.legal_docs || [],
+            virtual_content: updatedProperty.property_images?.virtual_content || [],
             amenities: {
               club_house: updatedProperty.club_house || false,
               swimming_pool: updatedProperty.swimming_pool || false,
@@ -410,10 +414,6 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
               visitor_parking: updatedProperty.visitor_parking || false,
               fire_safety: updatedProperty.fire_safety || false
             },
-            general_photos: updatedProperty.general_photos,
-            floor_plans: updatedProperty.floor_plans,
-            legal_docs: updatedProperty.legal_docs,
-            virtual_content: updatedProperty.virtual_content,
             
             updated_at: new Date().toISOString()
           };
@@ -466,8 +466,13 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             website_url: updatedProperty.website_url,
             brochure_url: updatedProperty.brochure_url,
             
-            // Images and amenities as JSONB
+            // Images and amenities as JSONB - Map from PropertyImageManager format
             property_images: updatedProperty.property_images,
+            general_photos: updatedProperty.property_images?.general_photos || {},
+            floor_plans: updatedProperty.property_images?.floor_plans || {},
+            project_images: updatedProperty.property_images?.project_images || [],
+            legal_docs: updatedProperty.property_images?.legal_docs || [],
+            virtual_content: updatedProperty.property_images?.virtual_content || [],
             amenities: {
               club_house: updatedProperty.club_house || false,
               swimming_pool: updatedProperty.swimming_pool || false,
@@ -484,11 +489,6 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
               visitor_parking: updatedProperty.visitor_parking || false,
               fire_safety: updatedProperty.fire_safety || false
             },
-            general_photos: updatedProperty.general_photos,
-            floor_plans: updatedProperty.floor_plans,
-            project_images: updatedProperty.project_images,
-            legal_docs: updatedProperty.legal_docs,
-            virtual_content: updatedProperty.virtual_content,
             
             updated_at: new Date().toISOString()
           };
@@ -974,13 +974,18 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<any>(() => {
-    // Ensure property_images is properly initialized
+    // Map database fields to PropertyImageManager format
     const initialData = { ...property };
-    if (!initialData.property_images) {
-      initialData.property_images = {};
-    }
-    console.log('PropertyEditModal - Initial property data:', property);
-    console.log('PropertyEditModal - Initial formData with images:', initialData);
+    
+    // Initialize property_images with the correct structure
+    initialData.property_images = {
+      general_photos: property.general_photos || {},
+      floor_plans: property.floor_plans || {},
+      legal_docs: property.legal_docs || [],
+      virtual_content: property.virtual_content || [],
+      project_images: property.project_images || []
+    };
+    
     return initialData;
   });
   const imageManagerRef = useRef<PropertyImageManagerRef>(null);
@@ -1020,14 +1025,12 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
     try {
       // Get images from PropertyImageManager
       const images = imageManagerRef.current?.getImages() || {};
-      console.log('PropertyEditModal - Images from manager:', images);
       
       // Update formData with images
       const updatedFormData = {
         ...formData,
         property_images: images
       };
-      console.log('PropertyEditModal - Updated form data to save:', updatedFormData);
 
       await onSave(updatedFormData);
     } catch (error) {
@@ -1372,11 +1375,6 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
               isSubmitting={isSubmitting}
               initialImages={formData.property_images || {}}
             />
-            {/* Debug info */}
-            <div className="mt-4 p-2 bg-gray-100 rounded text-xs">
-              <p>Debug - formData.property_images:</p>
-              <pre>{JSON.stringify(formData.property_images, null, 2)}</pre>
-            </div>
           </div>
         );
 
