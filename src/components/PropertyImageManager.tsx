@@ -53,9 +53,8 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
 
   // Update local images when initialImages prop changes
   React.useEffect(() => {
-    if (Object.keys(initialImages).length > 0) {
-      setLocalImages(initialImages);
-    }
+    console.log('PropertyImageManager - initialImages changed:', initialImages);
+    setLocalImages(initialImages);
   }, [initialImages]);
 
   // Expose methods to parent through ref
@@ -141,8 +140,10 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
       reader.onload = (e) => {
         const base64 = e.target?.result as string;
         if (base64) {
+          console.log('PropertyImageManager - File converted to base64:', base64.substring(0, 50) + '...');
           // Store base64 data directly instead of file object
           (newImages[activeCategory] as any)[activeSubcategory].push(base64);
+          console.log('PropertyImageManager - Updated newImages:', newImages);
           setLocalImages({ ...newImages });
         }
       };

@@ -973,7 +973,16 @@ interface PropertyEditModalProps {
 function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<any>(property);
+  const [formData, setFormData] = useState<any>(() => {
+    // Ensure property_images is properly initialized
+    const initialData = { ...property };
+    if (!initialData.property_images) {
+      initialData.property_images = {};
+    }
+    console.log('PropertyEditModal - Initial property data:', property);
+    console.log('PropertyEditModal - Initial formData with images:', initialData);
+    return initialData;
+  });
   const imageManagerRef = useRef<PropertyImageManagerRef>(null);
 
   const totalSteps = 5;
@@ -1011,12 +1020,14 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
     try {
       // Get images from PropertyImageManager
       const images = imageManagerRef.current?.getImages() || {};
+      console.log('PropertyEditModal - Images from manager:', images);
       
       // Update formData with images
       const updatedFormData = {
         ...formData,
         property_images: images
       };
+      console.log('PropertyEditModal - Updated form data to save:', updatedFormData);
 
       await onSave(updatedFormData);
     } catch (error) {
@@ -1361,6 +1372,11 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
               isSubmitting={isSubmitting}
               initialImages={formData.property_images || {}}
             />
+            {/* Debug info */}
+            <div className="mt-4 p-2 bg-gray-100 rounded text-xs">
+              <p>Debug - formData.property_images:</p>
+              <pre>{JSON.stringify(formData.property_images, null, 2)}</pre>
+            </div>
           </div>
         );
 
