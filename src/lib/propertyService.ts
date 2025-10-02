@@ -122,12 +122,12 @@ export async function createResaleProperty(data: ResalePropertyData, userId?: st
     console.log('Creating resale property with data:', data);
     console.log('User ID:', currentUserId);
     
-    // Start with basic required fields that definitely exist
+    // Build insert data with all available fields from the actual schema
     const insertData: any = {
+      // Required fields
       seller_name: data.sellerName,
       seller_email: data.sellerEmail,
       seller_contact_no: data.contactNumber,
-      seller_alternate_no: data.alternateNumber || null,
       property_type: data.propertyType,
       bhk_type: data.bhkType,
       location: data.location,
@@ -137,7 +137,8 @@ export async function createResaleProperty(data: ResalePropertyData, userId?: st
       created_by: currentUserId
     };
 
-    // Add optional fields that might exist
+    // Optional basic fields
+    if (data.alternateNumber) insertData.seller_alternate_no = data.alternateNumber;
     if (data.societyName) insertData.society_name = data.societyName;
     if (data.squareFeet) insertData.square_feet = parseInt(data.squareFeet);
     if (data.carpetArea) insertData.carpet_area = parseInt(data.carpetArea);
@@ -149,9 +150,48 @@ export async function createResaleProperty(data: ResalePropertyData, userId?: st
     if (data.hasAmenities !== undefined) insertData.has_amenities = data.hasAmenities;
     if (data.notes) insertData.notes = data.notes;
     
-    // Add JSON fields
+    // Extended resale fields that exist in the actual schema
+    if ((data as any).ownershipType) insertData.ownership_type = (data as any).ownershipType;
+    if ((data as any).loanOnProperty !== undefined) insertData.loan_on_property = (data as any).loanOnProperty === 'true';
+    if ((data as any).loanAmount) insertData.loan_amount = parseFloat((data as any).loanAmount);
+    if ((data as any).bankName) insertData.bank_name = (data as any).bankName;
+    if ((data as any).reasonForSale) insertData.reason_for_sale = (data as any).reasonForSale;
+    if ((data as any).flatsPerFloor) insertData.flats_per_floor = (data as any).flatsPerFloor;
+    if ((data as any).societyAreaSize) insertData.society_area_size = (data as any).societyAreaSize;
+    if ((data as any).reraId) insertData.rera_id = (data as any).reraId;
+    if ((data as any).parkingVehicles) insertData.parking_vehicles = (data as any).parkingVehicles;
+    if ((data as any).visitDaysWeekend) insertData.visit_days_weekend = (data as any).visitDaysWeekend;
+    if ((data as any).visitTimingWeekendFrom && (data as any).visitTimingWeekendTo) {
+      insertData.visit_timing_weekend = `${(data as any).visitTimingWeekendFrom}-${(data as any).visitTimingWeekendTo}`;
+    }
+    if ((data as any).visitDaysWeekdays) insertData.visit_days_weekdays = (data as any).visitDaysWeekdays;
+    if ((data as any).visitTimingWeekdaysFrom && (data as any).visitTimingWeekdaysTo) {
+      insertData.visit_timing_weekdays = `${(data as any).visitTimingWeekdaysFrom}-${(data as any).visitTimingWeekdaysTo}`;
+    }
+    if ((data as any).listedBy) insertData.listed_by = (data as any).listedBy;
+    
+    // Additional fields from the schema
+    if ((data as any).addressLine) insertData.address_line = (data as any).addressLine;
+    if ((data as any).city) insertData.city = (data as any).city;
+    if ((data as any).state) insertData.state = (data as any).state;
+    if ((data as any).country) insertData.country = (data as any).country;
+    if ((data as any).postalCode) insertData.postal_code = (data as any).postalCode;
+    if ((data as any).latitude) insertData.latitude = parseFloat((data as any).latitude);
+    if ((data as any).longitude) insertData.longitude = parseFloat((data as any).longitude);
+    if ((data as any).totalFloors) insertData.total_floors = parseInt((data as any).totalFloors);
+    if ((data as any).possessionStatus) insertData.possession_status = (data as any).possessionStatus;
+    if ((data as any).possessionDate) insertData.possession_date = (data as any).possessionDate;
+    if ((data as any).availableFrom) insertData.available_from = (data as any).availableFrom;
+    if ((data as any).maintenanceCharge) insertData.maintenance_charge = parseFloat((data as any).maintenanceCharge);
+    if ((data as any).maintenanceFrequency) insertData.maintenance_frequency = (data as any).maintenanceFrequency;
+    
+    // JSON fields
     insertData.property_images = data.propertyImages ? data.propertyImages : {};
     insertData.amenities = data.amenities || {};
+    insertData.general_photos = (data as any).generalPhotos || {};
+    insertData.floor_plans = (data as any).floorPlans || {};
+    insertData.legal_docs = (data as any).legalDocs || {};
+    insertData.virtual_content = (data as any).virtualContent || {};
     insertData.documents = [];
     
     console.log('Insert data prepared:', insertData);
@@ -186,12 +226,12 @@ export async function createRentalProperty(data: RentalPropertyData, userId?: st
       return { success: false, error: 'No user logged in. Please login first.' };
     }
     
-    // Start with basic required fields that definitely exist
+    // Build insert data with all available fields from the actual schema
     const insertData: any = {
+      // Required fields
       owner_name: data.sellerName,
       owner_email: data.sellerEmail,
       owner_contact_no: data.contactNumber,
-      owner_alternate_no: data.alternateNumber || null,
       property_type: data.propertyType,
       bhk_type: data.bhkType,
       location: data.location,
@@ -201,11 +241,13 @@ export async function createRentalProperty(data: RentalPropertyData, userId?: st
       created_by: currentUserId
     };
 
-    // Add optional fields that might exist
+    // Optional basic fields
+    if (data.alternateNumber) insertData.owner_alternate_no = data.alternateNumber;
     if (data.societyName) insertData.society_name = data.societyName;
     if (data.floorNo) insertData.floor_no = data.floorNo;
     if (data.isNegotiable !== undefined) insertData.rent_negotiable = data.isNegotiable;
     if (data.depositAmount) insertData.deposit_amount = parseFloat(data.depositAmount);
+    if (data.depositAmount && data.isNegotiable !== undefined) insertData.deposit_negotiable = data.isNegotiable;
     if (data.petsAllowed !== undefined) insertData.pets_allowed = data.petsAllowed;
     if (data.parkingType) insertData.parking_type = data.parkingType;
     if (data.immediatePossession !== undefined) insertData.immediate_possession = data.immediatePossession;
@@ -214,9 +256,26 @@ export async function createRentalProperty(data: RentalPropertyData, userId?: st
     if (data.hasAmenities !== undefined) insertData.has_amenities = data.hasAmenities;
     if (data.notes) insertData.notes = data.notes;
     
-    // Add JSON fields
+    // Extended rental fields that exist in the actual schema
+    if ((data as any).tenantType) insertData.tenant_type = (data as any).tenantType;
+    if ((data as any).parkingVehicles) insertData.parking_vehicles = (data as any).parkingVehicles;
+    if ((data as any).visitDaysWeekend) insertData.visit_days_weekend = (data as any).visitDaysWeekend;
+    if ((data as any).visitTimingWeekendFrom && (data as any).visitTimingWeekendTo) {
+      insertData.visit_timing_weekend = `${(data as any).visitTimingWeekendFrom}-${(data as any).visitTimingWeekendTo}`;
+    }
+    if ((data as any).visitDaysWeekdays) insertData.visit_days_weekdays = (data as any).visitDaysWeekdays;
+    if ((data as any).visitTimingWeekdaysFrom && (data as any).visitTimingWeekdaysTo) {
+      insertData.visit_timing_weekdays = `${(data as any).visitTimingWeekdaysFrom}-${(data as any).visitTimingWeekdaysTo}`;
+    }
+    if ((data as any).listedBy) insertData.listed_by = (data as any).listedBy;
+    
+    // JSON fields
     insertData.property_images = data.propertyImages ? data.propertyImages : {};
     insertData.amenities = data.amenities || {};
+    insertData.general_photos = (data as any).generalPhotos || {};
+    insertData.floor_plans = (data as any).floorPlans || {};
+    insertData.legal_docs = (data as any).legalDocs || {};
+    insertData.virtual_content = (data as any).virtualContent || {};
     insertData.documents = [];
 
     console.log('Rental property insert data:', insertData);
@@ -246,8 +305,9 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
       return { success: false, error: 'No user logged in. Please login first.' };
     }
     
-    // Start with basic required fields that definitely exist
+    // Build insert data with all available fields from the actual schema
     const insertData: any = {
+      // Required fields
       crafted_by: data.craftedBy || data.sellerName,
       project_name: data.projectName || `Project in ${data.location}`,
       project_type: data.projectType,
@@ -257,7 +317,7 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
       created_by: currentUserId
     };
 
-    // Add optional fields that might exist
+    // Optional basic fields
     if (data.roomsPerFloor) insertData.rooms_per_floor = data.roomsPerFloor;
     if (data.cpSables) insertData.cp_sables = data.cpSables;
     if (data.otherNotes) insertData.other_notes = data.otherNotes;
@@ -274,9 +334,50 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     if (data.reraNumber) insertData.rera_number = data.reraNumber;
     if (data.projectConversionRate) insertData.project_conversion_rate = data.projectConversionRate;
     
-    // Add JSON fields
+    // Extended new project fields that exist in the actual schema
+    if ((data as any).totalProjectAreaSize) insertData.total_project_area_size = (data as any).totalProjectAreaSize;
+    if ((data as any).towersCount) insertData.towers_count = parseInt((data as any).towersCount);
+    if ((data as any).totalFloors) insertData.total_floors = parseInt((data as any).totalFloors);
+    if ((data as any).suggestionDate) insertData.suggestion_date = (data as any).suggestionDate;
+    if ((data as any).suggestionYear) insertData.suggestion_year = parseInt((data as any).suggestionYear);
+    if ((data as any).flatsPerFloor) insertData.flats_per_floor = (data as any).flatsPerFloor;
+    if ((data as any).roi) insertData.roi = (data as any).roi;
+    if ((data as any).rentalYield) insertData.rental_yield = parseFloat((data as any).rentalYield);
+    if ((data as any).marketedBy) insertData.marketed_by = (data as any).marketedBy;
+    if ((data as any).listedBy) insertData.listed_by = (data as any).listedBy;
+    if ((data as any).facingVastu) insertData.facing_vastu = (data as any).facingVastu;
+    if ((data as any).latitude) insertData.latitude = parseFloat((data as any).latitude);
+    if ((data as any).longitude) insertData.longitude = parseFloat((data as any).longitude);
+    if ((data as any).launchDate) insertData.launch_date = (data as any).launchDate;
+    if ((data as any).possessionDate) insertData.possession_date = (data as any).possessionDate;
+    if ((data as any).minPrice) insertData.min_price = parseFloat((data as any).minPrice);
+    if ((data as any).websiteUrl) insertData.website_url = (data as any).websiteUrl;
+    if ((data as any).brochureUrl) insertData.brochure_url = (data as any).brochureUrl;
+    
+    // Amenities boolean fields from the schema
+    if ((data as any).clubHouse !== undefined) insertData.club_house = (data as any).clubHouse;
+    if ((data as any).swimmingPool !== undefined) insertData.swimming_pool = (data as any).swimmingPool;
+    if ((data as any).childrenPlayArea !== undefined) insertData.children_play_area = (data as any).childrenPlayArea;
+    if ((data as any).powerBackup !== undefined) insertData.power_backup = (data as any).powerBackup;
+    if ((data as any).houseKeeping !== undefined) insertData.house_keeping = (data as any).houseKeeping;
+    if ((data as any).lift !== undefined) insertData.lift = (data as any).lift;
+    if ((data as any).gym !== undefined) insertData.gym = (data as any).gym;
+    if ((data as any).park !== undefined) insertData.park = (data as any).park;
+    if ((data as any).security !== undefined) insertData.security = (data as any).security;
+    if ((data as any).gasPipeline !== undefined) insertData.gas_pipeline = (data as any).gasPipeline;
+    if ((data as any).rainWaterHarvesting !== undefined) insertData.rain_water_harvesting = (data as any).rainWaterHarvesting;
+    if ((data as any).sewageTreatmentPlant !== undefined) insertData.sewage_treatment_plant = (data as any).sewageTreatmentPlant;
+    if ((data as any).visitorParking !== undefined) insertData.visitor_parking = (data as any).visitorParking;
+    if ((data as any).fireSafety !== undefined) insertData.fire_safety = (data as any).fireSafety;
+    
+    // JSON fields
     insertData.property_images = data.propertyImages ? data.propertyImages : {};
     insertData.amenities = data.amenities || {};
+    insertData.general_photos = (data as any).generalPhotos || {};
+    insertData.floor_plans = (data as any).floorPlans || {};
+    insertData.project_images = (data as any).projectImages || {};
+    insertData.legal_docs = (data as any).legalDocs || {};
+    insertData.virtual_content = (data as any).virtualContent || {};
     insertData.documents = [];
 
     console.log('New project insert data:', insertData);
