@@ -328,29 +328,28 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             maintenance_charge: updatedProperty.maintenance_charge,
             maintenance_frequency: updatedProperty.maintenance_frequency,
             
-            // Images and amenities
+            // Images and amenities as JSONB
             property_images: updatedProperty.property_images,
-            amenities: updatedProperty.amenities,
+            amenities: {
+              club_house: updatedProperty.club_house || false,
+              swimming_pool: updatedProperty.swimming_pool || false,
+              children_play_area: updatedProperty.children_play_area || false,
+              power_backup: updatedProperty.power_backup || false,
+              house_keeping: updatedProperty.house_keeping || false,
+              lift: updatedProperty.lift || false,
+              gym: updatedProperty.gym || false,
+              park: updatedProperty.park || false,
+              security: updatedProperty.security || false,
+              gas_pipeline: updatedProperty.gas_pipeline || false,
+              rain_water_harvesting: updatedProperty.rain_water_harvesting || false,
+              sewage_treatment_plant: updatedProperty.sewage_treatment_plant || false,
+              visitor_parking: updatedProperty.visitor_parking || false,
+              fire_safety: updatedProperty.fire_safety || false
+            },
             general_photos: updatedProperty.general_photos,
             floor_plans: updatedProperty.floor_plans,
             legal_docs: updatedProperty.legal_docs,
             virtual_content: updatedProperty.virtual_content,
-            
-            // Amenities
-            club_house: updatedProperty.club_house,
-            swimming_pool: updatedProperty.swimming_pool,
-            children_play_area: updatedProperty.children_play_area,
-            power_backup: updatedProperty.power_backup,
-            house_keeping: updatedProperty.house_keeping,
-            lift: updatedProperty.lift,
-            gym: updatedProperty.gym,
-            park: updatedProperty.park,
-            security: updatedProperty.security,
-            gas_pipeline: updatedProperty.gas_pipeline,
-            rain_water_harvesting: updatedProperty.rain_water_harvesting,
-            sewage_treatment_plant: updatedProperty.sewage_treatment_plant,
-            visitor_parking: updatedProperty.visitor_parking,
-            fire_safety: updatedProperty.fire_safety,
             
             updated_at: new Date().toISOString()
           };
@@ -393,29 +392,28 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             visit_timing_weekdays: updatedProperty.visit_timing_weekdays,
             listed_by: updatedProperty.listed_by,
             
-            // Images and amenities
+            // Images and amenities as JSONB
             property_images: updatedProperty.property_images,
-            amenities: updatedProperty.amenities,
+            amenities: {
+              club_house: updatedProperty.club_house || false,
+              swimming_pool: updatedProperty.swimming_pool || false,
+              children_play_area: updatedProperty.children_play_area || false,
+              power_backup: updatedProperty.power_backup || false,
+              house_keeping: updatedProperty.house_keeping || false,
+              lift: updatedProperty.lift || false,
+              gym: updatedProperty.gym || false,
+              park: updatedProperty.park || false,
+              security: updatedProperty.security || false,
+              gas_pipeline: updatedProperty.gas_pipeline || false,
+              rain_water_harvesting: updatedProperty.rain_water_harvesting || false,
+              sewage_treatment_plant: updatedProperty.sewage_treatment_plant || false,
+              visitor_parking: updatedProperty.visitor_parking || false,
+              fire_safety: updatedProperty.fire_safety || false
+            },
             general_photos: updatedProperty.general_photos,
             floor_plans: updatedProperty.floor_plans,
             legal_docs: updatedProperty.legal_docs,
             virtual_content: updatedProperty.virtual_content,
-            
-            // Amenities
-            club_house: updatedProperty.club_house,
-            swimming_pool: updatedProperty.swimming_pool,
-            children_play_area: updatedProperty.children_play_area,
-            power_backup: updatedProperty.power_backup,
-            house_keeping: updatedProperty.house_keeping,
-            lift: updatedProperty.lift,
-            gym: updatedProperty.gym,
-            park: updatedProperty.park,
-            security: updatedProperty.security,
-            gas_pipeline: updatedProperty.gas_pipeline,
-            rain_water_harvesting: updatedProperty.rain_water_harvesting,
-            sewage_treatment_plant: updatedProperty.sewage_treatment_plant,
-            visitor_parking: updatedProperty.visitor_parking,
-            fire_safety: updatedProperty.fire_safety,
             
             updated_at: new Date().toISOString()
           };
@@ -468,30 +466,29 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             website_url: updatedProperty.website_url,
             brochure_url: updatedProperty.brochure_url,
             
-            // Images and amenities
+            // Images and amenities as JSONB
             property_images: updatedProperty.property_images,
-            amenities: updatedProperty.amenities,
+            amenities: {
+              club_house: updatedProperty.club_house || false,
+              swimming_pool: updatedProperty.swimming_pool || false,
+              children_play_area: updatedProperty.children_play_area || false,
+              power_backup: updatedProperty.power_backup || false,
+              house_keeping: updatedProperty.house_keeping || false,
+              lift: updatedProperty.lift || false,
+              gym: updatedProperty.gym || false,
+              park: updatedProperty.park || false,
+              security: updatedProperty.security || false,
+              gas_pipeline: updatedProperty.gas_pipeline || false,
+              rain_water_harvesting: updatedProperty.rain_water_harvesting || false,
+              sewage_treatment_plant: updatedProperty.sewage_treatment_plant || false,
+              visitor_parking: updatedProperty.visitor_parking || false,
+              fire_safety: updatedProperty.fire_safety || false
+            },
             general_photos: updatedProperty.general_photos,
             floor_plans: updatedProperty.floor_plans,
             project_images: updatedProperty.project_images,
             legal_docs: updatedProperty.legal_docs,
             virtual_content: updatedProperty.virtual_content,
-            
-            // Amenities
-            club_house: updatedProperty.club_house,
-            swimming_pool: updatedProperty.swimming_pool,
-            children_play_area: updatedProperty.children_play_area,
-            power_backup: updatedProperty.power_backup,
-            house_keeping: updatedProperty.house_keeping,
-            lift: updatedProperty.lift,
-            gym: updatedProperty.gym,
-            park: updatedProperty.park,
-            security: updatedProperty.security,
-            gas_pipeline: updatedProperty.gas_pipeline,
-            rain_water_harvesting: updatedProperty.rain_water_harvesting,
-            sewage_treatment_plant: updatedProperty.sewage_treatment_plant,
-            visitor_parking: updatedProperty.visitor_parking,
-            fire_safety: updatedProperty.fire_safety,
             
             updated_at: new Date().toISOString()
           };
@@ -1033,10 +1030,10 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+          <div className="space-y-4 sm:space-y-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Basic Information</h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {property.type === 'new_project' ? 'Project Name' : 'Property Title'}
@@ -1045,7 +1042,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                   type="text"
                   value={property.type === 'new_project' ? formData.project_name : formData.title}
                   onChange={(e) => handleInputChange(property.type === 'new_project' ? 'project_name' : 'title', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -1058,7 +1055,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                   type="text"
                   value={property.type === 'new_project' ? formData.project_location : formData.location}
                   onChange={(e) => handleInputChange(property.type === 'new_project' ? 'project_location' : 'location', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -1071,7 +1068,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                   type="text"
                   value={property.type === 'new_project' ? formData.crafted_by : (formData.seller_name || formData.owner_name)}
                   onChange={(e) => handleInputChange(property.type === 'new_project' ? 'crafted_by' : (property.type === 'rental' ? 'owner_name' : 'seller_name'), e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -1084,7 +1081,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                   type="email"
                   value={formData.seller_email || formData.owner_email}
                   onChange={(e) => handleInputChange(property.type === 'rental' ? 'owner_email' : 'seller_email', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -1097,7 +1094,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                   type="tel"
                   value={formData.seller_contact_no || formData.owner_contact_no}
                   onChange={(e) => handleInputChange(property.type === 'rental' ? 'owner_contact_no' : 'seller_contact_no', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -1110,7 +1107,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                   <select
                     value={formData.bhk_type}
                     onChange={(e) => handleInputChange('bhk_type', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   >
                     <option value="">Select BHK Type</option>
@@ -1129,10 +1126,10 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
 
       case 2:
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Details</h3>
+          <div className="space-y-4 sm:space-y-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Property Details</h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {property.type === 'new_project' && (
                 <>
                   <div>
@@ -1142,7 +1139,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     <select
                       value={formData.project_type}
                       onChange={(e) => handleInputChange('project_type', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     >
                       <option value="">Select Project Type</option>
@@ -1160,7 +1157,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     <select
                       value={formData.construction_type}
                       onChange={(e) => handleInputChange('construction_type', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     >
                       <option value="">Select Construction Type</option>
@@ -1182,7 +1179,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     <select
                       value={formData.property_type}
                       onChange={(e) => handleInputChange('property_type', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     >
                       <option value="">Select Property Type</option>
@@ -1200,7 +1197,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                       type="text"
                       value={formData.society_name}
                       onChange={(e) => handleInputChange('society_name', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </>
@@ -1214,7 +1211,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                   type="number"
                   value={property.type === 'rental' ? formData.rent_amount : property.type === 'new_project' ? formData.min_price : formData.asking_price}
                   onChange={(e) => handleInputChange(property.type === 'rental' ? 'rent_amount' : property.type === 'new_project' ? 'min_price' : 'asking_price', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
@@ -1226,7 +1223,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                 <select
                   value={formData.furnishing_type}
                   onChange={(e) => handleInputChange('furnishing_type', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
                   <option value="">Select Furnishing Type</option>
@@ -1245,7 +1242,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     <select
                       value={formData.property_age}
                       onChange={(e) => handleInputChange('property_age', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select Property Age</option>
                       <option value="under_construction">Under Construction</option>
@@ -1265,7 +1262,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     <select
                       value={formData.parking_type}
                       onChange={(e) => handleInputChange('parking_type', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select Parking Type</option>
                       <option value="covered_parking">Covered</option>
@@ -1281,7 +1278,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     <select
                       value={formData.is_negotiable ? 'true' : 'false'}
                       onChange={(e) => handleInputChange('is_negotiable', e.target.value === 'true')}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="false">No</option>
                       <option value="true">Yes</option>
@@ -1300,7 +1297,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                       type="number"
                       value={formData.deposit_amount}
                       onChange={(e) => handleInputChange('deposit_amount', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
@@ -1311,7 +1308,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     <select
                       value={formData.rent_negotiable ? 'true' : 'false'}
                       onChange={(e) => handleInputChange('rent_negotiable', e.target.value === 'true')}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="false">No</option>
                       <option value="true">Yes</option>
@@ -1325,7 +1322,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     <select
                       value={formData.tenant_type}
                       onChange={(e) => handleInputChange('tenant_type', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select Tenant Type</option>
                       <option value="family">Family</option>
@@ -1343,7 +1340,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                 <select
                   value={formData.status}
                   onChange={(e) => handleInputChange('status', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="available">Available</option>
                   <option value="sold">Sold</option>
@@ -1369,20 +1366,20 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
 
       case 4:
         return (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="space-y-4 sm:space-y-6">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Amenities</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {[
                 'club_house', 'swimming_pool', 'children_play_area', 'power_backup',
                 'house_keeping', 'lift', 'gym', 'park', 'security', 'gas_pipeline',
                 'rain_water_harvesting', 'sewage_treatment_plant', 'visitor_parking', 'fire_safety'
               ].map((amenity) => (
-                <label key={amenity} className="flex items-center space-x-2">
+                <label key={amenity} className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
                   <input
                     type="checkbox"
                     checked={formData[amenity] || false}
                     onChange={(e) => handleInputChange(amenity, e.target.checked)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4"
                   />
                   <span className="text-sm text-gray-700 capitalize">
                     {amenity.replace(/_/g, ' ')}
@@ -1415,27 +1412,27 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+        <div className="p-3 sm:p-6">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Edit Property</h2>
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Edit Property</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-600 p-1"
             >
-              <XMarkIcon className="w-6 h-6" />
+              <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
           </div>
 
           {/* Progress Steps */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between">
+          <div className="mb-4 sm:mb-6">
+            <div className="flex items-center justify-between overflow-x-auto">
               {steps.map((step, index) => (
-                <div key={step.id} className="flex items-center">
+                <div key={step.id} className="flex items-center flex-shrink-0">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
                       currentStep >= step.id
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-200 text-gray-600'
@@ -1443,13 +1440,13 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                   >
                     {step.id}
                   </div>
-                  <span className={`ml-2 text-sm font-medium ${
+                  <span className={`ml-1 sm:ml-2 text-xs sm:text-sm font-medium hidden sm:block ${
                     currentStep >= step.id ? 'text-blue-600' : 'text-gray-600'
                   }`}>
                     {step.name}
                   </span>
                   {index < steps.length - 1 && (
-                    <div className={`w-12 h-0.5 mx-4 ${
+                    <div className={`w-6 sm:w-12 h-0.5 mx-2 sm:mx-4 ${
                       currentStep > step.id ? 'bg-blue-600' : 'bg-gray-200'
                     }`} />
                   )}
@@ -1463,22 +1460,22 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
             {renderStepContent()}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between pt-6">
+            <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 pt-4 sm:pt-6">
               <button
                 type="button"
                 onClick={handlePrevious}
                 disabled={currentStep === 1}
-                className="flex items-center px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeftIcon className="w-4 h-4 mr-1" />
                 Previous
               </button>
 
-              <div className="flex space-x-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+                  className="px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
                 >
                   Cancel
                 </button>
@@ -1487,7 +1484,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                    className="flex items-center justify-center px-3 sm:px-4 py-2 text-sm sm:text-base bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                   >
                     Next
                     <ChevronRightIcon className="w-4 h-4 ml-1" />
@@ -1496,7 +1493,7 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 sm:px-6 py-2 text-sm sm:text-base bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? 'Updating...' : 'Update Property'}
                   </button>
