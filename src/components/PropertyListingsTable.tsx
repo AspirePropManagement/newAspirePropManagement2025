@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import { 
@@ -13,8 +13,11 @@ import {
   CalendarIcon,
   CurrencyRupeeIcon,
   MapPinIcon,
-  XMarkIcon
+  XMarkIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon
 } from '@heroicons/react/24/outline';
+import { PropertyImageManager, PropertyImageManagerRef } from './PropertyImageManager';
 
 interface PropertyListingsTableProps {
   onClose?: () => void;
@@ -252,7 +255,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
       }
 
       // Remove property from local state
-      setProperties(prev => prev.filter(p => p.id !== propertyId));
+      setProperties((prev: PropertyData[]) => prev.filter(p => p.id !== propertyId));
       alert('Property deleted successfully!');
     } catch (error) {
       console.error('Error deleting property:', error);
@@ -261,54 +264,248 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
   };
 
   // Handle save edit
-  const handleSaveEdit = async (updatedProperty: PropertyData) => {
+  const handleSaveEdit = async (updatedProperty: any) => {
     if (!user || !supabase) return;
 
     try {
       let tableName;
       let updateData: any = {};
-
+      
       switch (activeTab) {
         case 'resale':
           tableName = 'resale_properties';
           updateData = {
+            // Basic information
             seller_name: updatedProperty.seller_name,
             seller_email: updatedProperty.seller_email,
             seller_contact_no: updatedProperty.seller_contact_no,
+            seller_alternate_no: updatedProperty.seller_alternate_no,
+            
+            // Property details
             property_type: updatedProperty.property_type,
+            society_name: updatedProperty.society_name,
             bhk_type: updatedProperty.bhk_type,
+            square_feet: updatedProperty.square_feet,
+            carpet_area: updatedProperty.carpet_area,
             location: updatedProperty.location,
+            floor_no: updatedProperty.floor_no,
+            facing: updatedProperty.facing,
+            parking_type: updatedProperty.parking_type,
+            furnishing_type: updatedProperty.furnishing_type,
             asking_price: updatedProperty.asking_price,
+            is_negotiable: updatedProperty.is_negotiable,
+            property_age: updatedProperty.property_age,
+            has_amenities: updatedProperty.has_amenities,
             status: updatedProperty.status,
+            notes: updatedProperty.notes,
+            
+            // Extended fields
+            ownership_type: updatedProperty.ownership_type,
+            loan_on_property: updatedProperty.loan_on_property,
+            loan_amount: updatedProperty.loan_amount,
+            bank_name: updatedProperty.bank_name,
+            reason_for_sale: updatedProperty.reason_for_sale,
+            flats_per_floor: updatedProperty.flats_per_floor,
+            society_area_size: updatedProperty.society_area_size,
+            rera_id: updatedProperty.rera_id,
+            parking_vehicles: updatedProperty.parking_vehicles,
+            visit_days_weekend: updatedProperty.visit_days_weekend,
+            visit_timing_weekend: updatedProperty.visit_timing_weekend,
+            visit_days_weekdays: updatedProperty.visit_days_weekdays,
+            visit_timing_weekdays: updatedProperty.visit_timing_weekdays,
+            listed_by: updatedProperty.listed_by,
+            address_line: updatedProperty.address_line,
+            city: updatedProperty.city,
+            state: updatedProperty.state,
+            country: updatedProperty.country,
+            postal_code: updatedProperty.postal_code,
+            latitude: updatedProperty.latitude,
+            longitude: updatedProperty.longitude,
+            total_floors: updatedProperty.total_floors,
+            possession_status: updatedProperty.possession_status,
+            possession_date: updatedProperty.possession_date,
+            available_from: updatedProperty.available_from,
+            maintenance_charge: updatedProperty.maintenance_charge,
+            maintenance_frequency: updatedProperty.maintenance_frequency,
+            
+            // Images and amenities
+            property_images: updatedProperty.property_images,
+            amenities: updatedProperty.amenities,
+            general_photos: updatedProperty.general_photos,
+            floor_plans: updatedProperty.floor_plans,
+            legal_docs: updatedProperty.legal_docs,
+            virtual_content: updatedProperty.virtual_content,
+            
+            // Amenities
+            club_house: updatedProperty.club_house,
+            swimming_pool: updatedProperty.swimming_pool,
+            children_play_area: updatedProperty.children_play_area,
+            power_backup: updatedProperty.power_backup,
+            house_keeping: updatedProperty.house_keeping,
+            lift: updatedProperty.lift,
+            gym: updatedProperty.gym,
+            park: updatedProperty.park,
+            security: updatedProperty.security,
+            gas_pipeline: updatedProperty.gas_pipeline,
+            rain_water_harvesting: updatedProperty.rain_water_harvesting,
+            sewage_treatment_plant: updatedProperty.sewage_treatment_plant,
+            visitor_parking: updatedProperty.visitor_parking,
+            fire_safety: updatedProperty.fire_safety,
+            
             updated_at: new Date().toISOString()
           };
           break;
         case 'rental':
           tableName = 'rental_properties';
           updateData = {
-            owner_name: updatedProperty.seller_name,
-            owner_email: updatedProperty.seller_email,
-            owner_contact_no: updatedProperty.seller_contact_no,
+            // Basic information
+            owner_name: updatedProperty.owner_name,
+            owner_email: updatedProperty.owner_email,
+            owner_contact_no: updatedProperty.owner_contact_no,
+            owner_alternate_no: updatedProperty.owner_alternate_no,
+            
+            // Property details
             property_type: updatedProperty.property_type,
+            society_name: updatedProperty.society_name,
             bhk_type: updatedProperty.bhk_type,
             location: updatedProperty.location,
-            rent_amount: updatedProperty.asking_price,
+            floor_no: updatedProperty.floor_no,
+            rent_amount: updatedProperty.rent_amount,
+            rent_negotiable: updatedProperty.rent_negotiable,
+            deposit_amount: updatedProperty.deposit_amount,
+            deposit_negotiable: updatedProperty.deposit_negotiable,
+            pets_allowed: updatedProperty.pets_allowed,
+            parking_type: updatedProperty.parking_type,
+            furnishing_type: updatedProperty.furnishing_type,
+            immediate_possession: updatedProperty.immediate_possession,
+            available_from_date: updatedProperty.available_from_date,
+            visit_details: updatedProperty.visit_details,
+            has_amenities: updatedProperty.has_amenities,
             status: updatedProperty.status,
+            notes: updatedProperty.notes,
+            
+            // Extended fields
+            tenant_type: updatedProperty.tenant_type,
+            parking_vehicles: updatedProperty.parking_vehicles,
+            visit_days_weekend: updatedProperty.visit_days_weekend,
+            visit_timing_weekend: updatedProperty.visit_timing_weekend,
+            visit_days_weekdays: updatedProperty.visit_days_weekdays,
+            visit_timing_weekdays: updatedProperty.visit_timing_weekdays,
+            listed_by: updatedProperty.listed_by,
+            
+            // Images and amenities
+            property_images: updatedProperty.property_images,
+            amenities: updatedProperty.amenities,
+            general_photos: updatedProperty.general_photos,
+            floor_plans: updatedProperty.floor_plans,
+            legal_docs: updatedProperty.legal_docs,
+            virtual_content: updatedProperty.virtual_content,
+            
+            // Amenities
+            club_house: updatedProperty.club_house,
+            swimming_pool: updatedProperty.swimming_pool,
+            children_play_area: updatedProperty.children_play_area,
+            power_backup: updatedProperty.power_backup,
+            house_keeping: updatedProperty.house_keeping,
+            lift: updatedProperty.lift,
+            gym: updatedProperty.gym,
+            park: updatedProperty.park,
+            security: updatedProperty.security,
+            gas_pipeline: updatedProperty.gas_pipeline,
+            rain_water_harvesting: updatedProperty.rain_water_harvesting,
+            sewage_treatment_plant: updatedProperty.sewage_treatment_plant,
+            visitor_parking: updatedProperty.visitor_parking,
+            fire_safety: updatedProperty.fire_safety,
+            
             updated_at: new Date().toISOString()
           };
           break;
         case 'new_project':
           tableName = 'new_projects';
           updateData = {
-            project_name: updatedProperty.title,
-            project_location: updatedProperty.location,
+            // Basic information
+            crafted_by: updatedProperty.crafted_by,
+            project_name: updatedProperty.project_name,
+            project_type: updatedProperty.project_type,
+            construction_type: updatedProperty.construction_type,
+            project_location: updatedProperty.project_location,
+            contact_name_1: updatedProperty.contact_name_1,
+            contact_number_1: updatedProperty.contact_number_1,
+            contact_name_2: updatedProperty.contact_name_2,
+            contact_number_2: updatedProperty.contact_number_2,
+            
+            // Project details
+            rooms_per_floor: updatedProperty.rooms_per_floor,
+            cp_sables: updatedProperty.cp_sables,
+            other_notes: updatedProperty.other_notes,
+            is_govt_approved: updatedProperty.is_govt_approved,
+            is_rera_approved: updatedProperty.is_rera_approved,
+            loan_available: updatedProperty.loan_available,
+            social_media_marketing_allowed: updatedProperty.social_media_marketing_allowed,
+            important_notes: updatedProperty.important_notes,
+            units_available_for_sale: updatedProperty.units_available_for_sale,
+            rera_number: updatedProperty.rera_number,
+            project_conversion_rate: updatedProperty.project_conversion_rate,
             status: updatedProperty.status,
+            
+            // Extended fields
+            total_project_area_size: updatedProperty.total_project_area_size,
+            towers_count: updatedProperty.towers_count,
+            total_floors: updatedProperty.total_floors,
+            suggestion_date: updatedProperty.suggestion_date,
+            suggestion_year: updatedProperty.suggestion_year,
+            flats_per_floor: updatedProperty.flats_per_floor,
+            roi: updatedProperty.roi,
+            rental_yield: updatedProperty.rental_yield,
+            marketed_by: updatedProperty.marketed_by,
+            listed_by: updatedProperty.listed_by,
+            facing_vastu: updatedProperty.facing_vastu,
+            latitude: updatedProperty.latitude,
+            longitude: updatedProperty.longitude,
+            launch_date: updatedProperty.launch_date,
+            possession_date: updatedProperty.possession_date,
+            min_price: updatedProperty.min_price,
+            website_url: updatedProperty.website_url,
+            brochure_url: updatedProperty.brochure_url,
+            
+            // Images and amenities
+            property_images: updatedProperty.property_images,
+            amenities: updatedProperty.amenities,
+            general_photos: updatedProperty.general_photos,
+            floor_plans: updatedProperty.floor_plans,
+            project_images: updatedProperty.project_images,
+            legal_docs: updatedProperty.legal_docs,
+            virtual_content: updatedProperty.virtual_content,
+            
+            // Amenities
+            club_house: updatedProperty.club_house,
+            swimming_pool: updatedProperty.swimming_pool,
+            children_play_area: updatedProperty.children_play_area,
+            power_backup: updatedProperty.power_backup,
+            house_keeping: updatedProperty.house_keeping,
+            lift: updatedProperty.lift,
+            gym: updatedProperty.gym,
+            park: updatedProperty.park,
+            security: updatedProperty.security,
+            gas_pipeline: updatedProperty.gas_pipeline,
+            rain_water_harvesting: updatedProperty.rain_water_harvesting,
+            sewage_treatment_plant: updatedProperty.sewage_treatment_plant,
+            visitor_parking: updatedProperty.visitor_parking,
+            fire_safety: updatedProperty.fire_safety,
+            
             updated_at: new Date().toISOString()
           };
           break;
         default:
           throw new Error('Invalid property type');
       }
+
+      // Remove undefined values
+      Object.keys(updateData).forEach(key => {
+        if (updateData[key] === undefined) {
+          delete updateData[key];
+        }
+      });
 
       const { error } = await supabase
         .from(tableName)
@@ -322,7 +519,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
       }
 
       // Update property in local state
-      setProperties(prev => prev.map(p => 
+      setProperties((prev: PropertyData[]) => prev.map(p => 
         p.id === updatedProperty.id ? updatedProperty : p
       ));
       
@@ -777,93 +974,105 @@ interface PropertyEditModalProps {
 }
 
 function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps) {
-  const [formData, setFormData] = useState<PropertyData>(property);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<any>(property);
+  const imageManagerRef = useRef<PropertyImageManagerRef>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave(formData);
-  };
+  const totalSteps = 5;
+  const steps = [
+    { id: 1, name: 'Basic Information' },
+    { id: 2, name: 'Property Details' },
+    { id: 3, name: 'Images & Documents' },
+    { id: 4, name: 'Amenities' },
+    { id: 5, name: 'Review & Update' }
+  ];
 
-  const handleInputChange = (field: keyof PropertyData, value: string) => {
-    setFormData(prev => ({
+  const handleInputChange = (field: string, value: any) => {
+    setFormData((prev: any) => ({
       ...prev,
       [field]: value
     }));
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Edit Property</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <XMarkIcon className="w-6 h-6" />
-            </button>
-          </div>
+  const handleNext = () => {
+    if (currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+  const handlePrevious = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Get images from PropertyImageManager
+      const images = imageManagerRef.current?.getImages() || {};
+      
+      // Update formData with images
+      const updatedFormData = {
+        ...formData,
+        property_images: images
+      };
+
+      await onSave(updatedFormData);
+    } catch (error) {
+      console.error('Error updating property:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Property Title
+                  {property.type === 'new_project' ? 'Project Name' : 'Property Title'}
                 </label>
                 <input
                   type="text"
-                  value={formData.title}
-                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  value={property.type === 'new_project' ? formData.project_name : formData.title}
+                  onChange={(e) => handleInputChange(property.type === 'new_project' ? 'project_name' : 'title', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Location
+                  {property.type === 'new_project' ? 'Project Location' : 'Location'}
                 </label>
                 <input
                   type="text"
-                  value={formData.location}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  value={property.type === 'new_project' ? formData.project_location : formData.location}
+                  onChange={(e) => handleInputChange(property.type === 'new_project' ? 'project_location' : 'location', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  BHK Type
+                  {property.type === 'new_project' ? 'Crafted By' : 'Owner/Seller Name'}
                 </label>
                 <input
                   type="text"
-                  value={formData.bhkType}
-                  onChange={(e) => handleInputChange('bhkType', e.target.value)}
+                  value={property.type === 'new_project' ? formData.crafted_by : (formData.seller_name || formData.owner_name)}
+                  onChange={(e) => handleInputChange(property.type === 'new_project' ? 'crafted_by' : (property.type === 'rental' ? 'owner_name' : 'seller_name'), e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price/Amount
-                </label>
-                <input
-                  type="number"
-                  value={formData.askingPrice}
-                  onChange={(e) => handleInputChange('askingPrice', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Seller/Owner Name
-                </label>
-                <input
-                  type="text"
-                  value={formData.seller_name}
-                  onChange={(e) => handleInputChange('seller_name', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
 
@@ -873,9 +1082,10 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                 </label>
                 <input
                   type="email"
-                  value={formData.seller_email}
-                  onChange={(e) => handleInputChange('seller_email', e.target.value)}
+                  value={formData.seller_email || formData.owner_email}
+                  onChange={(e) => handleInputChange(property.type === 'rental' ? 'owner_email' : 'seller_email', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
 
@@ -885,11 +1095,246 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                 </label>
                 <input
                   type="tel"
-                  value={formData.seller_contact_no}
-                  onChange={(e) => handleInputChange('seller_contact_no', e.target.value)}
+                  value={formData.seller_contact_no || formData.owner_contact_no}
+                  onChange={(e) => handleInputChange(property.type === 'rental' ? 'owner_contact_no' : 'seller_contact_no', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
+
+              {property.type !== 'new_project' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    BHK Type
+                  </label>
+                  <select
+                    value={formData.bhk_type}
+                    onChange={(e) => handleInputChange('bhk_type', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  >
+                    <option value="">Select BHK Type</option>
+                    <option value="1_rk_1_bhk">1 RK/1 BHK</option>
+                    <option value="2_bhk">2 BHK</option>
+                    <option value="3_bhk">3 BHK</option>
+                    <option value="4_bhk">4 BHK</option>
+                    <option value="5_bhk">5 BHK</option>
+                    <option value="5_plus_bhk">5+ BHK</option>
+                  </select>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Details</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {property.type === 'new_project' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Project Type
+                    </label>
+                    <select
+                      value={formData.project_type}
+                      onChange={(e) => handleInputChange('project_type', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    >
+                      <option value="">Select Project Type</option>
+                      <option value="residence">Residence</option>
+                      <option value="gated_community_villa_or_bungalow">Gated Community/Villa/Bungalow</option>
+                      <option value="commercial">Commercial</option>
+                      <option value="land_or_plot">Land/Plot</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Construction Type
+                    </label>
+                    <select
+                      value={formData.construction_type}
+                      onChange={(e) => handleInputChange('construction_type', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    >
+                      <option value="">Select Construction Type</option>
+                      <option value="new_launching">New Launching</option>
+                      <option value="under_construction">Under Construction</option>
+                      <option value="ready_to_move">Ready to Move</option>
+                      <option value="partial_ready_to_move">Partial Ready to Move</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {property.type !== 'new_project' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Property Type
+                    </label>
+                    <select
+                      value={formData.property_type}
+                      onChange={(e) => handleInputChange('property_type', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    >
+                      <option value="">Select Property Type</option>
+                      <option value="apartment">Apartment</option>
+                      <option value="gated_community_villa_or_bungalow">Gated Community/Villa/Bungalow</option>
+                      <option value="independent_house">Independent House</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Society Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.society_name}
+                      onChange={(e) => handleInputChange('society_name', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {property.type === 'rental' ? 'Rent Amount' : property.type === 'new_project' ? 'Min Price' : 'Asking Price'}
+                </label>
+                <input
+                  type="number"
+                  value={property.type === 'rental' ? formData.rent_amount : property.type === 'new_project' ? formData.min_price : formData.asking_price}
+                  onChange={(e) => handleInputChange(property.type === 'rental' ? 'rent_amount' : property.type === 'new_project' ? 'min_price' : 'asking_price', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Furnishing Type
+                </label>
+                <select
+                  value={formData.furnishing_type}
+                  onChange={(e) => handleInputChange('furnishing_type', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Select Furnishing Type</option>
+                  <option value="fully_furnished">Fully Furnished</option>
+                  <option value="semi_furnished">Semi Furnished</option>
+                  <option value="un_furnished">Unfurnished</option>
+                </select>
+              </div>
+
+              {property.type === 'resale' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Age of Property
+                    </label>
+                    <select
+                      value={formData.property_age}
+                      onChange={(e) => handleInputChange('property_age', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Property Age</option>
+                      <option value="under_construction">Under Construction</option>
+                      <option value="new_construction">New Construction (0-1 years)</option>
+                      <option value="1_to_3_years">1-3 years</option>
+                      <option value="3_to_5_years">3-5 years</option>
+                      <option value="5_to_10_years">5-10 years</option>
+                      <option value="10_to_15_years">10-15 years</option>
+                      <option value="above_15_years">Above 15 years</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Parking Type
+                    </label>
+                    <select
+                      value={formData.parking_type}
+                      onChange={(e) => handleInputChange('parking_type', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Parking Type</option>
+                      <option value="covered_parking">Covered</option>
+                      <option value="open_parking">Open</option>
+                      <option value="shed_parking">Shed</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Price Negotiable
+                    </label>
+                    <select
+                      value={formData.is_negotiable ? 'true' : 'false'}
+                      onChange={(e) => handleInputChange('is_negotiable', e.target.value === 'true')}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="false">No</option>
+                      <option value="true">Yes</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {property.type === 'rental' && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Deposit Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.deposit_amount}
+                      onChange={(e) => handleInputChange('deposit_amount', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Rent Negotiable
+                    </label>
+                    <select
+                      value={formData.rent_negotiable ? 'true' : 'false'}
+                      onChange={(e) => handleInputChange('rent_negotiable', e.target.value === 'true')}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="false">No</option>
+                      <option value="true">Yes</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Tenant Type
+                    </label>
+                    <select
+                      value={formData.tenant_type}
+                      onChange={(e) => handleInputChange('tenant_type', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Tenant Type</option>
+                      <option value="family">Family</option>
+                      <option value="bachelor">Bachelor</option>
+                      <option value="anyone">Anyone</option>
+                    </select>
+                  </div>
+                </>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -907,21 +1352,156 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                 </select>
               </div>
             </div>
+          </div>
+        );
 
-            <div className="flex justify-end space-x-3 pt-4">
+      case 3:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Images & Documents</h3>
+            <PropertyImageManager
+              ref={imageManagerRef}
+              isSubmitting={isSubmitting}
+              initialImages={formData.property_images || {}}
+            />
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {[
+                'club_house', 'swimming_pool', 'children_play_area', 'power_backup',
+                'house_keeping', 'lift', 'gym', 'park', 'security', 'gas_pipeline',
+                'rain_water_harvesting', 'sewage_treatment_plant', 'visitor_parking', 'fire_safety'
+              ].map((amenity) => (
+                <label key={amenity} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={formData[amenity] || false}
+                    onChange={(e) => handleInputChange(amenity, e.target.checked)}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700 capitalize">
+                    {amenity.replace(/_/g, ' ')}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 5:
+        return (
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Review & Update</h3>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-medium text-gray-900 mb-2">Property Summary</h4>
+              <div className="text-sm text-gray-600 space-y-1">
+                <p><strong>Title:</strong> {property.type === 'new_project' ? formData.project_name : formData.title}</p>
+                <p><strong>Location:</strong> {property.type === 'new_project' ? formData.project_location : formData.location}</p>
+                <p><strong>Type:</strong> {property.type.replace('_', ' ')}</p>
+                <p><strong>Status:</strong> {formData.status}</p>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900">Edit Property</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <XMarkIcon className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Progress Steps */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between">
+              {steps.map((step, index) => (
+                <div key={step.id} className="flex items-center">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                      currentStep >= step.id
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-600'
+                    }`}
+                  >
+                    {step.id}
+                  </div>
+                  <span className={`ml-2 text-sm font-medium ${
+                    currentStep >= step.id ? 'text-blue-600' : 'text-gray-600'
+                  }`}>
+                    {step.name}
+                  </span>
+                  {index < steps.length - 1 && (
+                    <div className={`w-12 h-0.5 mx-4 ${
+                      currentStep > step.id ? 'bg-blue-600' : 'bg-gray-200'
+                    }`} />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Form Content */}
+          <form onSubmit={handleSubmit}>
+            {renderStepContent()}
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between pt-6">
               <button
                 type="button"
-                onClick={onClose}
-                className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+                onClick={handlePrevious}
+                disabled={currentStep === 1}
+                className="flex items-center px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Cancel
+                <ChevronLeftIcon className="w-4 h-4 mr-1" />
+                Previous
               </button>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Save Changes
-              </button>
+
+              <div className="flex space-x-3">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+
+                {currentStep < totalSteps ? (
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    Next
+                    <ChevronRightIcon className="w-4 h-4 ml-1" />
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? 'Updating...' : 'Update Property'}
+                  </button>
+                )}
+              </div>
             </div>
           </form>
         </div>
