@@ -1792,32 +1792,44 @@ export function PropertyForm({
                           </h5>
                           
                           <div className="flex overflow-x-auto space-x-2 pb-2">
-                            {subcategory.map((fileInfo: any, index: number) => (
-                              <div key={index} className="relative group flex-shrink-0">
-                                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-lg overflow-hidden border border-gray-200">
-                                  {fileInfo.name.includes('.pdf') || fileInfo.type?.includes('pdf') ? (
-                                    <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                                      <DocumentIcon className="h-4 w-4 sm:h-6 sm:w-6 text-gray-400" />
-                                    </div>
-                                  ) : (
-                                    <Image
-                                      src={fileInfo.url}
-                                      alt={`${subcategoryKey} ${index + 1}`}
-                                      width={80}
-                                      height={80}
-                                      className="object-cover w-full h-full"
-                                      unoptimized={fileInfo.url.startsWith('blob:')}
-                                    />
-                                  )}
+                            {subcategory.map((imageData: any, index: number) => {
+                              // Handle both old format (with name/type/url) and new format (base64 strings)
+                              const isBase64 = typeof imageData === 'string' && imageData.startsWith('data:');
+                              const isPDF = isBase64 
+                                ? (imageData.includes('data:application/pdf') || imageData.includes('data:application/octet-stream'))
+                                : (imageData.name?.includes('.pdf') || imageData.type?.includes('pdf'));
+                              
+                              const imageSrc = isBase64 ? imageData : imageData.url;
+                              const imageAlt = `${subcategoryKey} ${index + 1}`;
+                              const fileName = isBase64 ? `Image ${index + 1}` : (imageData.name || `File ${index + 1}`);
+                              
+                              return (
+                                <div key={index} className="relative group flex-shrink-0">
+                                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-lg overflow-hidden border border-gray-200">
+                                    {isPDF ? (
+                                      <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                                        <DocumentIcon className="h-4 w-4 sm:h-6 sm:w-6 text-gray-400" />
+                                      </div>
+                                    ) : (
+                                      <Image
+                                        src={imageSrc}
+                                        alt={imageAlt}
+                                        width={80}
+                                        height={80}
+                                        className="object-cover w-full h-full"
+                                        unoptimized={isBase64 || (imageSrc && imageSrc.startsWith('blob:'))}
+                                      />
+                                    )}
+                                  </div>
+                                  
+                                  {/* File name tooltip - Mobile responsive */}
+                                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 max-w-32 truncate">
+                                    {fileName}
+                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+                                  </div>
                                 </div>
-                                
-                                {/* File name tooltip - Mobile responsive */}
-                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 max-w-32 truncate">
-                                  {fileInfo.name}
-                                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
-                                </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
                       );
