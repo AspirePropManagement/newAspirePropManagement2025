@@ -257,10 +257,10 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
                       {properties
                         .slice(slideIndex * cardsPerSlide, (slideIndex + 1) * cardsPerSlide)
                         .map((property) => (
-                          <div
+                          <Link
                             key={property.id}
-                            className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 cursor-pointer"
-                            onClick={() => openModal(property)}
+                            href={`/properties/resale/${property.id}`}
+                            className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 cursor-pointer block"
                           >
                             {/* Property Image */}
                             <div className="relative h-48 overflow-hidden">
@@ -304,7 +304,7 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
                                 {property.location}
                               </p>
                             </div>
-                          </div>
+                          </Link>
                         ))}
                     </div>
                   </div>
