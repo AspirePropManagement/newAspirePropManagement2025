@@ -397,13 +397,18 @@ export function PropertyForm({
     const errors: string[] = [];
     
     // Basic validation for required fields
-    if (!formData.sellerName) errors.push('Seller/Owner name is required');
-    if (!formData.sellerEmail) errors.push('Email is required');
-    if (!formData.contactNumber) errors.push('Contact number is required');
-    if (!formData.bhkType) errors.push('BHK type is required');
-    if (!formData.propertyType) errors.push('Property type is required');
-    if (!formData.location) errors.push('Location is required');
-    if (!formData.furnishingType) errors.push('Furnishing type is required');
+    if (!formData.sellerName?.trim()) errors.push('Seller/Owner name is required');
+    if (!formData.sellerEmail?.trim()) errors.push('Email is required');
+    if (!formData.contactNumber?.trim()) errors.push('Contact number is required');
+    if (!formData.bhkType?.trim()) errors.push('BHK type is required');
+    if (!formData.propertyType?.trim()) errors.push('Property type is required');
+    if (!formData.location?.trim()) errors.push('Location is required');
+    if (!formData.furnishingType?.trim()) errors.push('Furnishing type is required');
+    
+    // Email validation
+    if (formData.sellerEmail && !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(formData.sellerEmail)) {
+      errors.push('Please enter a valid email address');
+    }
     
     // Contact number validation - must be exactly 10 digits
     if (formData.contactNumber && !/^[0-9]{10}$/.test(formData.contactNumber)) {
@@ -411,17 +416,49 @@ export function PropertyForm({
     }
     
     // Alternate number validation - if provided, must be exactly 10 digits
-    if (formData.alternateNumber && !/^[0-9]{10}$/.test(formData.alternateNumber)) {
+    if (formData.alternateNumber && formData.alternateNumber.trim() && !/^[0-9]{10}$/.test(formData.alternateNumber)) {
       errors.push('Alternate number must be exactly 10 digits (numbers only)');
     }
     
     // Property type specific validation
-    if (propertyType === 'resale' && !formData.askingPrice) {
-      errors.push('Asking price is required for resale properties');
+    if (propertyType === 'resale') {
+      if (!formData.askingPrice?.trim()) {
+        errors.push('Asking price is required for resale properties');
+      } else if (isNaN(parseFloat(formData.askingPrice)) || parseFloat(formData.askingPrice) <= 0) {
+        errors.push('Asking price must be a valid positive number');
+      }
+      if (!formData.listedBy?.trim()) {
+        errors.push('Listed by is required for resale properties');
+      }
     }
     
-    if (propertyType === 'rental' && !formData.rentAmount) {
-      errors.push('Rent amount is required for rental properties');
+    if (propertyType === 'rental') {
+      if (!formData.rentAmount?.trim()) {
+        errors.push('Rent amount is required for rental properties');
+      } else if (isNaN(parseFloat(formData.rentAmount)) || parseFloat(formData.rentAmount) <= 0) {
+        errors.push('Rent amount must be a valid positive number');
+      }
+      if (!formData.tenantType?.trim()) {
+        errors.push('Tenant type is required for rental properties');
+      }
+      if (!formData.listedBy?.trim()) {
+        errors.push('Listed by is required for rental properties');
+      }
+    }
+    
+    if (propertyType === 'new_project') {
+      if (!formData.projectName?.trim()) {
+        errors.push('Project name is required for new projects');
+      }
+      if (!formData.craftedBy?.trim()) {
+        errors.push('Crafted by is required for new projects');
+      }
+      if (!formData.constructionType?.trim()) {
+        errors.push('Construction type is required for new projects');
+      }
+      if (!formData.listedBy?.trim()) {
+        errors.push('Listed by is required for new projects');
+      }
     }
     
     return errors;
@@ -555,8 +592,7 @@ export function PropertyForm({
           required
         >
           <option value="">Select BHK Type</option>
-          <option value="1_rk">1 RK</option>
-          <option value="1_bhk">1 BHK</option>
+          <option value="1_rk_1_bhk">1 RK/1 BHK</option>
           <option value="2_bhk">2 BHK</option>
           <option value="3_bhk">3 BHK</option>
           <option value="4_bhk">4 BHK</option>
@@ -629,6 +665,31 @@ export function PropertyForm({
           />
         </div>
       )}
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Listed By *
+        </label>
+        <select
+          value={formData.listedBy}
+          onChange={(e) => handleInputChange('listedBy', e.target.value)}
+          className={selectClass}
+          required
+        >
+          <option value="">Select Listed By</option>
+          {propertyType === 'new_project' ? (
+            <>
+              <option value="builder">Builder</option>
+              <option value="agent">Agent</option>
+            </>
+          ) : (
+            <>
+              <option value="owner">Owner</option>
+              <option value="agent">Agent</option>
+            </>
+          )}
+        </select>
+      </div>
     </div>
   );
 
@@ -797,24 +858,8 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Sixth Row - Listing & Compliance */}
+      {/* Sixth Row - Compliance */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Listed By *
-          </label>
-          <select
-            value={formData.listedBy}
-            onChange={(e) => handleInputChange('listedBy', e.target.value)}
-            className={selectClass}
-            required
-          >
-            <option value="">Select Listed By</option>
-            <option value="builder">Builder</option>
-            <option value="agent">Agent</option>
-          </select>
-        </div>
-
         <div>
           <label className={labelClass}>
             Facing (As per Vastu Compliances)
@@ -871,7 +916,7 @@ export function PropertyForm({
           Available BHK Types
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-          {['1_rk', '1_bhk', '2_bhk', '3_bhk', '4_bhk', '5_bhk', '5_plus_bhk'].map((bhkType) => (
+          {['1_rk_1_bhk', '2_bhk', '3_bhk', '4_bhk', '5_bhk', '5_plus_bhk'].map((bhkType) => (
             <label key={bhkType} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
               <input
                 type="checkbox"
@@ -1076,7 +1121,7 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Fifth Row - RERA & Listed By */}
+      {/* Fifth Row - RERA */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
@@ -1089,22 +1134,6 @@ export function PropertyForm({
             className={inputClass}
             placeholder="Enter RERA ID"
           />
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Listed By *
-          </label>
-          <select
-            value={formData.listedBy}
-            onChange={(e) => handleInputChange('listedBy', e.target.value)}
-            className={selectClass}
-            required
-          >
-            <option value="">Select Listed By</option>
-            <option value="owner">Owner</option>
-            <option value="agent">Agent</option>
-          </select>
         </div>
       </div>
 
@@ -1329,22 +1358,6 @@ export function PropertyForm({
             <option value="family">Family</option>
             <option value="bachelor">Bachelor</option>
             <option value="anyone">Anyone</option>
-          </select>
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Listed By *
-          </label>
-          <select
-            value={formData.listedBy}
-            onChange={(e) => handleInputChange('listedBy', e.target.value)}
-            className={selectClass}
-            required
-          >
-            <option value="">Select Listed By</option>
-            <option value="owner">Owner</option>
-            <option value="agent">Agent</option>
           </select>
         </div>
       </div>

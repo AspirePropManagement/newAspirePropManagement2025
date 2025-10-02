@@ -202,41 +202,52 @@ export async function createRentalProperty(data: RentalPropertyData, userId?: st
       return { success: false, error: 'No user logged in. Please login first.' };
     }
     
+    const insertData = {
+      owner_name: data.sellerName,
+      owner_email: data.sellerEmail,
+      owner_contact_no: data.contactNumber,
+      owner_alternate_no: data.alternateNumber,
+      property_type: data.propertyType,
+      society_name: data.societyName,
+      bhk_type: data.bhkType,
+      location: data.location,
+      floor_no: data.floorNo,
+      rent_amount: data.rentAmount ? parseFloat(data.rentAmount) : null,
+      rent_negotiable: data.isNegotiable,
+      deposit_amount: data.depositAmount ? parseFloat(data.depositAmount) : null,
+      deposit_negotiable: data.isNegotiable,
+      pets_allowed: data.petsAllowed,
+      parking_type: data.parkingType,
+      furnishing_type: data.furnishingType,
+      immediate_possession: data.immediatePossession,
+      available_from_date: data.availableFromDate,
+      visit_details: data.visitDetails,
+      has_amenities: data.hasAmenities,
+      status: data.status,
+      property_images: data.propertyImages ? data.propertyImages : {},
+      amenities: data.amenities || {},
+      documents: [],
+      notes: data.notes,
+      // New rental fields mapping
+      tenant_type: (data as any).tenantType || null,
+      parking_vehicles: (data as any).parkingVehicles || [],
+      visit_days_weekend: (data as any).visitDaysWeekend || null,
+      visit_timing_weekend: ((data as any).visitTimingWeekendFrom && (data as any).visitTimingWeekendTo)
+        ? `${(data as any).visitTimingWeekendFrom}-${(data as any).visitTimingWeekendTo}`
+        : null,
+      visit_days_weekdays: (data as any).visitDaysWeekdays || null,
+      visit_timing_weekdays: ((data as any).visitTimingWeekdaysFrom && (data as any).visitTimingWeekdaysTo)
+        ? `${(data as any).visitTimingWeekdaysFrom}-${(data as any).visitTimingWeekdaysTo}`
+        : null,
+      listed_by: (data as any).listedBy || null,
+      created_by: currentUserId
+    };
+
+    console.log('Rental property insert data:', insertData);
+    
     const { data: property, error } = await supabase
       .from('rental_properties')
-      .insert({
-        owner_name: data.sellerName,
-        owner_email: data.sellerEmail,
-        owner_contact_no: data.contactNumber,
-        owner_alternate_no: data.alternateNumber,
-        property_type: data.propertyType,
-        society_name: data.societyName,
-        bhk_type: data.bhkType,
-        location: data.location,
-        flat_no: data.flatNo,
-        wing_no: data.wingNo,
-        floor_no: data.floorNo,
-        rent_amount: data.rentAmount ? parseFloat(data.rentAmount) : null,
-        rent_negotiable: data.isNegotiable,
-        deposit_amount: data.depositAmount ? parseFloat(data.depositAmount) : null,
-        deposit_negotiable: data.isNegotiable,
-        allowed_for_family: data.allowedForFamily,
-        allowed_for_bachelor: data.allowedForBachelor,
-        allowed_for_anyone: data.allowedForAnyone,
-        pets_allowed: data.petsAllowed,
-        parking_type: data.parkingType,
-        furnishing_type: data.furnishingType,
-        immediate_possession: data.immediatePossession,
-        available_from_date: data.availableFromDate,
-        visit_details: data.visitDetails,
-        has_amenities: data.hasAmenities,
-        status: data.status,
-        property_images: data.propertyImages ? data.propertyImages : {},
-        amenities: data.amenities || {},
-        documents: [],
-        notes: data.notes,
-        created_by: currentUserId
-      })
+      .insert(insertData)
       .select()
       .single();
 
@@ -259,35 +270,51 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
       return { success: false, error: 'No user logged in. Please login first.' };
     }
     
+    const insertData = {
+      crafted_by: data.craftedBy || data.sellerName,
+      project_name: data.projectName || `Project in ${data.location}`,
+      project_type: data.projectType,
+      construction_type: data.constructionType || 'new_launching',
+      project_location: data.location,
+      rooms_per_floor: data.roomsPerFloor,
+      cp_sables: data.cpSables,
+      other_notes: data.otherNotes,
+      contact_name_1: data.contactName1 || data.sellerName,
+      contact_number_1: data.contactNumber1 || data.contactNumber,
+      contact_name_2: data.contactName2,
+      contact_number_2: data.contactNumber2,
+      is_govt_approved: data.isGovtApproved,
+      is_rera_approved: data.isReraApproved,
+      loan_available: data.loanAvailable,
+      social_media_marketing_allowed: data.socialMediaMarketingAllowed,
+      important_notes: data.importantNotes,
+      units_available_for_sale: data.unitsAvailableForSale,
+      rera_number: data.reraNumber,
+      project_conversion_rate: data.projectConversionRate,
+      status: data.status,
+      property_images: data.propertyImages ? data.propertyImages : {},
+      amenities: data.amenities || {},
+      documents: [],
+      // New project fields mapping
+      total_project_area_size: (data as any).totalProjectAreaSize || null,
+      towers_count: (data as any).towersCount ? parseInt((data as any).towersCount) : null,
+      total_floors: (data as any).totalFloors ? parseInt((data as any).totalFloors) : null,
+      flats_per_floor: (data as any).flatsPerFloor || null,
+      roi: (data as any).roi || null,
+      rental_yield: (data as any).rentalYield ? parseFloat((data as any).rentalYield) : null,
+      marketed_by: (data as any).marketedBy || null,
+      facing_vastu: (data as any).facingVastu || null,
+      suggestion_date: (data as any).suggestionDate || null,
+      suggestion_year: (data as any).suggestionYear ? parseInt((data as any).suggestionYear) : null,
+      listed_by: (data as any).listedBy || null,
+      created_by: currentUserId
+    };
+
+    console.log('New project insert data:', insertData);
+    
     const { data: project, error } = await supabase
       .from('new_projects')
-      .insert({
-        crafted_by: data.craftedBy || data.sellerName,
-        project_name: data.projectName || `Project in ${data.location}`,
-        project_type: data.projectType,
-        construction_type: data.constructionType || 'new_launching',
-        project_location: data.location,
-        rooms_per_floor: data.roomsPerFloor,
-        cp_sables: data.cpSables,
-        other_notes: data.otherNotes,
-        contact_name_1: data.contactName1 || data.sellerName,
-        contact_number_1: data.contactNumber1 || data.contactNumber,
-        contact_name_2: data.contactName2,
-        contact_number_2: data.contactNumber2,
-        is_govt_approved: data.isGovtApproved,
-        is_rera_approved: data.isReraApproved,
-        loan_available: data.loanAvailable,
-        social_media_marketing_allowed: data.socialMediaMarketingAllowed,
-        important_notes: data.importantNotes,
-        units_available_for_sale: data.unitsAvailableForSale,
-        rera_number: data.reraNumber,
-        project_conversion_rate: data.projectConversionRate,
-        status: data.status,
-        property_images: data.propertyImages ? data.propertyImages : {},
-        amenities: data.amenities || {},
-        documents: [],
-        created_by: currentUserId
-      })
+      .insert(insertData)
       .select()
       .single();
 
