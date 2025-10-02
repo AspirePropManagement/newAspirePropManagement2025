@@ -256,7 +256,7 @@ export function PropertyForm({
     contactNumber: '',
     alternateNumber: '',
     bhkType: '',
-    propertyType: propertyType, // Initialize with the prop value
+    propertyType: '', // User will select the actual property type (apartment, villa, etc.)
     location: '',
     
     // Property Details (Step 2)
@@ -345,13 +345,8 @@ export function PropertyForm({
     }
   }, [savedImages]);
 
-  // Update propertyType when prop changes
-  React.useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      propertyType: propertyType
-    }));
-  }, [propertyType]);
+  // Note: propertyType prop is used for form navigation, not for the database property_type field
+  // The database property_type field is set by user selection in the form
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
