@@ -136,19 +136,18 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
     }
 
     Array.from(files).forEach((file) => {
-      // Create a mock URL for demonstration and store file info
-      const mockUrl = URL.createObjectURL(file);
-      const fileInfo = {
-        url: mockUrl,
-        name: file.name,
-        size: file.size,
-        type: file.type
+      // Convert file to base64
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        if (base64) {
+          // Store base64 data directly instead of file object
+          (newImages[activeCategory] as any)[activeSubcategory].push(base64);
+          setLocalImages({ ...newImages });
+        }
       };
-      (newImages[activeCategory] as any)[activeSubcategory].push(fileInfo);
+      reader.readAsDataURL(file);
     });
-
-    // Only update local state, never notify parent
-    setLocalImages(newImages);
   }, [localImages, activeCategory, activeSubcategory, isSubmitting]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -187,11 +186,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
       Object.prototype.hasOwnProperty.call(newImages, category) &&
       Array.isArray((newImages as any)[category]?.[subcategory])
     ) {
-      const subcatImages = (newImages as any)[category][subcategory] as Array<{ url: string }>;
-      const fileInfo = subcatImages[index];
-      if (fileInfo && typeof fileInfo.url === 'string' && fileInfo.url.startsWith('blob:')) {
-        URL.revokeObjectURL(fileInfo.url);
-      }
+      const subcatImages = (newImages as any)[category][subcategory] as string[];
       subcatImages.splice(index, 1);
       
       setLocalImages(newImages);
@@ -360,8 +355,9 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
           </h4>
           <div className="overflow-x-auto">
             <div className="flex space-x-2 sm:space-x-3 pb-2 min-w-max">
-              {(localImages[activeCategory] as any)[activeSubcategory].map((fileInfo: any, index: number) => {
-                const isPDF = fileInfo.name.includes('.pdf') || fileInfo.type.includes('pdf');
+              {(localImages[activeCategory] as any)[activeSubcategory].map((imageData: string, index: number) => {
+                const isPDF = imageData.includes('data:application/pdf') || imageData.includes('data:application/octet-stream');
+                const isBase64Image = imageData.startsWith('data:image/');
                 
                 return (
                   <div key={index} className="relative group flex-shrink-0">
@@ -370,19 +366,23 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
                         <div className="w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center bg-gray-50 rounded-lg">
                           <DocumentIcon className="h-6 w-6 sm:h-10 sm:w-10 text-gray-400" />
                         </div>
-                      ) : (
+                      ) : isBase64Image ? (
                         <div className="relative">
                           <Image
-                            src={fileInfo.url}
-                            alt={`Uploaded ${safeSubcategory?.name || 'image'} ${fileInfo.name}`}
+                            src={imageData}
+                            alt={`Uploaded ${safeSubcategory?.name || 'image'} ${index + 1}`}
                             width={128}
                             height={128}
                             className="object-contain rounded-lg w-24 h-24 sm:w-32 sm:h-32"
-                            unoptimized={fileInfo.url.startsWith('blob:')}
+                            unoptimized={true}
                             onError={() => {
-                              console.log('Image failed to load:', fileInfo.url);
+                              console.log('Base64 image failed to load:', index);
                             }}
                           />
+                        </div>
+                      ) : (
+                        <div className="w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center bg-gray-50 rounded-lg">
+                          <DocumentIcon className="h-6 w-6 sm:h-10 sm:w-10 text-gray-400" />
                         </div>
                       )}
                     </div>
@@ -400,8 +400,8 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
                     
                     {/* File Info - Mobile responsive filename */}
                     <div className="mt-1 text-center">
-                      <p className="text-xs text-gray-600 truncate px-1 max-w-24 sm:max-w-32" title={fileInfo.name}>
-                        {fileInfo.name.length > 12 ? fileInfo.name.substring(0, 12) + '...' : fileInfo.name}
+                      <p className="text-xs text-gray-600 truncate px-1 max-w-24 sm:max-w-32" title={`Image ${index + 1}`}>
+                        Image {index + 1}
                       </p>
                     </div>
                   </div>

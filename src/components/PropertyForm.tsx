@@ -1012,7 +1012,63 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Third Row - Ownership & Loan */}
+      {/* Third Row - Age, Parking Type, Negotiable */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Age of Property
+          </label>
+          <select
+            value={formData.propertyAge}
+            onChange={(e) => handleInputChange('propertyAge', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Property Age</option>
+            <option value="under_construction">Under Construction</option>
+            <option value="new_construction">New Construction (0-1 years)</option>
+            <option value="1_to_3_years">1-3 years</option>
+            <option value="3_to_5_years">3-5 years</option>
+            <option value="5_to_10_years">5-10 years</option>
+            <option value="10_to_15_years">10-15 years</option>
+            <option value="above_15_years">Above 15 years</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Parking Type
+          </label>
+          <select
+            value={formData.parkingType}
+            onChange={(e) => handleInputChange('parkingType', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Parking Type</option>
+            <option value="covered_parking">Covered</option>
+            <option value="open_parking">Open</option>
+            <option value="shed_parking">Shed</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Fourth Row - Negotiable */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Price Negotiable
+          </label>
+          <select
+            value={formData.isNegotiable ? 'true' : 'false'}
+            onChange={(e) => handleInputChange('isNegotiable', e.target.value === 'true')}
+            className={selectClass}
+          >
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Fifth Row - Ownership & Loan */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
@@ -1092,7 +1148,7 @@ export function PropertyForm({
         />
       </div>
 
-      {/* Fourth Row - Additional Details */}
+      {/* Sixth Row - Additional Details */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
@@ -1121,7 +1177,7 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Fifth Row - RERA */}
+      {/* Seventh Row - RERA */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
@@ -1360,9 +1416,62 @@ export function PropertyForm({
             <option value="anyone">Anyone</option>
           </select>
         </div>
+
+        <div>
+          <label className={labelClass}>
+            Parking Type
+          </label>
+          <select
+            value={formData.parkingType}
+            onChange={(e) => handleInputChange('parkingType', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Parking Type</option>
+            <option value="covered_parking">Covered</option>
+            <option value="open_parking">Open</option>
+            <option value="shed_parking">Shed</option>
+          </select>
+        </div>
       </div>
 
-      {/* Fourth Row - Availability */}
+      {/* Fourth Row - Age and Negotiable */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Age of Property
+          </label>
+          <select
+            value={formData.propertyAge}
+            onChange={(e) => handleInputChange('propertyAge', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Property Age</option>
+            <option value="under_construction">Under Construction</option>
+            <option value="new_construction">New Construction (0-1 years)</option>
+            <option value="1_to_3_years">1-3 years</option>
+            <option value="3_to_5_years">3-5 years</option>
+            <option value="5_to_10_years">5-10 years</option>
+            <option value="10_to_15_years">10-15 years</option>
+            <option value="above_15_years">Above 15 years</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Rent Negotiable
+          </label>
+          <select
+            value={formData.isNegotiable ? 'true' : 'false'}
+            onChange={(e) => handleInputChange('isNegotiable', e.target.value === 'true')}
+            className={selectClass}
+          >
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Fifth Row - Availability */}
       <div>
         <label className={labelClass}>
           Available From Date
