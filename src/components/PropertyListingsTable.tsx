@@ -268,6 +268,8 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
     if (!user || !supabase) return;
 
     try {
+      console.log('PropertyListingsTable - handleSaveEdit called with:', updatedProperty);
+      console.log('PropertyListingsTable - property_images from updatedProperty:', updatedProperty.property_images);
       let tableName;
       let updateData: any = {};
       
@@ -502,6 +504,16 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
         if (updateData[key] === undefined) {
           delete updateData[key];
         }
+      });
+
+      console.log('PropertyListingsTable - Final updateData being sent to database:', updateData);
+      console.log('PropertyListingsTable - Image fields in updateData:', {
+        property_images: updateData.property_images,
+        general_photos: updateData.general_photos,
+        floor_plans: updateData.floor_plans,
+        legal_docs: updateData.legal_docs,
+        virtual_content: updateData.virtual_content,
+        project_images: updateData.project_images
       });
 
       const { error } = await supabase
@@ -1025,12 +1037,14 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
     try {
       // Get images from PropertyImageManager
       const images = imageManagerRef.current?.getImages() || {};
+      console.log('PropertyEditModal - Images from PropertyImageManager:', images);
       
       // Update formData with images
       const updatedFormData = {
         ...formData,
         property_images: images
       };
+      console.log('PropertyEditModal - Updated form data with images:', updatedFormData);
 
       await onSave(updatedFormData);
     } catch (error) {

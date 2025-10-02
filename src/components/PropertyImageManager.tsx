@@ -61,7 +61,10 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
 
   // Expose methods to parent through ref
   useImperativeHandle(ref, () => ({
-    getImages: () => localImages,
+    getImages: () => {
+      console.log('PropertyImageManager - getImages called, returning:', localImages);
+      return localImages;
+    },
     setImages: (images: PropertyImages) => setLocalImages(images)
   }), [localImages]);
 
@@ -168,6 +171,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
       reader.onload = (e) => {
         const base64 = e.target?.result as string;
         if (base64) {
+          console.log('PropertyImageManager - File converted to base64, storing in:', activeCategory, activeSubcategory);
           // Store base64 data directly instead of file object
           if (currentCategory.subcategories && Object.keys(currentCategory.subcategories).length > 0) {
             // Categories with subcategories
@@ -176,6 +180,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
             // Categories without subcategories
             (newImages as any)[activeCategory].push(base64);
           }
+          console.log('PropertyImageManager - Updated newImages structure:', newImages);
           setLocalImages({ ...newImages });
         }
       };
