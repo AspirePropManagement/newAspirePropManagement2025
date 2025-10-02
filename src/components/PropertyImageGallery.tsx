@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { PropertyImages } from '@/types/Property';
 import Image from 'next/image';
-import { getImageSrc, isBase64Image, getImagesByCategory } from '@/utils/imageUtils';
+import { getImageSrc, isBase64Image, getImagesByCategory, filterValidImages } from '@/utils/imageUtils';
 
 interface PropertyImageGalleryProps {
   images: PropertyImages;
@@ -32,26 +32,33 @@ export function PropertyImageGallery({ images, className = '' }: PropertyImageGa
       Object.keys(images.general_photos).forEach(key => {
         const categoryImages = images.general_photos![key as keyof typeof images.general_photos];
         console.log(`PropertyImageGallery - Category ${key}:`, categoryImages);
-        if (categoryImages?.length) {
-          categories.push({
-            id: key,
-            name: key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-            count: categoryImages?.length || 0,
-            type: 'general'
-          });
+        if (Array.isArray(categoryImages) && categoryImages.length > 0) {
+          const validImages = filterValidImages(categoryImages);
+          if (validImages.length > 0) {
+            categories.push({
+              id: key,
+              name: key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              count: validImages.length,
+              type: 'general'
+            });
+          }
         }
       });
     }
 
     if (images.project_images) {
       Object.keys(images.project_images).forEach(key => {
-        if (images.project_images![key as keyof typeof images.project_images]?.length) {
-          categories.push({
-            id: key,
-            name: key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-            count: images.project_images![key as keyof typeof images.project_images]?.length || 0,
-            type: 'project'
-          });
+        const categoryImages = images.project_images![key as keyof typeof images.project_images];
+        if (Array.isArray(categoryImages) && categoryImages.length > 0) {
+          const validImages = filterValidImages(categoryImages);
+          if (validImages.length > 0) {
+            categories.push({
+              id: key,
+              name: key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              count: validImages.length,
+              type: 'project'
+            });
+          }
         }
       });
     }
@@ -61,13 +68,32 @@ export function PropertyImageGallery({ images, className = '' }: PropertyImageGa
 
   const categories = getImageCategories();
   
+  // Set default category to first available category if exterior is not available
+  React.useEffect(() => {
+    if (categories.length > 0 && !categories.find(c => c.id === selectedCategory)) {
+      setSelectedCategory(categories[0].id);
+    }
+  }, [categories, selectedCategory]);
+  
   // Reset image errors when category changes
   React.useEffect(() => {
     setImageErrors(new Set());
   }, [selectedCategory]);
   
-  // Get current images using utility function
-  const currentImages = getImagesByCategory(images, selectedCategory);
+  // Get current images directly from the images structure
+  const getCurrentImages = (category: string) => {
+    // Check if it's a general_photos category
+    if (images.general_photos && images.general_photos[category]) {
+      return filterValidImages(images.general_photos[category]);
+    }
+    // Check if it's a project_images category
+    if (images.project_images && images.project_images[category]) {
+      return filterValidImages(images.project_images[category]);
+    }
+    return [];
+  };
+  
+  const currentImages = getCurrentImages(selectedCategory);
   console.log(`PropertyImageGallery - Current images for ${selectedCategory}:`, currentImages);
 
   return (
