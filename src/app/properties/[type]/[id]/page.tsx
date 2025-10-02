@@ -79,6 +79,8 @@ export default function PropertyDetailPage() {
         }
 
         const data = await response.json();
+        console.log('Property details fetched:', data);
+        console.log('Property images structure:', data.property_images);
         setProperty(data);
       } catch (err) {
         console.error('Error fetching property:', err);
@@ -551,13 +553,17 @@ export default function PropertyDetailPage() {
 
       {/* Comprehensive Property Layout */}
       <PropertyLayout
-        propertyImages={{
-          general_photos: property.property_images?.general_photos || {},
-          floor_plans: property.property_images?.floor_plans || {},
-          project_images: property.property_images?.project_images || {},
-          legal_docs: property.property_images?.legal_docs || {},
-          virtual_content: property.property_images?.virtual_content || {}
-        }}
+        propertyImages={(() => {
+          const images = {
+            general_photos: property.property_images?.general_photos || {},
+            floor_plans: property.property_images?.floor_plans || {},
+            project_images: property.property_images?.project_images || {},
+            legal_docs: property.property_images?.legal_docs || {},
+            virtual_content: property.property_images?.virtual_content || {}
+          };
+          console.log('PropertyLayout - Images being passed:', images);
+          return images;
+        })()}
         propertyDetails={getPropertyDetails() || {
           title: 'Property',
           price: 0,

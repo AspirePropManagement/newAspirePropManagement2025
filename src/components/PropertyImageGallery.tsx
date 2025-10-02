@@ -19,17 +19,24 @@ export function PropertyImageGallery({ images, className = '' }: PropertyImageGa
   const [selectedCategory, setSelectedCategory] = useState<string>('exterior');
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
+  // Debug logging
+  console.log('PropertyImageGallery - Received images:', images);
+
   // Get all available image categories
   const getImageCategories = () => {
     const categories: any[] = [];
     
+    console.log('PropertyImageGallery - Checking general_photos:', images.general_photos);
+    
     if (images.general_photos) {
       Object.keys(images.general_photos).forEach(key => {
-        if (images.general_photos![key as keyof typeof images.general_photos]?.length) {
+        const categoryImages = images.general_photos![key as keyof typeof images.general_photos];
+        console.log(`PropertyImageGallery - Category ${key}:`, categoryImages);
+        if (categoryImages?.length) {
           categories.push({
             id: key,
             name: key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-            count: images.general_photos![key as keyof typeof images.general_photos]?.length || 0,
+            count: categoryImages?.length || 0,
             type: 'general'
           });
         }
@@ -61,6 +68,7 @@ export function PropertyImageGallery({ images, className = '' }: PropertyImageGa
   
   // Get current images using utility function
   const currentImages = getImagesByCategory(images, selectedCategory);
+  console.log(`PropertyImageGallery - Current images for ${selectedCategory}:`, currentImages);
 
   return (
     <div className={`space-y-4 sm:space-y-6 ${className}`}>
