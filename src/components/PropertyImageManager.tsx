@@ -17,6 +17,7 @@ interface PropertyImages {
     bedrooms?: string[];
     kitchen?: string[];
     bathrooms?: string[];
+    living_dining_balcony?: string[];
     amenities?: string[];
   };
   floor_plans?: {
@@ -52,6 +53,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
   const [activeCategory, setActiveCategory] = useState<'general_photos' | 'floor_plans' | 'legal_docs' | 'virtual_content' | 'project_images'>('general_photos');
   const [activeSubcategory, setActiveSubcategory] = useState<string>('exterior');
   const [dragOver, setDragOver] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Update local images when initialImages prop changes
@@ -87,6 +89,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
         bedrooms: { name: 'Bedrooms', description: 'All bedroom types and sizes' },
         kitchen: { name: 'Kitchen', description: 'Kitchen area and appliances' },
         bathrooms: { name: 'Bathrooms', description: 'Bathroom facilities' },
+        living_dining_balcony: { name: 'Living area, Dining & Balcony Area', description: 'Living room, dining area, and balcony spaces' },
         amenities: { name: 'Amenities', description: 'Gym, pool, clubhouse, etc.' }
       }
     },
@@ -145,8 +148,9 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
   }, [localImages]);
 
   const handleFileUpload = useCallback((files: FileList) => {
-    if (isSubmitting) return; // Prevent uploads while submitting
+    if (isSubmitting || isUploading) return; // Prevent uploads while submitting or uploading
 
+    setIsUploading(true);
     const newImages = { ...localImages };
     const currentCategory = IMAGE_CATEGORIES[activeCategory];
     
@@ -165,28 +169,53 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
       }
     }
 
-    Array.from(files).forEach((file) => {
-      // Convert file to base64
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64 = e.target?.result as string;
-        if (base64) {
-          console.log('PropertyImageManager - File converted to base64, storing in:', activeCategory, activeSubcategory);
-          // Store base64 data directly instead of file object
-          if (currentCategory.subcategories && Object.keys(currentCategory.subcategories).length > 0) {
-            // Categories with subcategories
-            (newImages as any)[activeCategory][activeSubcategory].push(base64);
+    // Process all files and collect base64 data
+    const filePromises = Array.from(files).map((file) => {
+      return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64 = e.target?.result as string;
+          if (base64) {
+            resolve(base64);
           } else {
-            // Categories without subcategories
-            (newImages as any)[activeCategory].push(base64);
+            reject(new Error('Failed to convert file to base64'));
           }
-          console.log('PropertyImageManager - Updated newImages structure:', newImages);
-          setLocalImages({ ...newImages });
-        }
-      };
-      reader.readAsDataURL(file);
+        };
+        reader.onerror = () => reject(new Error('File reading failed'));
+        reader.readAsDataURL(file);
+      });
     });
-  }, [localImages, activeCategory, activeSubcategory, isSubmitting, IMAGE_CATEGORIES]);
+
+    // Wait for all files to be processed, then update state once
+    Promise.all(filePromises)
+      .then((base64Results) => {
+        console.log('PropertyImageManager - All files converted to base64, storing in:', activeCategory, activeSubcategory);
+        
+        // Add all base64 results to the appropriate array
+        if (currentCategory.subcategories && Object.keys(currentCategory.subcategories).length > 0) {
+          // Categories with subcategories
+          (newImages as any)[activeCategory][activeSubcategory].push(...base64Results);
+        } else {
+          // Categories without subcategories
+          (newImages as any)[activeCategory].push(...base64Results);
+        }
+        
+        console.log('PropertyImageManager - Updated newImages structure:', newImages);
+        setLocalImages({ ...newImages });
+        
+        // Clear the file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      })
+      .catch((error) => {
+        console.error('Error processing files:', error);
+        alert('Error uploading files. Please try again.');
+      })
+      .finally(() => {
+        setIsUploading(false);
+      });
+  }, [localImages, activeCategory, activeSubcategory, isSubmitting, isUploading, IMAGE_CATEGORIES]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -364,7 +393,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
           dragOver
             ? 'border-blue-400 bg-blue-50'
             : 'border-gray-300 hover:border-gray-400'
-        } ${isSubmitting ? 'opacity-50 pointer-events-none' : ''}`}
+        } ${isSubmitting || isUploading ? 'opacity-50 pointer-events-none' : ''}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -387,10 +416,10 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isUploading}
             className="px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
           >
-            Choose Files
+            {isUploading ? 'Uploading...' : 'Choose Files'}
           </button>
         </div>
         <input
@@ -400,7 +429,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
           accept=".jpg,.jpeg,.png,.pdf"
           onChange={handleFileInputChange}
           className="hidden"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isUploading}
         />
       </div>
 

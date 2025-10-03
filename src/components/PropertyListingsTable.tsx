@@ -1139,7 +1139,8 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     required
                   >
                     <option value="">Select BHK Type</option>
-                    <option value="1_rk_1_bhk">1 RK/1 BHK</option>
+                    <option value="1_rk">1 RK</option>
+                    <option value="1_bhk">1 BHK</option>
                     <option value="2_bhk">2 BHK</option>
                     <option value="3_bhk">3 BHK</option>
                     <option value="4_bhk">4 BHK</option>

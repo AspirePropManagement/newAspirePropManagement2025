@@ -17,8 +17,7 @@ export interface PropertyImages {
     bedrooms?: ImageSource[];
     kitchen?: ImageSource[];
     bathrooms?: ImageSource[];
-    living_dining?: ImageSource[];
-    balcony?: ImageSource[];
+    living_dining_balcony?: ImageSource[];
     amenities?: ImageSource[];
   };
   
@@ -73,7 +72,7 @@ export interface ResaleProperty {
   seller_alternate_no?: string;
   property_type: 'apartment' | 'gated_community_villa_or_bungalow' | 'independent_house';
   society_name?: string;
-  bhk_type: '1_rk_1_bhk' | '2_bhk' | '3_bhk' | '4_bhk' | '5_bhk' | '5_plus_bhk';
+  bhk_type: '1_rk' | '2_bhk' | '3_bhk' | '4_bhk' | '5_bhk' | '5_plus_bhk';
   square_feet?: number;
   carpet_area?: number;
   location: string;
@@ -123,7 +122,7 @@ export interface RentalProperty {
   owner_alternate_no?: string;
   property_type: 'apartment' | 'gated_community_villa_or_bungalow' | 'independent_house';
   society_name?: string;
-  bhk_type: '1_rk_1_bhk' | '2_bhk' | '3_bhk' | '4_bhk' | '5_bhk' | '5_plus_bhk';
+  bhk_type: '1_rk' | '2_bhk' | '3_bhk' | '4_bhk' | '5_bhk' | '5_plus_bhk';
   location: string;
   floor_no?: string;
   rent_amount: number;

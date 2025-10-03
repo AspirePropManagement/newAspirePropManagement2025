@@ -23,6 +23,7 @@ interface RentalProperty {
       kitchen?: string[];
       bathrooms?: string[];
       living_dining?: string[];
+      living_dining_balcony?: string[];
     };
   };
   amenities?: {
@@ -103,6 +104,11 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
     // Try living/dining area
     if (images?.general_photos?.living_dining?.length) {
       return images.general_photos.living_dining[0];
+    }
+    
+    // Try living/dining/balcony area
+    if (images?.general_photos?.living_dining_balcony?.length) {
+      return images.general_photos.living_dining_balcony[0];
     }
     
     // Try bedrooms

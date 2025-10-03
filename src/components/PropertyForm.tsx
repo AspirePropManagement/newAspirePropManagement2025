@@ -587,7 +587,8 @@ export function PropertyForm({
           required
         >
           <option value="">Select BHK Type</option>
-          <option value="1_rk_1_bhk">1 RK/1 BHK</option>
+          <option value="1_rk">1 RK</option>
+          <option value="1_bhk">1 BHK</option>
           <option value="2_bhk">2 BHK</option>
           <option value="3_bhk">3 BHK</option>
           <option value="4_bhk">4 BHK</option>
@@ -911,7 +912,7 @@ export function PropertyForm({
           Available BHK Types
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-          {['1_rk_1_bhk', '2_bhk', '3_bhk', '4_bhk', '5_bhk', '5_plus_bhk'].map((bhkType) => (
+          {['1_rk', '1_bhk', '2_bhk', '3_bhk', '4_bhk', '5_bhk', '5_plus_bhk'].map((bhkType) => (
             <label key={bhkType} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
               <input
                 type="checkbox"

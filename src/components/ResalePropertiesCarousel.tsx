@@ -110,6 +110,9 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
     if (property.property_images?.living_room) {
       images.push(...property.property_images.living_room);
     }
+    if (property.property_images?.living_dining_balcony) {
+      images.push(...property.property_images.living_dining_balcony);
+    }
     
     // Add general photos
     if (property.general_photos?.exterior) {
