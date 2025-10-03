@@ -9,28 +9,7 @@ import {
   StarIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
-
-interface PropertyImages {
-  general_photos?: {
-    exterior?: string[];
-    interior?: string[];
-    bedrooms?: string[];
-    kitchen?: string[];
-    bathrooms?: string[];
-    living_dining_balcony?: string[];
-    amenities?: string[];
-  };
-  floor_plans?: {
-    floor_plan?: string[];
-    site_plan?: string[];
-    blueprint?: string[];
-    elevation?: string[];
-    legal_docs?: string[];
-  };
-  legal_docs?: string[];
-  virtual_content?: string[];
-  project_images?: string[];
-}
+import { PropertyImages } from '@/types/Property';
 
 interface PropertyImageManagerProps {
   isSubmitting?: boolean;
@@ -108,7 +87,12 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
       name: 'Legal Documents',
       description: 'Property papers, approvals, certificates',
       icon: DocumentIcon,
-      subcategories: {}
+      subcategories: {
+        rera_certificate: { name: 'RERA Certificate', description: 'RERA registration documents' },
+        approval_documents: { name: 'Approval Documents', description: 'Government approvals' },
+        legal_documents: { name: 'Legal Documents', description: 'Legal papers and contracts' },
+        brochures: { name: 'Brochures', description: 'Property brochures and marketing materials' }
+      }
     },
     virtual_content: {
       name: 'Virtual Content',
@@ -129,11 +113,17 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
     let total = 0;
     Object.values(localImages).forEach(category => {
       if (category) {
-        Object.values(category).forEach(subcategory => {
-          if (Array.isArray(subcategory)) {
-            total += subcategory.length;
-          }
-        });
+        if (Array.isArray(category)) {
+          // Handle simple arrays (legal_docs, virtual_content, project_images)
+          total += category.length;
+        } else {
+          // Handle objects with subcategories (general_photos, floor_plans, legal_docs object)
+          Object.values(category).forEach(subcategory => {
+            if (Array.isArray(subcategory)) {
+              total += subcategory.length;
+            }
+          });
+        }
       }
     });
 
@@ -154,7 +144,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
     const newImages = { ...localImages };
     const currentCategory = IMAGE_CATEGORIES[activeCategory];
     
-    // Handle categories with subcategories (general_photos, floor_plans)
+    // Handle categories with subcategories (general_photos, floor_plans, legal_docs)
     if (currentCategory.subcategories && Object.keys(currentCategory.subcategories).length > 0) {
       if (!newImages[activeCategory]) {
         (newImages as any)[activeCategory] = {};
@@ -163,7 +153,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
         (newImages as any)[activeCategory][activeSubcategory] = [];
       }
     } else {
-      // Handle categories without subcategories (legal_docs, virtual_content, project_images)
+      // Handle categories without subcategories (virtual_content, project_images)
       if (!newImages[activeCategory]) {
         (newImages as any)[activeCategory] = [];
       }
@@ -249,7 +239,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
     const newImages: PropertyImages = { ...localImages };
     const currentCategory = IMAGE_CATEGORIES[category as keyof typeof IMAGE_CATEGORIES];
 
-    // Handle categories with subcategories (general_photos, floor_plans)
+    // Handle categories with subcategories (general_photos, floor_plans, legal_docs)
     if (currentCategory.subcategories && Object.keys(currentCategory.subcategories).length > 0) {
       if (
         Object.prototype.hasOwnProperty.call(newImages, category) &&
@@ -260,7 +250,7 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
         setLocalImages(newImages);
       }
     } else {
-      // Handle categories without subcategories (legal_docs, virtual_content, project_images)
+      // Handle categories without subcategories (virtual_content, project_images)
       if (
         Object.prototype.hasOwnProperty.call(newImages, category) &&
         Array.isArray((newImages as any)[category])
@@ -345,11 +335,17 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
               let categoryCount = 0;
               
               if (categoryImages) {
-                Object.values(categoryImages).forEach(subcategory => {
-                  if (Array.isArray(subcategory)) {
-                    categoryCount += subcategory.length;
-                  }
-                });
+                if (Array.isArray(categoryImages)) {
+                  // Handle simple arrays (legal_docs, virtual_content, project_images)
+                  categoryCount = categoryImages.length;
+                } else {
+                  // Handle objects with subcategories (general_photos, floor_plans, legal_docs object)
+                  Object.values(categoryImages).forEach(subcategory => {
+                    if (Array.isArray(subcategory)) {
+                      categoryCount += subcategory.length;
+                    }
+                  });
+                }
               }
 
               return (

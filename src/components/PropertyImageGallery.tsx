@@ -83,12 +83,14 @@ export function PropertyImageGallery({ images, className = '' }: PropertyImageGa
   // Get current images directly from the images structure
   const getCurrentImages = (category: string) => {
     // Check if it's a general_photos category
-    if (images.general_photos && images.general_photos[category]) {
-      return filterValidImages(images.general_photos[category]);
+    if (images.general_photos && images.general_photos[category as keyof typeof images.general_photos]) {
+      const categoryImages = images.general_photos[category as keyof typeof images.general_photos];
+      return categoryImages ? filterValidImages(categoryImages) : [];
     }
     // Check if it's a project_images category
-    if (images.project_images && images.project_images[category]) {
-      return filterValidImages(images.project_images[category]);
+    if (images.project_images && images.project_images[category as keyof typeof images.project_images]) {
+      const categoryImages = images.project_images[category as keyof typeof images.project_images];
+      return categoryImages ? filterValidImages(categoryImages) : [];
     }
     return [];
   };
