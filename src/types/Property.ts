@@ -195,6 +195,10 @@ export interface NewProject {
   visitor_parking?: boolean;
   fire_safety?: boolean;
   status?: string;
+  documents?: string[];
+  created_at: string;
+  updated_at: string;
+  created_by: string;
   property_images?: PropertyImages;
   amenities?: any;
   general_photos?: any;
@@ -202,11 +206,6 @@ export interface NewProject {
   project_images?: any;
   legal_docs?: any;
   virtual_content?: any;
-  notes?: string;
-  created_at: string;
-  updated_at: string;
-  created_by: string;
-  // New fields
   total_project_area_size?: string;
   towers_count?: number;
   total_floors?: number;
@@ -218,6 +217,15 @@ export interface NewProject {
   marketed_by?: string;
   listed_by?: 'builder' | 'agent';
   facing_vastu?: string;
+  latitude?: number;
+  longitude?: number;
+  launch_date?: string;
+  possession_date?: string;
+  min_price?: number;
+  currency_code?: string;
+  website_url?: string;
+  brochure_url?: string;
+  deleted_at?: string;
 }
 
 export type Property = ResaleProperty | RentalProperty | NewProject;

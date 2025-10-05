@@ -106,6 +106,7 @@ export interface NewProjectData extends PropertyFormData {
   unitsAvailableForSale?: string;
   reraNumber?: string;
   projectConversionRate?: string;
+  documents?: string[];
 }
 
 /**
@@ -372,6 +373,9 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     if ((data as any).websiteUrl) insertData.website_url = (data as any).websiteUrl;
     if ((data as any).brochureUrl) insertData.brochure_url = (data as any).brochureUrl;
     
+    // Set default currency code
+    insertData.currency_code = 'INR';
+    
     // Amenities boolean fields from the schema
     if ((data as any).clubHouse !== undefined) insertData.club_house = (data as any).clubHouse;
     if ((data as any).swimmingPool !== undefined) insertData.swimming_pool = (data as any).swimmingPool;
@@ -406,7 +410,7 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
       insertData.legal_docs = [];
       insertData.virtual_content = [];
     }
-    insertData.documents = [];
+    insertData.documents = data.documents || [];
 
     console.log('New project insert data:', insertData);
     
