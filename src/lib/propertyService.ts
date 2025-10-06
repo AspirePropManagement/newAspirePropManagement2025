@@ -324,12 +324,23 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
       return { success: false, error: 'No user logged in. Please login first.' };
     }
     
+    // Debug: Log the incoming data
+    console.log('New project data received:', data);
+    
+    // Validate required fields
+    const projectType = data.projectType || data.propertyType;
+    console.log('Project type resolved:', projectType);
+    
+    if (!projectType) {
+      return { success: false, error: 'Project type is required' };
+    }
+
     // Build insert data with all available fields from the actual schema
     const insertData: any = {
       // Required fields
       crafted_by: data.craftedBy || data.sellerName,
       project_name: data.projectName || `Project in ${data.location}`,
-      project_type: data.projectType,
+      project_type: projectType,
       construction_type: data.constructionType || 'new_launching',
       project_location: data.location,
       status: data.status || 'active',
