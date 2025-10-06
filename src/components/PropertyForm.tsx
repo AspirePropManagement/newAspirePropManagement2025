@@ -398,7 +398,11 @@ export function PropertyForm({
     if (!formData.bhkType?.trim()) errors.push('BHK type is required');
     if (!formData.propertyType?.trim()) errors.push('Property type is required');
     if (!formData.location?.trim()) errors.push('Location is required');
-    if (!formData.furnishingType?.trim()) errors.push('Furnishing type is required');
+    
+    // Furnishing type is only required for resale and rental properties, not for new projects
+    if (propertyType !== 'new_project' && !formData.furnishingType?.trim()) {
+      errors.push('Furnishing type is required');
+    }
     
     // Email validation
     if (formData.sellerEmail && !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(formData.sellerEmail)) {
