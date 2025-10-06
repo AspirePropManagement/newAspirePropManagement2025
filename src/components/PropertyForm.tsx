@@ -603,7 +603,7 @@ export function PropertyForm({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Property Type *
+          {propertyType === 'new_project' ? 'Project Type' : 'Property Type'} *
         </label>
         <select
           value={formData.propertyType}
@@ -611,7 +611,7 @@ export function PropertyForm({
           className={selectClass}
           required
         >
-          <option value="">Select Property Type</option>
+          <option value="">Select {propertyType === 'new_project' ? 'Project' : 'Property'} Type</option>
           <option value="apartment">Apartment</option>
           <option value="gated_community_villa_or_bungalow">Gated Community Villa/Bungalow</option>
           <option value="independent_house">Independent House</option>
@@ -737,7 +737,7 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Second Row - Construction Details */}
+      {/* Second Row - Construction Type */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
