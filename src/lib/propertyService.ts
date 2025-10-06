@@ -335,6 +335,18 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
       return { success: false, error: 'Project type is required' };
     }
 
+    // Validate project type against database constraints
+    const validProjectTypes = ['residence', 'gated_community_villa_or_bungalow', 'commercial', 'land_or_plot'];
+    if (!validProjectTypes.includes(projectType)) {
+      return { success: false, error: `Invalid project type. Must be one of: ${validProjectTypes.join(', ')}` };
+    }
+
+    // Validate construction type against database constraints
+    const validConstructionTypes = ['new_launching', 'under_construction', 'ready_to_move', 'partial_ready_to_move'];
+    if (data.constructionType && !validConstructionTypes.includes(data.constructionType)) {
+      return { success: false, error: `Invalid construction type. Must be one of: ${validConstructionTypes.join(', ')}` };
+    }
+
     // Build insert data with all available fields from the actual schema
     const insertData: any = {
       // Required fields

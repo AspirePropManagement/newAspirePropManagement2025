@@ -451,14 +451,14 @@ export function PropertyForm({
       errors.push('Please enter a valid email address');
     }
     
-    // Contact number validation - must be exactly 10 digits
-    if (formData.contactNumber && !/^[0-9]{10}$/.test(formData.contactNumber)) {
-      errors.push('Contact number must be exactly 10 digits (numbers only)');
+    // Contact number validation - must be 10-15 digits with optional + prefix (matches DB constraint)
+    if (formData.contactNumber && !/^\+?[0-9]{10,15}$/.test(formData.contactNumber)) {
+      errors.push('Contact number must be 10-15 digits (numbers only, + prefix optional)');
     }
     
-    // Alternate number validation - if provided, must be exactly 10 digits
-    if (formData.alternateNumber && formData.alternateNumber.trim() && !/^[0-9]{10}$/.test(formData.alternateNumber)) {
-      errors.push('Alternate number must be exactly 10 digits (numbers only)');
+    // Alternate number validation - if provided, must be 10-15 digits with optional + prefix
+    if (formData.alternateNumber && formData.alternateNumber.trim() && !/^\+?[0-9]{10,15}$/.test(formData.alternateNumber)) {
+      errors.push('Alternate number must be 10-15 digits (numbers only, + prefix optional)');
     }
     
     // Property type specific validation
@@ -499,6 +499,13 @@ export function PropertyForm({
       }
       if (!formData.listedBy?.trim()) {
         errors.push('Listed by is required for new projects');
+      }
+      // Validate new project contact numbers
+      if (formData.contactNumber1 && !/^\+?[0-9]{10,15}$/.test(formData.contactNumber1)) {
+        errors.push('Contact Number 1 must be 10-15 digits (numbers only, + prefix optional)');
+      }
+      if (formData.contactNumber2 && !/^\+?[0-9]{10,15}$/.test(formData.contactNumber2)) {
+        errors.push('Contact Number 2 must be 10-15 digits (numbers only, + prefix optional)');
       }
     }
     
