@@ -355,10 +355,11 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     if (data.contactNumber1 || data.contactNumber) insertData.contact_number_1 = data.contactNumber1 || data.contactNumber;
     if (data.contactName2) insertData.contact_name_2 = data.contactName2;
     if (data.contactNumber2) insertData.contact_number_2 = data.contactNumber2;
-    if (data.isGovtApproved !== undefined) insertData.is_govt_approved = data.isGovtApproved;
-    if (data.isReraApproved !== undefined) insertData.is_rera_approved = data.isReraApproved;
-    if (data.loanAvailable !== undefined) insertData.loan_available = data.loanAvailable;
-    if (data.socialMediaMarketingAllowed !== undefined) insertData.social_media_marketing_allowed = data.socialMediaMarketingAllowed;
+    // Set compliance and approval fields as hardcoded (as requested)
+    insertData.is_govt_approved = false;
+    insertData.is_rera_approved = false;
+    insertData.loan_available = false;
+    insertData.social_media_marketing_allowed = false;
     if (data.importantNotes) insertData.important_notes = data.importantNotes;
     if (data.unitsAvailableForSale) insertData.units_available_for_sale = data.unitsAvailableForSale;
     if (data.reraNumber) insertData.rera_number = data.reraNumber;
@@ -376,8 +377,9 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     if ((data as any).marketedBy) insertData.marketed_by = (data as any).marketedBy;
     if ((data as any).listedBy) insertData.listed_by = (data as any).listedBy;
     if ((data as any).facingVastu) insertData.facing_vastu = (data as any).facingVastu;
-    if ((data as any).latitude) insertData.latitude = parseFloat((data as any).latitude);
-    if ((data as any).longitude) insertData.longitude = parseFloat((data as any).longitude);
+    // Set latitude and longitude as empty (hardcoded as requested)
+    insertData.latitude = null;
+    insertData.longitude = null;
     if ((data as any).launchDate) insertData.launch_date = (data as any).launchDate;
     if ((data as any).possessionDate) insertData.possession_date = (data as any).possessionDate;
     if ((data as any).minPrice) insertData.min_price = parseFloat((data as any).minPrice);
@@ -387,21 +389,39 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     // Set default currency code
     insertData.currency_code = 'INR';
     
-    // Amenities boolean fields from the schema
-    if ((data as any).clubHouse !== undefined) insertData.club_house = (data as any).clubHouse;
-    if ((data as any).swimmingPool !== undefined) insertData.swimming_pool = (data as any).swimmingPool;
-    if ((data as any).childrenPlayArea !== undefined) insertData.children_play_area = (data as any).childrenPlayArea;
-    if ((data as any).powerBackup !== undefined) insertData.power_backup = (data as any).powerBackup;
-    if ((data as any).houseKeeping !== undefined) insertData.house_keeping = (data as any).houseKeeping;
-    if ((data as any).lift !== undefined) insertData.lift = (data as any).lift;
-    if ((data as any).gym !== undefined) insertData.gym = (data as any).gym;
-    if ((data as any).park !== undefined) insertData.park = (data as any).park;
-    if ((data as any).security !== undefined) insertData.security = (data as any).security;
-    if ((data as any).gasPipeline !== undefined) insertData.gas_pipeline = (data as any).gasPipeline;
-    if ((data as any).rainWaterHarvesting !== undefined) insertData.rain_water_harvesting = (data as any).rainWaterHarvesting;
-    if ((data as any).sewageTreatmentPlant !== undefined) insertData.sewage_treatment_plant = (data as any).sewageTreatmentPlant;
-    if ((data as any).visitorParking !== undefined) insertData.visitor_parking = (data as any).visitorParking;
-    if ((data as any).fireSafety !== undefined) insertData.fire_safety = (data as any).fireSafety;
+    // Amenities boolean fields from the schema - extract from amenities object
+    if (data.amenities && typeof data.amenities === 'object') {
+      insertData.club_house = Boolean(data.amenities.club_house);
+      insertData.swimming_pool = Boolean(data.amenities.swimming_pool);
+      insertData.children_play_area = Boolean(data.amenities.children_play_area);
+      insertData.power_backup = Boolean(data.amenities.power_backup);
+      insertData.house_keeping = Boolean(data.amenities.house_keeping);
+      insertData.lift = Boolean(data.amenities.lift);
+      insertData.gym = Boolean(data.amenities.gym);
+      insertData.park = Boolean(data.amenities.park);
+      insertData.security = Boolean(data.amenities.security);
+      insertData.gas_pipeline = Boolean(data.amenities.gas_pipeline);
+      insertData.rain_water_harvesting = Boolean(data.amenities.rain_water_harvesting);
+      insertData.sewage_treatment_plant = Boolean(data.amenities.sewage_treatment_plant);
+      insertData.visitor_parking = Boolean(data.amenities.visitor_parking);
+      insertData.fire_safety = Boolean(data.amenities.fire_safety);
+    } else {
+      // Set all amenities to false if no amenities data
+      insertData.club_house = false;
+      insertData.swimming_pool = false;
+      insertData.children_play_area = false;
+      insertData.power_backup = false;
+      insertData.house_keeping = false;
+      insertData.lift = false;
+      insertData.gym = false;
+      insertData.park = false;
+      insertData.security = false;
+      insertData.gas_pipeline = false;
+      insertData.rain_water_harvesting = false;
+      insertData.sewage_treatment_plant = false;
+      insertData.visitor_parking = false;
+      insertData.fire_safety = false;
+    }
     
     // JSON fields - Extract from propertyImages structure
     insertData.property_images = data.propertyImages ? data.propertyImages : {};

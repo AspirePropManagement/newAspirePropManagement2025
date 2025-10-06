@@ -654,9 +654,20 @@ export function PropertyForm({
           required
         >
           <option value="">Select {propertyType === 'new_project' ? 'Project' : 'Property'} Type</option>
-          <option value="apartment">Apartment</option>
-          <option value="gated_community_villa_or_bungalow">Gated Community Villa/Bungalow</option>
-          <option value="independent_house">Independent House</option>
+          {propertyType === 'new_project' ? (
+            <>
+              <option value="residence">Residence</option>
+              <option value="gated_community_villa_or_bungalow">Gated Community/Villa/Bungalow</option>
+              <option value="commercial">Commercial</option>
+              <option value="land_or_plot">Land/Plot</option>
+            </>
+          ) : (
+            <>
+              <option value="apartment">Apartment</option>
+              <option value="gated_community_villa_or_bungalow">Gated Community Villa/Bungalow</option>
+              <option value="independent_house">Independent House</option>
+            </>
+          )}
         </select>
       </div>
 
@@ -1153,36 +1164,6 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Fifteenth Row - Location Coordinates */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Latitude
-          </label>
-          <input
-            type="number"
-            step="any"
-            value={formData.latitude}
-            onChange={(e) => handleInputChange('latitude', e.target.value)}
-            className={inputClass}
-            placeholder="e.g., 18.5204"
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Longitude
-          </label>
-          <input
-            type="number"
-            step="any"
-            value={formData.longitude}
-            onChange={(e) => handleInputChange('longitude', e.target.value)}
-            className={inputClass}
-            placeholder="e.g., 73.8567"
-          />
-        </div>
-      </div>
 
       {/* Sixteenth Row - Notes */}
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
@@ -1244,69 +1225,7 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Project Amenities */}
-      <div>
-        <label className={labelClass}>
-          Project Amenities
-        </label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {[
-            { key: 'clubHouse', label: 'Club House' },
-            { key: 'swimmingPool', label: 'Swimming Pool' },
-            { key: 'childrenPlayArea', label: 'Children Play Area' },
-            { key: 'powerBackup', label: 'Power Backup' },
-            { key: 'houseKeeping', label: 'House Keeping' },
-            { key: 'lift', label: 'Lift' },
-            { key: 'gym', label: 'Gym' },
-            { key: 'park', label: 'Park' },
-            { key: 'security', label: 'Security' },
-            { key: 'gasPipeline', label: 'Gas Pipeline' },
-            { key: 'rainWaterHarvesting', label: 'Rain Water Harvesting' },
-            { key: 'sewageTreatmentPlant', label: 'Sewage Treatment Plant' },
-            { key: 'visitorParking', label: 'Visitor Parking' },
-            { key: 'fireSafety', label: 'Fire Safety' }
-          ].map((amenity) => (
-            <label key={amenity.key} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
-              <input
-                type="checkbox"
-                checked={Boolean(formData[amenity.key as keyof typeof formData])}
-                onChange={(e) => handleInputChange(amenity.key, e.target.checked)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded flex-shrink-0"
-              />
-              <span className="text-xs sm:text-sm text-gray-700">
-                {amenity.label}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
 
-      {/* Compliance and Approval */}
-      <div>
-        <label className={labelClass}>
-          Compliance & Approvals
-        </label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {[
-            { key: 'isGovtApproved', label: 'Government Approved' },
-            { key: 'isReraApproved', label: 'RERA Approved' },
-            { key: 'loanAvailable', label: 'Loan Available' },
-            { key: 'socialMediaMarketingAllowed', label: 'Social Media Marketing Allowed' }
-          ].map((compliance) => (
-            <label key={compliance.key} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
-              <input
-                type="checkbox"
-                checked={Boolean(formData[compliance.key as keyof typeof formData])}
-                onChange={(e) => handleInputChange(compliance.key, e.target.checked)}
-                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded flex-shrink-0"
-              />
-              <span className="text-xs sm:text-sm text-gray-700">
-                {compliance.label}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
     </div>
   );
 
