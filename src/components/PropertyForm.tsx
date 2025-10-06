@@ -274,6 +274,48 @@ export function PropertyForm({
     suggestionDate: '',
     suggestionYear: '',
     availableBhkTypes: [] as string[],
+    
+    // New Project specific fields
+    launchDate: '',
+    possessionDate: '',
+    minPrice: '',
+    websiteUrl: '',
+    brochureUrl: '',
+    roomsPerFloor: '',
+    cpSables: '',
+    unitsAvailableForSale: '',
+    contactName1: '',
+    contactNumber1: '',
+    contactName2: '',
+    contactNumber2: '',
+    reraNumber: '',
+    projectConversionRate: '',
+    latitude: '',
+    longitude: '',
+    otherNotes: '',
+    importantNotes: '',
+    
+    // New Project Amenities (boolean fields)
+    clubHouse: false,
+    swimmingPool: false,
+    childrenPlayArea: false,
+    powerBackup: false,
+    houseKeeping: false,
+    lift: false,
+    gym: false,
+    park: false,
+    security: false,
+    gasPipeline: false,
+    rainWaterHarvesting: false,
+    sewageTreatmentPlant: false,
+    visitorParking: false,
+    fireSafety: false,
+    
+    // Compliance fields
+    isGovtApproved: false,
+    isReraApproved: false,
+    loanAvailable: false,
+    socialMediaMarketingAllowed: false,
     tenantType: '',
     flatNo: '',
     wingNo: '',
@@ -910,6 +952,270 @@ export function PropertyForm({
         </div>
       </div>
 
+      {/* Eighth Row - Launch and Possession Dates */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Launch Date
+          </label>
+          <input
+            type="date"
+            value={formData.launchDate}
+            onChange={(e) => handleInputChange('launchDate', e.target.value)}
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Possession Date
+          </label>
+          <input
+            type="date"
+            value={formData.possessionDate}
+            onChange={(e) => handleInputChange('possessionDate', e.target.value)}
+            className={inputClass}
+          />
+        </div>
+      </div>
+
+      {/* Ninth Row - Pricing and URLs */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Minimum Price (₹)
+          </label>
+          <input
+            type="number"
+            value={formData.minPrice}
+            onChange={(e) => handleInputChange('minPrice', e.target.value)}
+            className={inputClass}
+            placeholder="Enter minimum price"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Website URL
+          </label>
+          <input
+            type="url"
+            value={formData.websiteUrl}
+            onChange={(e) => handleInputChange('websiteUrl', e.target.value)}
+            className={inputClass}
+            placeholder="https://example.com"
+          />
+        </div>
+      </div>
+
+      {/* Tenth Row - Additional URLs and Contact Info */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Brochure URL
+          </label>
+          <input
+            type="url"
+            value={formData.brochureUrl}
+            onChange={(e) => handleInputChange('brochureUrl', e.target.value)}
+            className={inputClass}
+            placeholder="https://example.com/brochure.pdf"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Rooms per Floor
+          </label>
+          <input
+            type="text"
+            value={formData.roomsPerFloor}
+            onChange={(e) => handleInputChange('roomsPerFloor', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 2, 4, 6"
+          />
+        </div>
+      </div>
+
+      {/* Eleventh Row - Additional Project Details */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            CP Sables
+          </label>
+          <input
+            type="text"
+            value={formData.cpSables}
+            onChange={(e) => handleInputChange('cpSables', e.target.value)}
+            className={inputClass}
+            placeholder="Enter CP Sables information"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Units Available for Sale
+          </label>
+          <input
+            type="text"
+            value={formData.unitsAvailableForSale}
+            onChange={(e) => handleInputChange('unitsAvailableForSale', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 150 units"
+          />
+        </div>
+      </div>
+
+      {/* Twelfth Row - Contact Information */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Contact Name 1
+          </label>
+          <input
+            type="text"
+            value={formData.contactName1}
+            onChange={(e) => handleInputChange('contactName1', e.target.value)}
+            className={inputClass}
+            placeholder="Primary contact person"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Contact Number 1
+          </label>
+          <input
+            type="tel"
+            value={formData.contactNumber1}
+            onChange={(e) => handleInputChange('contactNumber1', e.target.value)}
+            className={inputClass}
+            placeholder="10-15 digit number"
+          />
+        </div>
+      </div>
+
+      {/* Thirteenth Row - Secondary Contact */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Contact Name 2
+          </label>
+          <input
+            type="text"
+            value={formData.contactName2}
+            onChange={(e) => handleInputChange('contactName2', e.target.value)}
+            className={inputClass}
+            placeholder="Secondary contact person"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Contact Number 2
+          </label>
+          <input
+            type="tel"
+            value={formData.contactNumber2}
+            onChange={(e) => handleInputChange('contactNumber2', e.target.value)}
+            className={inputClass}
+            placeholder="10-15 digit number"
+          />
+        </div>
+      </div>
+
+      {/* Fourteenth Row - Compliance Information */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            RERA Number
+          </label>
+          <input
+            type="text"
+            value={formData.reraNumber}
+            onChange={(e) => handleInputChange('reraNumber', e.target.value)}
+            className={inputClass}
+            placeholder="Enter RERA registration number"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Project Conversion Rate
+          </label>
+          <input
+            type="text"
+            value={formData.projectConversionRate}
+            onChange={(e) => handleInputChange('projectConversionRate', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 85%"
+          />
+        </div>
+      </div>
+
+      {/* Fifteenth Row - Location Coordinates */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Latitude
+          </label>
+          <input
+            type="number"
+            step="any"
+            value={formData.latitude}
+            onChange={(e) => handleInputChange('latitude', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 18.5204"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Longitude
+          </label>
+          <input
+            type="number"
+            step="any"
+            value={formData.longitude}
+            onChange={(e) => handleInputChange('longitude', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 73.8567"
+          />
+        </div>
+      </div>
+
+      {/* Sixteenth Row - Notes */}
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Other Notes
+          </label>
+          <textarea
+            value={formData.otherNotes}
+            onChange={(e) => handleInputChange('otherNotes', e.target.value)}
+            className={inputClass}
+            rows={3}
+            placeholder="Any additional notes about the project"
+          />
+        </div>
+      </div>
+
+      {/* Seventeenth Row - Important Notes */}
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Important Notes
+          </label>
+          <textarea
+            value={formData.importantNotes}
+            onChange={(e) => handleInputChange('importantNotes', e.target.value)}
+            className={inputClass}
+            rows={3}
+            placeholder="Important information about the project"
+          />
+        </div>
+      </div>
+
       {/* BHK Type Checkboxes for New Projects - Mobile Responsive */}
       <div>
         <label className={labelClass}>
@@ -932,6 +1238,70 @@ export function PropertyForm({
               />
               <span className="text-xs sm:text-sm text-gray-700">
                 {bhkType.replace('_', ' ').toUpperCase()}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Project Amenities */}
+      <div>
+        <label className={labelClass}>
+          Project Amenities
+        </label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {[
+            { key: 'clubHouse', label: 'Club House' },
+            { key: 'swimmingPool', label: 'Swimming Pool' },
+            { key: 'childrenPlayArea', label: 'Children Play Area' },
+            { key: 'powerBackup', label: 'Power Backup' },
+            { key: 'houseKeeping', label: 'House Keeping' },
+            { key: 'lift', label: 'Lift' },
+            { key: 'gym', label: 'Gym' },
+            { key: 'park', label: 'Park' },
+            { key: 'security', label: 'Security' },
+            { key: 'gasPipeline', label: 'Gas Pipeline' },
+            { key: 'rainWaterHarvesting', label: 'Rain Water Harvesting' },
+            { key: 'sewageTreatmentPlant', label: 'Sewage Treatment Plant' },
+            { key: 'visitorParking', label: 'Visitor Parking' },
+            { key: 'fireSafety', label: 'Fire Safety' }
+          ].map((amenity) => (
+            <label key={amenity.key} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <input
+                type="checkbox"
+                checked={Boolean(formData[amenity.key as keyof typeof formData])}
+                onChange={(e) => handleInputChange(amenity.key, e.target.checked)}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded flex-shrink-0"
+              />
+              <span className="text-xs sm:text-sm text-gray-700">
+                {amenity.label}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Compliance and Approval */}
+      <div>
+        <label className={labelClass}>
+          Compliance & Approvals
+        </label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {[
+            { key: 'isGovtApproved', label: 'Government Approved' },
+            { key: 'isReraApproved', label: 'RERA Approved' },
+            { key: 'loanAvailable', label: 'Loan Available' },
+            { key: 'socialMediaMarketingAllowed', label: 'Social Media Marketing Allowed' }
+          ].map((compliance) => (
+            <label key={compliance.key} className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <input
+                type="checkbox"
+                checked={Boolean(formData[compliance.key as keyof typeof formData])}
+                onChange={(e) => handleInputChange(compliance.key, e.target.checked)}
+                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded flex-shrink-0"
+              />
+              <span className="text-xs sm:text-sm text-gray-700">
+                {compliance.label}
               </span>
             </label>
           ))}
