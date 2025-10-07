@@ -111,30 +111,55 @@ CREATE INDEX IF NOT EXISTS idx_new_projects_images
 ON public.new_projects USING GIN (images);
 
 -- Add constraints for the new fields where appropriate
+-- Note: Using DO blocks to check if constraints exist before adding them
 
 -- Furnishing type constraint
-ALTER TABLE public.new_projects 
-ADD CONSTRAINT IF NOT EXISTS new_projects_furnishing_type_check 
-CHECK (
-  furnishing_type IS NULL OR 
-  furnishing_type = ANY (ARRAY['fully_furnished'::text, 'semi_furnished'::text, 'un_furnished'::text])
-);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'new_projects_furnishing_type_check'
+    ) THEN
+        ALTER TABLE public.new_projects 
+        ADD CONSTRAINT new_projects_furnishing_type_check 
+        CHECK (
+          furnishing_type IS NULL OR 
+          furnishing_type = ANY (ARRAY['fully_furnished'::text, 'semi_furnished'::text, 'un_furnished'::text])
+        );
+    END IF;
+END $$;
 
 -- Parking type constraint
-ALTER TABLE public.new_projects 
-ADD CONSTRAINT IF NOT EXISTS new_projects_parking_type_check 
-CHECK (
-  parking_type IS NULL OR 
-  parking_type = ANY (ARRAY['covered_parking'::text, 'open_parking'::text, 'shed_parking'::text])
-);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'new_projects_parking_type_check'
+    ) THEN
+        ALTER TABLE public.new_projects 
+        ADD CONSTRAINT new_projects_parking_type_check 
+        CHECK (
+          parking_type IS NULL OR 
+          parking_type = ANY (ARRAY['covered_parking'::text, 'open_parking'::text, 'shed_parking'::text])
+        );
+    END IF;
+END $$;
 
 -- Facing direction constraint
-ALTER TABLE public.new_projects 
-ADD CONSTRAINT IF NOT EXISTS new_projects_facing_check 
-CHECK (
-  facing IS NULL OR 
-  facing = ANY (ARRAY['north'::text, 'south'::text, 'east'::text, 'west'::text, 'north_east'::text, 'north_west'::text, 'south_east'::text, 'south_west'::text])
-);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'new_projects_facing_check'
+    ) THEN
+        ALTER TABLE public.new_projects 
+        ADD CONSTRAINT new_projects_facing_check 
+        CHECK (
+          facing IS NULL OR 
+          facing = ANY (ARRAY['north'::text, 'south'::text, 'east'::text, 'west'::text, 'north_east'::text, 'north_west'::text, 'south_east'::text, 'south_west'::text])
+        );
+    END IF;
+END $$;
 
 -- Update existing records to set starting_price = min_price for backward compatibility
 UPDATE public.new_projects 
