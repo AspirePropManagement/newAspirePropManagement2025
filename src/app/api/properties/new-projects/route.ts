@@ -52,7 +52,10 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: Request) {
   try {
+    console.log('New projects API GET request received');
+    
     if (!supabase) {
+      console.error('Supabase connection not available');
       return NextResponse.json(
         { error: 'Database connection not available' },
         { status: 500 }
@@ -61,6 +64,7 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
+    console.log('User ID from search params:', userId);
 
     let query = supabase
       .from('new_projects')
@@ -72,6 +76,7 @@ export async function GET(request: Request) {
       query = query.eq('created_by', userId);
     }
 
+    console.log('Executing query for new projects...');
     const { data, error } = await query;
 
     if (error) {
@@ -79,9 +84,10 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Failed to fetch properties' }, { status: 500 });
     }
 
+    console.log('New projects query result:', { count: data?.length || 0, data });
     return NextResponse.json(data || []);
   } catch (error) {
-    console.error('Unexpected error:', error);
+    console.error('Unexpected error in new projects API:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

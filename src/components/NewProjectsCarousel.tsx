@@ -40,15 +40,15 @@ interface NewProject {
 
 interface NewProjectsCarouselProps {
   projects: NewProject[];
+  loading?: boolean;
 }
 
 /**
  * NewProjectsCarousel component displays new projects in a horizontal carousel
  * Shows 4 cards at a time with navigation controls
  */
-export function NewProjectsCarousel({ projects }: NewProjectsCarouselProps) {
+export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [cardsPerSlide, setCardsPerSlide] = useState(1);
 
   // Update cards per slide based on screen size
@@ -72,11 +72,7 @@ export function NewProjectsCarousel({ projects }: NewProjectsCarouselProps) {
   const totalSlides = Math.ceil(projects.length / cardsPerSlide);
   const maxIndex = Math.max(0, totalSlides - 1);
 
-  useEffect(() => {
-    if (projects.length > 0) {
-      setIsLoading(false);
-    }
-  }, [projects]);
+  // Remove the local loading state management - use prop instead
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
@@ -142,7 +138,7 @@ export function NewProjectsCarousel({ projects }: NewProjectsCarouselProps) {
     return amenityList.slice(0, 3); // Show only first 3 amenities
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="py-16 bg-white">
         <div className="container mx-auto px-4">
@@ -166,12 +162,17 @@ export function NewProjectsCarousel({ projects }: NewProjectsCarouselProps) {
     );
   }
 
-  if (projects.length === 0) {
+  if (projects.length === 0 && !loading) {
     return (
       <div className="py-16 bg-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">New Projects</h2>
-          <p className="text-gray-600">No new projects available at the moment.</p>
+          <p className="text-gray-600 mb-6">No new projects available at the moment.</p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+            <p className="text-blue-800 text-sm">
+              New projects will appear here once they are added to the system.
+            </p>
+          </div>
         </div>
       </div>
     );

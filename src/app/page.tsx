@@ -60,7 +60,7 @@ export default function HomePage() {
       <div className="h-32 md:h-40"></div>
 
       {/* New Projects Section */}
-      <NewProjectsCarousel projects={newProjects} />
+      <NewProjectsCarousel projects={newProjects} loading={projectsLoading} />
 
       {/* Ads Banner Section */}
       <AdsBannerSection location="home_middle" />

@@ -54,19 +54,22 @@ export function useNewProjects() {
       setLoading(true);
       setError(null);
 
+      console.log('Fetching new projects from API...');
       const response = await fetch('/api/properties/new-projects');
       
       if (!response.ok) {
-        throw new Error('Failed to fetch new projects');
+        throw new Error(`Failed to fetch new projects: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log('Raw new projects data:', data);
       
       // Filter only active projects and limit to 12 for home page
       const activeProjects = data
         .filter((project: NewProject) => project.status === 'active' || !project.status)
         .slice(0, 12);
       
+      console.log('Filtered active projects:', activeProjects);
       setProjects(activeProjects);
     } catch (err) {
       console.error('Error fetching new projects:', err);
