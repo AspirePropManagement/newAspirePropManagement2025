@@ -275,6 +275,17 @@ export function PropertyForm({
     suggestionYear: '',
     availableBhkTypes: [] as string[],
     
+    // Property details fields
+    carpetArea: '',
+    squareFeet: '',
+    propertyAge: '',
+    floorNo: '',
+    facing: '',
+    parkingType: '',
+    furnishingType: '',
+    askingPrice: '',
+    description: '',
+    
     // New Project specific fields
     launchDate: '',
     possessionDate: '',
@@ -319,17 +330,9 @@ export function PropertyForm({
     tenantType: '',
     flatNo: '',
     wingNo: '',
-    floorNo: '',
-    facing: '',
-    parkingType: '',
-    furnishingType: '',
-    squareFeet: '',
-    carpetArea: '',
-    askingPrice: '',
     rentAmount: '',
     depositAmount: '',
     isNegotiable: false,
-    propertyAge: '',
     hasAmenities: false,
     allowedForFamily: false,
     allowedForBachelor: false,
@@ -925,6 +928,121 @@ export function PropertyForm({
             </label>
           ))}
         </div>
+      </div>
+
+      {/* Property Details */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Carpet Area (sq ft)
+          </label>
+          <input
+            type="number"
+            value={formData.carpetArea}
+            onChange={(e) => handleInputChange('carpetArea', e.target.value)}
+            className={inputClass}
+            placeholder="Enter carpet area"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Built-up Area (sq ft)
+          </label>
+          <input
+            type="number"
+            value={formData.squareFeet}
+            onChange={(e) => handleInputChange('squareFeet', e.target.value)}
+            className={inputClass}
+            placeholder="Enter built-up area"
+          />
+        </div>
+      </div>
+
+      {/* Property Details Row 2 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Floor Number
+          </label>
+          <input
+            type="text"
+            value={formData.floorNo}
+            onChange={(e) => handleInputChange('floorNo', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 5th Floor, Ground Floor"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Facing Direction
+          </label>
+          <select
+            value={formData.facing}
+            onChange={(e) => handleInputChange('facing', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Facing</option>
+            <option value="north">North</option>
+            <option value="south">South</option>
+            <option value="east">East</option>
+            <option value="west">West</option>
+            <option value="north_east">North East</option>
+            <option value="north_west">North West</option>
+            <option value="south_east">South East</option>
+            <option value="south_west">South West</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Property Details Row 3 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Parking Type
+          </label>
+          <select
+            value={formData.parkingType}
+            onChange={(e) => handleInputChange('parkingType', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Parking Type</option>
+            <option value="covered_parking">Covered Parking</option>
+            <option value="open_parking">Open Parking</option>
+            <option value="shed_parking">Shed Parking</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Furnishing Type
+          </label>
+          <select
+            value={formData.furnishingType}
+            onChange={(e) => handleInputChange('furnishingType', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Furnishing Type</option>
+            <option value="fully_furnished">Fully Furnished</option>
+            <option value="semi_furnished">Semi Furnished</option>
+            <option value="un_furnished">Unfurnished</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div>
+        <label className={labelClass}>
+          Project Description
+        </label>
+        <textarea
+          value={formData.description}
+          onChange={(e) => handleInputChange('description', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
+          rows={4}
+          placeholder="Enter detailed project description..."
+        />
       </div>
 
       {/* Fifth Row - Financial Details */}

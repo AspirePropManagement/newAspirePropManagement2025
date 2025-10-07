@@ -40,7 +40,7 @@ export interface PropertyFormData {
   floorNo?: string;
   facing?: string;
   parkingType?: string;
-  furnishingType: string;
+  furnishingType?: string;
   squareFeet?: string;
   carpetArea?: string;
   askingPrice?: string;
@@ -107,6 +107,17 @@ export interface NewProjectData extends PropertyFormData {
   reraNumber?: string;
   projectConversionRate?: string;
   availableBhkTypes?: string[];
+  // Property details fields
+  carpetArea?: string;
+  squareFeet?: string;
+  propertyAge?: string;
+  floorNo?: string;
+  facing?: string;
+  parkingType?: string;
+  furnishingType?: string;
+  askingPrice?: string;
+  description?: string;
+  societyName?: string;
   documents?: string[];
 }
 
@@ -397,6 +408,18 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     } else {
       insertData.available_bhk_types = [];
     }
+
+    // Property details fields
+    if ((data as any).carpetArea) insertData.carpet_area = parseFloat((data as any).carpetArea);
+    if ((data as any).squareFeet) insertData.square_feet = parseFloat((data as any).squareFeet);
+    if ((data as any).propertyAge) insertData.property_age = (data as any).propertyAge;
+    if ((data as any).floorNo) insertData.floor_no = (data as any).floorNo;
+    if ((data as any).facing) insertData.facing = (data as any).facing;
+    if ((data as any).parkingType) insertData.parking_type = (data as any).parkingType;
+    if ((data as any).furnishingType) insertData.furnishing_type = (data as any).furnishingType;
+    if ((data as any).askingPrice) insertData.asking_price = parseFloat((data as any).askingPrice);
+    if ((data as any).description) insertData.description = (data as any).description;
+    if ((data as any).societyName) insertData.society_name = (data as any).societyName;
     // Set latitude and longitude as empty (hardcoded as requested)
     insertData.latitude = null;
     insertData.longitude = null;
