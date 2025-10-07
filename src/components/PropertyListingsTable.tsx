@@ -105,7 +105,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
       if (error) throw error;
 
       // Transform data to common format
-      const transformedData: PropertyData[] = (data || []).map(item => ({
+      const transformedData: PropertyData[] = (data || []).map((item: any) => ({
         id: item.id,
         type: propertyType,
         title: getPropertyTitle(item, propertyType),
@@ -243,7 +243,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
 
       // Check if user is admin or owns the property
       const isAdmin = user.role === 'ADMIN';
-      const property = properties.find(p => p.id === propertyId);
+      const property = properties.find((p: PropertyData) => p.id === propertyId);
       
       if (!isAdmin && property && property.created_by !== user.id) {
         alert('You can only delete properties that you created.');
@@ -262,7 +262,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
       }
 
       // Remove property from local state
-      setProperties((prev: PropertyData[]) => prev.filter(p => p.id !== propertyId));
+      setProperties((prev: PropertyData[]) => prev.filter((p: PropertyData) => p.id !== propertyId));
       alert('Property deleted successfully!');
     } catch (error) {
       console.error('Error deleting property:', error);
@@ -475,6 +475,21 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             website_url: updatedProperty.website_url,
             brochure_url: updatedProperty.brochure_url,
             
+            // New fields added to the database schema
+            society_name: updatedProperty.society_name,
+            carpet_area: updatedProperty.carpet_area,
+            square_feet: updatedProperty.square_feet,
+            floor_no: updatedProperty.floor_no,
+            facing: updatedProperty.facing,
+            parking_type: updatedProperty.parking_type,
+            furnishing_type: updatedProperty.furnishing_type,
+            asking_price: updatedProperty.asking_price,
+            starting_price: updatedProperty.starting_price,
+            description: updatedProperty.description,
+            notes: updatedProperty.notes,
+            available_bhk_types: updatedProperty.available_bhk_types,
+            property_age: updatedProperty.property_age,
+            
             // Images and amenities as JSONB - Map from PropertyImageManager format
             property_images: updatedProperty.property_images,
             general_photos: updatedProperty.property_images?.general_photos || {},
@@ -637,7 +652,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {properties.map((property) => (
+                  {properties.map((property: PropertyData) => (
                     <tr 
                       key={property.id}
                       className="hover:bg-blue-50/50 cursor-pointer transition-colors duration-200"
@@ -747,7 +762,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
 
             {/* Mobile Card View */}
             <div className="lg:hidden space-y-3 p-4">
-              {properties.map((property) => (
+              {properties.map((property: PropertyData) => (
                 <div 
                   key={property.id}
                   className="bg-white/90 backdrop-blur-sm rounded-xl border border-gray-200 p-4 hover:shadow-lg transition-all duration-300 cursor-pointer"
@@ -1207,6 +1222,420 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                       <option value="ready_to_move">Ready to Move</option>
                       <option value="partial_ready_to_move">Partial Ready to Move</option>
                     </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Total Project Area Size
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.total_project_area_size || ''}
+                      onChange={(e) => handleInputChange('total_project_area_size', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., 10 acres, 50,000 sq ft"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Number of Towers
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.towers_count || ''}
+                      onChange={(e) => handleInputChange('towers_count', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter number of towers"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Total Floors
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.total_floors || ''}
+                      onChange={(e) => handleInputChange('total_floors', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter total floors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      ROI
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.roi || ''}
+                      onChange={(e) => handleInputChange('roi', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., 12-15%"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Rental Yield
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.rental_yield || ''}
+                      onChange={(e) => handleInputChange('rental_yield', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter rental yield percentage"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Marketed By
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.marketed_by || ''}
+                      onChange={(e) => handleInputChange('marketed_by', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter marketing company name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Listed By
+                    </label>
+                    <select
+                      value={formData.listed_by || ''}
+                      onChange={(e) => handleInputChange('listed_by', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    >
+                      <option value="">Select Listed By</option>
+                      <option value="builder">Builder</option>
+                      <option value="agent">Agent</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Launch Date
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.launch_date || ''}
+                      onChange={(e) => handleInputChange('launch_date', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Possession Date
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.possession_date || ''}
+                      onChange={(e) => handleInputChange('possession_date', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Website URL
+                    </label>
+                    <input
+                      type="url"
+                      value={formData.website_url || ''}
+                      onChange={(e) => handleInputChange('website_url', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="https://example.com"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Brochure URL
+                    </label>
+                    <input
+                      type="url"
+                      value={formData.brochure_url || ''}
+                      onChange={(e) => handleInputChange('brochure_url', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="https://example.com/brochure.pdf"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Rooms per Floor
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.rooms_per_floor || ''}
+                      onChange={(e) => handleInputChange('rooms_per_floor', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., 2, 4, 6"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      CP Sables
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.cp_sables || ''}
+                      onChange={(e) => handleInputChange('cp_sables', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter CP Sables information"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Units Available for Sale
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.units_available_for_sale || ''}
+                      onChange={(e) => handleInputChange('units_available_for_sale', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., 150 units"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Contact Name 1
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.contact_name_1 || ''}
+                      onChange={(e) => handleInputChange('contact_name_1', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Primary contact person"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Contact Number 1
+                    </label>
+                    <input
+                      type="tel"
+                      value={formData.contact_number_1 || ''}
+                      onChange={(e) => handleInputChange('contact_number_1', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="10-15 digit number"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Contact Name 2
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.contact_name_2 || ''}
+                      onChange={(e) => handleInputChange('contact_name_2', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Secondary contact person"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Contact Number 2
+                    </label>
+                    <input
+                      type="tel"
+                      value={formData.contact_number_2 || ''}
+                      onChange={(e) => handleInputChange('contact_number_2', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="10-15 digit number"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      RERA Number
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.rera_number || ''}
+                      onChange={(e) => handleInputChange('rera_number', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter RERA registration number"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Project Conversion Rate
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.project_conversion_rate || ''}
+                      onChange={(e) => handleInputChange('project_conversion_rate', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., 85%"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Society Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.society_name || ''}
+                      onChange={(e) => handleInputChange('society_name', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter society name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Carpet Area (sq ft)
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.carpet_area || ''}
+                      onChange={(e) => handleInputChange('carpet_area', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter carpet area"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Built-up Area (sq ft)
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.square_feet || ''}
+                      onChange={(e) => handleInputChange('square_feet', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter built-up area"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Floor Number
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.floor_no || ''}
+                      onChange={(e) => handleInputChange('floor_no', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., 5th Floor, Ground Floor"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Facing Direction
+                    </label>
+                    <select
+                      value={formData.facing || ''}
+                      onChange={(e) => handleInputChange('facing', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Facing</option>
+                      <option value="north">North</option>
+                      <option value="south">South</option>
+                      <option value="east">East</option>
+                      <option value="west">West</option>
+                      <option value="north_east">North East</option>
+                      <option value="north_west">North West</option>
+                      <option value="south_east">South East</option>
+                      <option value="south_west">South West</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Parking Type
+                    </label>
+                    <select
+                      value={formData.parking_type || ''}
+                      onChange={(e) => handleInputChange('parking_type', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Parking Type</option>
+                      <option value="covered_parking">Covered Parking</option>
+                      <option value="open_parking">Open Parking</option>
+                      <option value="shed_parking">Shed Parking</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <textarea
+                      value={formData.description || ''}
+                      onChange={(e) => handleInputChange('description', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-vertical"
+                      rows={4}
+                      placeholder="Enter detailed project description..."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Other Notes
+                    </label>
+                    <textarea
+                      value={formData.other_notes || ''}
+                      onChange={(e) => handleInputChange('other_notes', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-vertical"
+                      rows={3}
+                      placeholder="Any additional notes about the project"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Important Notes
+                    </label>
+                    <textarea
+                      value={formData.important_notes || ''}
+                      onChange={(e) => handleInputChange('important_notes', e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-vertical"
+                      rows={3}
+                      placeholder="Important information about the project"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Available BHK Types
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {['1_rk', '1_bhk', '2_bhk', '3_bhk', '4_bhk', '5_bhk', '5_plus_bhk'].map((bhk) => (
+                        <label key={bhk} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={(formData.available_bhk_types || []).includes(bhk)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                handleInputChange('available_bhk_types', [...(formData.available_bhk_types || []), bhk]);
+                              } else {
+                                handleInputChange('available_bhk_types', (formData.available_bhk_types || []).filter((type: string) => type !== bhk));
+                              }
+                            }}
+                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          />
+                          <span className="text-sm text-gray-700">{bhk.replace('_', ' ').toUpperCase()}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                 </>
               )}
