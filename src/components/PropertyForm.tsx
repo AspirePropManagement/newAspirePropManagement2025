@@ -240,6 +240,128 @@ interface PropertyFormProps {
   onPrevious?: () => void;
 }
 
+interface FormData {
+  // Basic Information (Step 1)
+  sellerName: string;
+  sellerEmail: string;
+  contactNumber: string;
+  alternateNumber: string;
+  bhkType: string;
+  propertyType: string;
+  location: string;
+  
+  // Property Details (Step 2)
+  societyName: string;
+  projectName: string;
+  craftedBy: string;
+  constructionType: string;
+  totalProjectAreaSize: string;
+  towersCount: string;
+  totalFloors: string;
+  roi: string;
+  rentalYield: string;
+  marketedBy: string;
+  facingVastu: string;
+  suggestionDate: string;
+  suggestionYear: string;
+  availableBhkTypes: string[];
+  
+  // Property details fields
+  carpetArea: string;
+  squareFeet: string;
+  propertyAge: string;
+  floorNo: string;
+  facing: string;
+  parkingType: string;
+  furnishingType: string;
+  askingPrice: string;
+  description: string;
+  
+  // New Project specific fields
+  launchDate: string;
+  possessionDate: string;
+  minPrice: string;
+  websiteUrl: string;
+  brochureUrl: string;
+  roomsPerFloor: string;
+  cpSables: string;
+  unitsAvailableForSale: string;
+  contactName1: string;
+  contactNumber1: string;
+  contactName2: string;
+  contactNumber2: string;
+  reraNumber: string;
+  projectConversionRate: string;
+  latitude: string;
+  longitude: string;
+  otherNotes: string;
+  importantNotes: string;
+  
+  // New Project Amenities (boolean fields)
+  clubHouse: boolean;
+  swimmingPool: boolean;
+  childrenPlayArea: boolean;
+  powerBackup: boolean;
+  houseKeeping: boolean;
+  lift: boolean;
+  gym: boolean;
+  park: boolean;
+  security: boolean;
+  gasPipeline: boolean;
+  rainWaterHarvesting: boolean;
+  sewageTreatmentPlant: boolean;
+  visitorParking: boolean;
+  fireSafety: boolean;
+  
+  // Compliance fields
+  isGovtApproved: boolean;
+  isReraApproved: boolean;
+  loanAvailable: boolean;
+  socialMediaMarketingAllowed: boolean;
+  tenantType: string;
+  flatNo: string;
+  wingNo: string;
+  rentAmount: string;
+  depositAmount: string;
+  isNegotiable: boolean;
+  hasAmenities: boolean;
+  allowedForFamily: boolean;
+  allowedForBachelor: boolean;
+  allowedForAnyone: boolean;
+  petsAllowed: boolean;
+  immediatePossession: boolean;
+  availableFromDate: string;
+  visitDetails: string;
+  notes: string;
+  
+  // Resale specific new fields
+  ownershipType: string;
+  loanOnProperty: string;
+  loanAmount: string;
+  bankName: string;
+  reasonForSale: string;
+  flatsPerFloor: string;
+  societyAreaSize: string;
+  reraId: string;
+  parkingVehicles: string[];
+  visitDaysWeekend: string;
+  visitTimingWeekendFrom: string;
+  visitTimingWeekendTo: string;
+  visitDaysWeekdays: string;
+  visitTimingWeekdaysFrom: string;
+  visitTimingWeekdaysTo: string;
+  listedBy: string;
+  
+  // Images & Documents (Step 3)
+  propertyImages: any;
+  
+  // Amenities (Step 4)
+  amenities: PropertyAmenities;
+  
+  // Review & Submit (Step 5)
+  status: string;
+}
+
 export function PropertyForm({ 
   propertyType, 
   currentStep, 
@@ -249,7 +371,7 @@ export function PropertyForm({
   onNext,
   onPrevious
 }: PropertyFormProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     // Basic Information (Step 1)
     sellerName: '',
     sellerEmail: '',
@@ -377,7 +499,7 @@ export function PropertyForm({
   // Save images whenever they change in the image manager
   const handleImagesChange = (images: any) => {
     setSavedImages(images);
-    setFormData(prev => ({
+    setFormData((prev: FormData) => ({
       ...prev,
       propertyImages: images
     }));
@@ -394,7 +516,7 @@ export function PropertyForm({
   // The database property_type field is set by user selection in the form
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev: FormData) => ({
       ...prev,
       [field]: value
     }));
@@ -909,12 +1031,12 @@ export function PropertyForm({
                 checked={formData.availableBhkTypes.includes(bhk)}
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setFormData(prev => ({
+                    setFormData((prev: FormData) => ({
                       ...prev,
                       availableBhkTypes: [...prev.availableBhkTypes, bhk]
                     }));
                   } else {
-                    setFormData(prev => ({
+                    setFormData((prev: FormData) => ({
                       ...prev,
                       availableBhkTypes: prev.availableBhkTypes.filter(type => type !== bhk)
                     }));
@@ -2159,7 +2281,7 @@ export function PropertyForm({
         
         {(() => {
           const selectedAmenities = Object.entries(formData.amenities).filter(([category, items]) => 
-            items && Object.values(items).some(Boolean)
+            items && typeof items === 'object' && Object.values(items).some(Boolean)
           );
 
           if (selectedAmenities.length === 0) {
@@ -2173,26 +2295,29 @@ export function PropertyForm({
 
           return (
             <div className="space-y-3 sm:space-y-4">
-              {selectedAmenities.map(([category, items]) => (
-                <div key={category} className="border border-gray-200 rounded-lg sm:rounded-xl p-3 sm:p-4 bg-white">
-                  <h4 className="font-medium text-gray-800 mb-2 sm:mb-3 capitalize text-sm sm:text-base">
-                    {category.replace('_', ' ')} ({Object.values(items).filter(Boolean).length})
-                  </h4>
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                    {Object.entries(items).map(([itemKey, isSelected]) => {
-                      if (!isSelected) return null;
-                      return (
-                        <span 
-                          key={itemKey} 
-                          className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-blue-100 text-blue-800"
-                        >
-                          {itemKey.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                        </span>
-                      );
-                    })}
+              {selectedAmenities.map(([category, items]) => {
+                const itemsObj = items as Record<string, boolean>;
+                return (
+                  <div key={category} className="border border-gray-200 rounded-lg sm:rounded-xl p-3 sm:p-4 bg-white">
+                    <h4 className="font-medium text-gray-800 mb-2 sm:mb-3 capitalize text-sm sm:text-base">
+                      {category.replace('_', ' ')} ({Object.values(itemsObj).filter(Boolean).length})
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                      {Object.entries(itemsObj).map(([itemKey, isSelected]) => {
+                        if (!isSelected) return null;
+                        return (
+                          <span 
+                            key={itemKey} 
+                            className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-blue-100 text-blue-800"
+                          >
+                            {itemKey.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          </span>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           );
         })()}
