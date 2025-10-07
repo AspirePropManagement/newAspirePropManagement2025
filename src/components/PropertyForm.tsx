@@ -1122,6 +1122,19 @@ export function PropertyForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
+            Society Name
+          </label>
+          <input
+            type="text"
+            value={formData.societyName}
+            onChange={(e) => handleInputChange('societyName', e.target.value)}
+            className={inputClass}
+            placeholder="Enter society or building name"
+          />
+        </div>
+
+        <div>
+          <label className={labelClass}>
             Parking Type
           </label>
           <select
@@ -1135,7 +1148,10 @@ export function PropertyForm({
             <option value="shed_parking">Shed Parking</option>
           </select>
         </div>
+      </div>
 
+      {/* Property Details Row 4 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
             Furnishing Type
@@ -1149,6 +1165,22 @@ export function PropertyForm({
             <option value="fully_furnished">Fully Furnished</option>
             <option value="semi_furnished">Semi Furnished</option>
             <option value="un_furnished">Unfurnished</option>
+          </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>
+            Property Age
+          </label>
+          <select
+            value={formData.propertyAge}
+            onChange={(e) => handleInputChange('propertyAge', e.target.value)}
+            className={selectClass}
+          >
+            <option value="">Select Property Age</option>
+            <option value="under_construction">Under Construction</option>
+            <option value="ready_to_move">Ready to Move</option>
+            <option value="partial_ready_to_move">Partial Ready to Move</option>
           </select>
         </div>
       </div>
@@ -2262,13 +2294,21 @@ export function PropertyForm({
             <h4 className="font-medium text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">Property Details</h4>
             <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
               <p><span className="font-medium">Society:</span> {formData.societyName || 'Not provided'}</p>
-              <p><span className="font-medium">Furnishing:</span> {formData.furnishingType || 'Not provided'}</p>
+              <p><span className="font-medium">Furnishing:</span> {formData.furnishingType ? formData.furnishingType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
               <p><span className="font-medium">Square Feet:</span> {formData.squareFeet || 'Not provided'}</p>
               {propertyType === 'rental' && (
                 <p><span className="font-medium">Rent:</span> ₹{formData.rentAmount || 'Not provided'}</p>
               )}
               {propertyType === 'resale' && (
                 <p><span className="font-medium">Price:</span> ₹{formData.askingPrice || 'Not provided'}</p>
+              )}
+              {propertyType === 'new_project' && (
+                <>
+                  <p><span className="font-medium">Project Name:</span> {formData.projectName || 'Not provided'}</p>
+                  <p><span className="font-medium">Crafted By:</span> {formData.craftedBy || 'Not provided'}</p>
+                  <p><span className="font-medium">Construction Type:</span> {formData.constructionType ? formData.constructionType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
+                  <p><span className="font-medium">Min Price:</span> ₹{formData.minPrice || 'Not provided'}</p>
+                </>
               )}
             </div>
           </div>

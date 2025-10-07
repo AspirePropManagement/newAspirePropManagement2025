@@ -182,7 +182,7 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
   }
 
   return (
-    <div className="py-16 bg-white">
+    <div className="py-16 bg-white mt-8 sm:mt-12 md:mt-0">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">

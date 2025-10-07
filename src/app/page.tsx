@@ -57,7 +57,7 @@ export default function HomePage() {
       </div>
 
       {/* Add spacing to prevent overlap with next section */}
-      <div className="h-32 md:h-40"></div>
+      <div className="h-48 sm:h-56 md:h-40 lg:h-32"></div>
 
       {/* New Projects Section */}
       <NewProjectsCarousel projects={newProjects} loading={projectsLoading} />

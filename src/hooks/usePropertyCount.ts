@@ -24,20 +24,18 @@ export function usePropertyCount() {
         return;
       }
 
-      // Count properties from all property tables
+      // Count properties from all property tables with proper status filtering
       const [
-        { count: propertiesCount },
         { count: resaleCount },
         { count: rentalCount },
         { count: newProjectsCount }
       ] = await Promise.all([
-        supabase.from('properties').select('*', { count: 'exact', head: true }),
-        supabase.from('resale_properties').select('*', { count: 'exact', head: true }),
-        supabase.from('rental_properties').select('*', { count: 'exact', head: true }),
-        supabase.from('new_projects').select('*', { count: 'exact', head: true })
+        supabase.from('resale_properties').select('*', { count: 'exact', head: true }).eq('status', 'available'),
+        supabase.from('rental_properties').select('*', { count: 'exact', head: true }).eq('status', 'available'),
+        supabase.from('new_projects').select('*', { count: 'exact', head: true }).eq('status', 'active')
       ]);
 
-      const total = (propertiesCount || 0) + (resaleCount || 0) + (rentalCount || 0) + (newProjectsCount || 0);
+      const total = (resaleCount || 0) + (rentalCount || 0) + (newProjectsCount || 0);
       setTotalCount(total);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch property count';
