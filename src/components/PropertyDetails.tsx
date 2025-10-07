@@ -24,17 +24,17 @@ interface PropertyDetailsProps {
  */
 export function PropertyDetails({ details, specifications, className = '' }: PropertyDetailsProps) {
   const basicDetails = [
-    { label: 'Property Type', value: details.propertyType },
-    { label: 'BHK Type', value: details.bhkType },
-    { label: 'Carpet Area', value: `${details.carpetArea} sq ft` },
-    { label: 'Built-up Area', value: `${details.squareFeet} sq ft` },
-    { label: 'Status', value: details.status },
-    { label: 'Location', value: details.location },
+    { label: 'Property Type', value: details.propertyType || 'N/A' },
+    { label: 'BHK Type', value: details.bhkType || 'N/A' },
+    { label: 'Carpet Area', value: details.carpetArea > 0 ? `${details.carpetArea} sq ft` : 'N/A' },
+    { label: 'Built-up Area', value: details.squareFeet > 0 ? `${details.squareFeet} sq ft` : 'N/A' },
+    { label: 'Status', value: details.status || 'Available' },
+    { label: 'Location', value: details.location || 'Location not specified' },
   ];
 
   const pricingDetails = [
-    { label: 'Price', value: `₹${details.price.toLocaleString('en-IN')}` },
-    { label: 'Price per sq ft', value: `₹${Math.round(details.price / details.carpetArea).toLocaleString('en-IN')}` },
+    { label: 'Price', value: details.price > 0 ? `₹${details.price.toLocaleString('en-IN')}` : 'Price on request' },
+    { label: 'Price per sq ft', value: details.price > 0 && details.carpetArea > 0 ? `₹${Math.round(details.price / details.carpetArea).toLocaleString('en-IN')}` : 'N/A' },
   ];
 
   return (

@@ -138,7 +138,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
     } else if (property.type === 'rental') {
       return `${formatPrice(property.rent_amount)}/month`;
     } else if (property.type === 'new_project') {
-      return formatPrice(property.starting_price);
+      return formatPrice(property.min_price);
     }
     return 'Price on request';
   };
@@ -147,6 +147,23 @@ export function PropertyCard({ property }: PropertyCardProps) {
    * Gets BHK configuration
    */
   const getBHKConfig = () => {
+    if (property.type === 'new_project') {
+      // For new projects, show available BHK types or project type
+      if (property.available_bhk_types && property.available_bhk_types.length > 0) {
+        const bhkMap: { [key: string]: string } = {
+          '1_rk': '1 RK',
+          '1_bhk': '1 BHK',
+          '2_bhk': '2 BHK',
+          '3_bhk': '3 BHK',
+          '4_bhk': '4 BHK',
+          '5_bhk': '5 BHK',
+          '5_plus_bhk': '5+ BHK'
+        };
+        return property.available_bhk_types.map((bhk: string) => bhkMap[bhk] || bhk.replace('_', ' ').toUpperCase()).join(', ');
+      }
+      return property.project_type?.replace('_', ' ').toUpperCase() || 'Project';
+    }
+    
     const bhkMap: { [key: string]: string } = {
       '1_rk': '1 RK',
       '1_bhk': '1 BHK',
@@ -179,10 +196,10 @@ export function PropertyCard({ property }: PropertyCardProps) {
    * Gets price per sq ft
    */
   const getPricePerSqFt = () => {
-    const price = property.asking_price || property.rent_amount || property.starting_price;
+    const price = property.asking_price || property.rent_amount || property.min_price;
     const area = property.carpet_area || property.square_feet;
     
-    if (price && area) {
+    if (price && area && area > 0) {
       const pricePerSqFt = price / area;
       return `₹${Math.round(pricePerSqFt).toLocaleString()}/sq.ft`;
     }

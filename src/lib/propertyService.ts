@@ -106,6 +106,7 @@ export interface NewProjectData extends PropertyFormData {
   unitsAvailableForSale?: string;
   reraNumber?: string;
   projectConversionRate?: string;
+  availableBhkTypes?: string[];
   documents?: string[];
 }
 
@@ -389,6 +390,13 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     if ((data as any).marketedBy) insertData.marketed_by = (data as any).marketedBy;
     if ((data as any).listedBy) insertData.listed_by = (data as any).listedBy;
     if ((data as any).facingVastu) insertData.facing_vastu = (data as any).facingVastu;
+    
+    // Available BHK types for new projects
+    if ((data as any).availableBhkTypes && Array.isArray((data as any).availableBhkTypes)) {
+      insertData.available_bhk_types = (data as any).availableBhkTypes;
+    } else {
+      insertData.available_bhk_types = [];
+    }
     // Set latitude and longitude as empty (hardcoded as requested)
     insertData.latitude = null;
     insertData.longitude = null;

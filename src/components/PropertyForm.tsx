@@ -507,6 +507,10 @@ export function PropertyForm({
       if (formData.contactNumber2 && !/^\+?[0-9]{10,15}$/.test(formData.contactNumber2)) {
         errors.push('Contact Number 2 must be 10-15 digits (numbers only, + prefix optional)');
       }
+      // Validate available BHK types
+      if (!formData.availableBhkTypes || formData.availableBhkTypes.length === 0) {
+        errors.push('At least one BHK type must be selected for new projects');
+      }
     }
     
     return errors;
@@ -886,6 +890,40 @@ export function PropertyForm({
             className={inputClass}
             placeholder="e.g., 12-15%"
           />
+        </div>
+      </div>
+
+      {/* Available BHK Types */}
+      <div>
+        <label className={labelClass}>
+          Available BHK Types *
+        </label>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-2">
+          {['1_rk', '1_bhk', '2_bhk', '3_bhk', '4_bhk', '5_bhk', '5_plus_bhk'].map((bhk) => (
+            <label key={bhk} className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.availableBhkTypes.includes(bhk)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setFormData(prev => ({
+                      ...prev,
+                      availableBhkTypes: [...prev.availableBhkTypes, bhk]
+                    }));
+                  } else {
+                    setFormData(prev => ({
+                      ...prev,
+                      availableBhkTypes: prev.availableBhkTypes.filter(type => type !== bhk)
+                    }));
+                  }
+                }}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded flex-shrink-0"
+              />
+              <span className="text-xs sm:text-sm text-gray-700">
+                {bhk.replace('_', ' ').toUpperCase()}
+              </span>
+            </label>
+          ))}
         </div>
       </div>
 

@@ -156,19 +156,26 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
       case 'rental':
         return item.rent_amount || 0;
       case 'new_project':
-        return item.min_price || 0;
+        // For new projects, show min_price if available, otherwise show as price on request
+        return item.min_price || null;
       default:
         return 0;
     }
   };
 
   const getPropertyBHK = (item: any, type: string) => {
-    if (type === 'new_project') return 'N/A';
+    if (type === 'new_project') {
+      // For new projects, show available BHK types or project type
+      if (item.available_bhk_types && item.available_bhk_types.length > 0) {
+        return item.available_bhk_types.map((bhk: string) => bhk.replace('_', ' ').toUpperCase()).join(', ');
+      }
+      return item.project_type?.replace('_', ' ').toUpperCase() || 'Project';
+    }
     return item.bhk_type?.replace('_', ' ').toUpperCase() || 'N/A';
   };
 
   // Format price for display
-  const formatPrice = (price: number, type: string) => {
+  const formatPrice = (price: number | null, type: string) => {
     if (!price) return 'Price on request';
     
     const suffix = type === 'rental' ? '/month' : '';

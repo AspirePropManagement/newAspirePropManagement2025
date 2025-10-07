@@ -313,6 +313,23 @@ export default function PropertyDetailPage() {
 
   // Get BHK configuration
   const getBHKConfig = () => {
+    if (type === 'new_project') {
+      // For new projects, show available BHK types or project type
+      if (property.available_bhk_types && property.available_bhk_types.length > 0) {
+        const bhkMap: { [key: string]: string } = {
+          '1_rk': '1 RK',
+          '1_bhk': '1 BHK',
+          '2_bhk': '2 BHK',
+          '3_bhk': '3 BHK',
+          '4_bhk': '4 BHK',
+          '5_bhk': '5 BHK',
+          '5_plus_bhk': '5+ BHK'
+        };
+        return property.available_bhk_types.map((bhk: string) => bhkMap[bhk] || bhk.replace('_', ' ').toUpperCase()).join(', ');
+      }
+      return property.project_type?.replace('_', ' ').toUpperCase() || 'Project';
+    }
+    
     if (!property?.bhk_type) return 'BHK not specified';
     
     const bhkMap: { [key: string]: string } = {
