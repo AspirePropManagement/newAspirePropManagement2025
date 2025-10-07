@@ -7,6 +7,9 @@ interface NewProject {
   construction_type: string;
   project_location: string;
   crafted_by: string;
+  min_price?: number;
+  starting_price?: number;
+  available_bhk_types?: string[];
   property_images?: {
     general_photos?: {
       exterior?: string[];
@@ -64,9 +67,13 @@ export function useNewProjects() {
       const data = await response.json();
       console.log('Raw new projects data:', data);
       
-      // Filter only active projects and limit to 12 for home page
+      // Filter only active/available projects and limit to 12 for home page
       const activeProjects = data
-        .filter((project: NewProject) => project.status === 'active' || !project.status)
+        .filter((project: NewProject) => 
+          project.status === 'active' || 
+          project.status === 'available' || 
+          !project.status
+        )
         .slice(0, 12);
       
       console.log('Filtered active projects:', activeProjects);

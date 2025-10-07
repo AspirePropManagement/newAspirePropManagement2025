@@ -13,6 +13,9 @@ interface NewProject {
   construction_type: string;
   project_location: string;
   crafted_by: string;
+  min_price?: number;
+  starting_price?: number;
+  available_bhk_types?: string[];
   property_images?: {
     general_photos?: {
       exterior?: string[];
