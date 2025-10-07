@@ -24,7 +24,10 @@ interface PropertyDetailsProps {
  */
 export function PropertyDetails({ details, specifications, className = '' }: PropertyDetailsProps) {
   const basicDetails = [
-    { label: 'Property Type', value: details.propertyType || 'N/A' },
+    { 
+      label: details.type === 'new_project' ? 'Project Type' : 'Property Type', 
+      value: details.propertyType || 'N/A' 
+    },
     { label: 'BHK Type', value: details.bhkType || 'N/A' },
     { label: 'Carpet Area', value: details.carpetArea > 0 ? `${details.carpetArea} sq ft` : 'N/A' },
     { label: 'Built-up Area', value: details.squareFeet > 0 ? `${details.squareFeet} sq ft` : 'N/A' },

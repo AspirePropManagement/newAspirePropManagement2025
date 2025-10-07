@@ -548,8 +548,13 @@ export default function PropertyDetailPage() {
                     <span className="font-semibold text-gray-900">{property.carpet_area || 'N/A'} sq.ft</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Property Type</span>
-                    <span className="font-semibold text-gray-900">{property.property_type || 'N/A'}</span>
+                    <span className="text-gray-600">{type === 'new_project' ? 'Project Type' : 'Property Type'}</span>
+                    <span className="font-semibold text-gray-900">
+                      {type === 'new_project' 
+                        ? (property.project_type?.replace('_', ' ').toUpperCase() || 'N/A')
+                        : (property.property_type?.replace('_', ' ').toUpperCase() || 'N/A')
+                      }
+                    </span>
                   </div>
                 </div>
               </div>

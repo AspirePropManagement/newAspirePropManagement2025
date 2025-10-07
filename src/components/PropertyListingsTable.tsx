@@ -883,7 +883,12 @@ function PropertyDetailModal({ property, onClose }: PropertyDetailModalProps) {
     
     // Common fields for all property types
     details.push(
-      { label: 'Property Type', value: property.type.replace('_', ' ').toUpperCase() },
+      { 
+        label: property.type === 'new_project' ? 'Project Type' : 'Property Type', 
+        value: property.type === 'new_project' 
+          ? (property.project_type?.replace('_', ' ').toUpperCase() || 'N/A')
+          : property.type.replace('_', ' ').toUpperCase() 
+      },
       { label: 'Status', value: property.status },
       { label: 'Listed Date', value: new Date(property.createdAt).toLocaleDateString('en-IN') }
     );
