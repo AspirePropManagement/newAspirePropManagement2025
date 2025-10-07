@@ -59,29 +59,29 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 
     if (usersError) throw usersError
 
-    // Fetch property counts from resale_properties table
-    const { data: resaleProperties, error: resaleError } = await supabase
+    // First, get all properties to see what we have
+    const { data: allResaleProperties, error: allResaleError } = await supabase
       .from('resale_properties')
       .select('id, created_at, status, seller_name, asking_price')
-      .eq('status', 'available')
 
-    if (resaleError) throw resaleError
+    if (allResaleError) throw allResaleError
 
-    // Fetch property counts from rental_properties table
-    const { data: rentalProperties, error: rentalError } = await supabase
+    const { data: allRentalProperties, error: allRentalError } = await supabase
       .from('rental_properties')
       .select('id, created_at, status, owner_name, rent_amount')
-      .eq('status', 'available')
 
-    if (rentalError) throw rentalError
+    if (allRentalError) throw allRentalError
 
-    // Fetch project counts from new_projects table
-    const { data: newProjects, error: projectsError } = await supabase
+    const { data: allNewProjects, error: allProjectsError } = await supabase
       .from('new_projects')
       .select('id, created_at, status, project_name, crafted_by')
-      .eq('status', 'active')
 
-    if (projectsError) throw projectsError
+    if (allProjectsError) throw allProjectsError
+
+    // Then filter by status
+    const resaleProperties = allResaleProperties?.filter(p => p.status === 'available') || []
+    const rentalProperties = allRentalProperties?.filter(p => p.status === 'available') || []
+    const newProjects = allNewProjects?.filter(p => p.status === 'active') || []
 
     // Calculate statistics
     const totalUsers = users?.length || 0
@@ -92,6 +92,20 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     const totalRentalProperties = rentalProperties?.length || 0
     const totalNewProjects = newProjects?.length || 0
     const totalProperties = totalResaleProperties + totalRentalProperties + totalNewProjects
+
+    // Debug logging
+    console.log('Dashboard Service Debug:', {
+      allResaleCount: allResaleProperties?.length || 0,
+      allRentalCount: allRentalProperties?.length || 0,
+      allNewProjectsCount: allNewProjects?.length || 0,
+      totalResaleProperties,
+      totalRentalProperties,
+      totalNewProjects,
+      totalProperties,
+      resaleStatuses: allResaleProperties?.map(p => p.status),
+      rentalStatuses: allRentalProperties?.map(p => p.status),
+      projectStatuses: allNewProjects?.map(p => p.status)
+    });
 
     // Organize users by role
     const usersByRole = {
