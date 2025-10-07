@@ -156,7 +156,9 @@ export default function PropertyDetailPage() {
       bhkType: getBHKConfig(),
       carpetArea: property.carpet_area || property.square_feet || 0,
       squareFeet: property.square_feet || property.carpet_area || 0,
-      propertyType: property.property_type || property.project_type || 'Property',
+      propertyType: type === 'new_project' 
+        ? (property.project_type?.replace('_', ' ').toUpperCase() || 'Project')
+        : (property.property_type?.replace('_', ' ').toUpperCase() || 'Property'),
       status: property.status || 'Available',
       description: property.description || property.notes || property.other_notes || 'No description available',
       id: property.id,
@@ -277,7 +279,9 @@ export default function PropertyDetailPage() {
       price: property.asking_price || property.rent_amount || property.starting_price || 0,
       bhkType: getBHKConfig(),
       carpetArea: property.carpet_area || property.square_feet || 0,
-      propertyType: property.property_type || 'Property',
+      propertyType: type === 'new_project' 
+        ? (property.project_type?.replace('_', ' ').toUpperCase() || 'Project')
+        : (property.property_type?.replace('_', ' ').toUpperCase() || 'Property'),
       id: property.id,
       type: property.type
     };
