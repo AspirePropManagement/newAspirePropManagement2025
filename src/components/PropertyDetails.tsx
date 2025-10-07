@@ -13,6 +13,7 @@ interface PropertyDetailsProps {
     propertyType: string;
     status: string;
     description: string;
+    type?: string;
   };
   specifications: Record<string, any>;
   className?: string;
