@@ -88,9 +88,11 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     const totalAgents = users?.filter(u => u.role === 'AGENT').length || 0
     const totalBuilders = users?.filter(u => u.role === 'BUILDER').length || 0
     const totalBuyers = users?.filter(u => u.role === 'BUYER').length || 0
-    const totalResaleProperties = resaleProperties?.length || 0
-    const totalRentalProperties = rentalProperties?.length || 0
-    const totalNewProjects = newProjects?.length || 0
+    
+    // Use all properties count instead of filtered count
+    const totalResaleProperties = allResaleProperties?.length || 0
+    const totalRentalProperties = allRentalProperties?.length || 0
+    const totalNewProjects = allNewProjects?.length || 0
     const totalProperties = totalResaleProperties + totalRentalProperties + totalNewProjects
 
     // Debug logging

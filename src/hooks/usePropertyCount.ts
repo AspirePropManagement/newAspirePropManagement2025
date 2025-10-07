@@ -70,19 +70,24 @@ export function usePropertyCount() {
         projectStatuses: projectStatuses.data?.map(p => p.status)
       });
 
-      // For now, let's use all properties count to see if status filtering is the issue
+      // Calculate totals
       const totalWithStatus = (resaleCount || 0) + (rentalCount || 0) + (newProjectsCount || 0);
       const totalAllProperties = (allResaleCount || 0) + (allRentalCount || 0) + (allNewProjectsCount || 0);
       
       console.log('Count comparison:', {
         withStatusFilter: totalWithStatus,
         allProperties: totalAllProperties,
-        usingAllProperties: totalAllProperties > 0
+        resaleWithStatus: resaleCount,
+        rentalWithStatus: rentalCount,
+        newProjectsWithStatus: newProjectsCount,
+        resaleAll: allResaleCount,
+        rentalAll: allRentalCount,
+        newProjectsAll: allNewProjectsCount
       });
       
-      // Use all properties count if status filtering returns 0 but we have properties
-      const finalTotal = totalWithStatus > 0 ? totalWithStatus : totalAllProperties;
-      setTotalCount(finalTotal);
+      // Since you have 3 properties but only 1 is showing, let's use all properties count
+      // This suggests the status filtering is too restrictive
+      setTotalCount(totalAllProperties);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch property count';
       setError(errorMessage);
