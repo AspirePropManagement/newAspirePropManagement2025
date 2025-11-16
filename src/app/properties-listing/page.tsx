@@ -640,53 +640,8 @@ function PropertiesListingContent() {
 
          {/* Right Content - Properties Grid */}
          <div className="flex-1 min-h-screen bg-white/30 backdrop-blur-sm">
-           {/* Sticky Floating Filter Button - Mobile & Tablet */}
-           <div className="lg:hidden fixed bottom-4 right-4 z-50">
-             <button
-               onClick={() => setShowFilters(!showFilters)}
-               className="group flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-full font-semibold shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110"
-               style={{
-                 boxShadow: '0 10px 40px rgba(249, 115, 22, 0.4), 0 6px 20px rgba(239, 68, 68, 0.3)',
-                 backdropFilter: 'blur(10px)',
-                 animation: getActiveFilterCount() > 0 ? 'pulse 2s infinite' : 'none'
-               }}
-             >
-               <Bars3Icon className="w-5 h-5" />
-               <span className="font-bold">Filters</span>
-               {getActiveFilterCount() > 0 && (
-                 <span className="bg-white text-orange-600 text-xs rounded-full px-2.5 py-1 min-w-[24px] h-6 flex items-center justify-center font-bold shadow-md animate-bounce">
-                   {getActiveFilterCount()}
-                 </span>
-               )}
-               <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-               </svg>
-             </button>
-           </div>
-
-           {/* Desktop Floating Filter Button - Shows when scrolling */}
-           <div className="hidden lg:block fixed bottom-6 right-6 z-40">
-             <button
-               onClick={() => setShowFilters(!showFilters)}
-               className="group flex items-center space-x-3 px-6 py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-2xl font-semibold shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105"
-               style={{
-                 boxShadow: '0 15px 50px rgba(249, 115, 22, 0.4), 0 8px 25px rgba(239, 68, 68, 0.3)',
-                 backdropFilter: 'blur(15px)',
-                 animation: getActiveFilterCount() > 0 ? 'pulse 2s infinite' : 'none'
-               }}
-             >
-               <Bars3Icon className="w-6 h-6" />
-               <span className="font-bold text-lg">Filters</span>
-               {getActiveFilterCount() > 0 && (
-                 <span className="bg-white text-orange-600 text-sm rounded-full px-3 py-1 min-w-[28px] h-7 flex items-center justify-center font-bold shadow-md animate-bounce">
-                   {getActiveFilterCount()}
-                 </span>
-               )}
-               <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-               </svg>
-             </button>
-           </div>
+           {/* Sticky Floating Filter Button - Mobile & Tablet (removed) */}
+           {/* Desktop Floating Filter Button - Shows when scrolling (removed) */}
 
            <div className="p-3 sm:p-4 md:p-6">
              {/* Mobile Filter Button - Static (for initial view) */}
@@ -709,7 +664,7 @@ function PropertiesListingContent() {
              </div>
 
             {/* Results Header */}
-            <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8 p-3 sm:p-4 md:p-6 bg-white/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100">
+            <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8 p-3 sm:p-4 md:pm-6 bg-white/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100">
               <div className="flex-1">
                 <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-1 sm:mb-2">{mainHeading}</h1>
                 <p className="text-gray-600 text-sm sm:text-base md:text-lg font-medium">

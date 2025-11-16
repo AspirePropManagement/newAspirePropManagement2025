@@ -163,7 +163,7 @@ export default function AdminDashboardPage() {
   const isLoading = authLoading || dataLoading;
 
   return (
-    <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
+    <DashboardLayout onPostPropertyClick={() => setShowPropertyForm(true)}>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-6">
         <div className="w-full max-w-none px-3 sm:px-4 md:px-6 lg:px-8">
           {/* Modern Page Header */}

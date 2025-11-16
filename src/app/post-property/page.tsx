@@ -6,7 +6,6 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '@/hooks/useAuth';
 import { PropertyForm } from '@/components/PropertyForm';
 import { PropertyFormSkeleton } from '@/components/skeletons';
-import PropertyListingsTable from '@/components/PropertyListingsTable';
 import { ScrollArrow } from '@/components/ScrollArrow';
 import { 
   createResaleProperty, 
@@ -367,8 +366,7 @@ export default function PostPropertyPage() {
               {[
                 { id: 'resale', name: 'Resale', icon: '🏠', gradient: 'from-blue-500 to-indigo-500' },
                 { id: 'rental', name: 'Rental', icon: '🔑', gradient: 'from-green-500 to-emerald-500' },
-                { id: 'new_project', name: 'New Project', icon: '🏗️', gradient: 'from-purple-500 to-pink-500' },
-                { id: 'listings', name: 'Listings', icon: '📋', gradient: 'from-orange-500 to-red-500' }
+                { id: 'new_project', name: 'New Project', icon: '🏗️', gradient: 'from-purple-500 to-pink-500' }
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -400,10 +398,6 @@ export default function PostPropertyPage() {
           {isSubmitting ? (
             <div className="p-4 sm:p-6 md:p-8">
               <PropertyFormSkeleton />
-            </div>
-          ) : activeTab === 'listings' ? (
-            <div className="p-4 sm:p-6 md:p-8">
-              <PropertyListingsTable />
             </div>
           ) : (
             <div className="p-4 sm:p-6 md:p-8">

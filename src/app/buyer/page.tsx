@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import DashboardLayout from '@/components/DashboardLayout'
+import DashboardPropertyForm from '@/components/DashboardPropertyForm'
 import Link from 'next/link'
 import { HeartIcon, EyeIcon, ShareIcon } from '@heroicons/react/24/outline'
 
@@ -31,6 +32,7 @@ interface FavoriteProperty {
 export default function BuyerDashboardPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth()
   const router = useRouter()
+  const [showPropertyForm, setShowPropertyForm] = useState(false)
   
   const [favorites, setFavorites] = useState<FavoriteProperty[]>([])
   const [stats, setStats] = useState<PropertyStats>({
@@ -132,7 +134,7 @@ export default function BuyerDashboardPage() {
   }
 
   return (
-    <DashboardLayout onPropertyListingClick={() => {}}>
+    <DashboardLayout onPostPropertyClick={() => setShowPropertyForm(true)}>
       <div className="min-h-screen bg-gray-50 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
@@ -331,6 +333,14 @@ export default function BuyerDashboardPage() {
           </div>
         </div>
       </div>
+      {/* Property Form Modal */}
+      <DashboardPropertyForm
+        isOpen={showPropertyForm}
+        onClose={() => setShowPropertyForm(false)}
+        onSuccess={() => {
+          setShowPropertyForm(false);
+        }}
+      />
     </DashboardLayout>
   )
 }

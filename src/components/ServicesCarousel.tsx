@@ -109,7 +109,7 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
 
   if (isLoading) {
     return (
-      <div className="py-16 bg-white">
+      <div className="py-6 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <div className="animate-pulse">
@@ -130,9 +130,9 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
     );
   }
 
-  if (services.length === 0) {
+  if (services.length === 0 && !isLoading) {
     return (
-      <div className="py-16 bg-white">
+      <div className="py-6 bg-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Services</h2>
           <p className="text-gray-600">No services available at the moment.</p>
@@ -142,7 +142,7 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
   }
 
   return (
-    <div className="py-16 bg-white">
+    <div className="py-6 bg-white">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">

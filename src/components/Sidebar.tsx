@@ -27,10 +27,10 @@ interface SidebarProps {
   onToggle: () => void;
   userRole: string;
   isMobile?: boolean;
-  onPropertyListingClick?: () => void;
+  onPostPropertyClick?: () => void;
 }
 
-export default function Sidebar({ collapsed, onToggle, userRole, isMobile = false, onPropertyListingClick }: SidebarProps) {
+export default function Sidebar({ collapsed, onToggle, userRole, isMobile = false, onPostPropertyClick }: SidebarProps) {
   const pathname = usePathname();
   const { signOut } = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -82,41 +82,65 @@ export default function Sidebar({ collapsed, onToggle, userRole, isMobile = fals
       case 'ADMIN':
         return [
           {
-            name: 'Property Listing',
+            name: 'Post Property',
             href: '#',
+            icon: PlusIcon,
+            description: 'Post new property listings',
+            onClick: onPostPropertyClick
+          },
+          {
+            name: 'My Listings',
+            href: '/my-listings',
             icon: ListBulletIcon,
-            description: 'Post and manage properties',
-            onClick: onPropertyListingClick
+            description: 'View and manage your property listings'
           }
         ];
       case 'AGENT':
         return [
           {
-            name: 'Property Listing',
+            name: 'Post Property',
             href: '#',
+            icon: PlusIcon,
+            description: 'Post new property listings',
+            onClick: onPostPropertyClick
+          },
+          {
+            name: 'My Listings',
+            href: '/my-listings',
             icon: ListBulletIcon,
-            description: 'Post and manage properties',
-            onClick: onPropertyListingClick
+            description: 'View and manage your property listings'
           }
         ];
       case 'BUILDER':
         return [
           {
-            name: 'Property Listing',
+            name: 'Post Property',
             href: '#',
+            icon: PlusIcon,
+            description: 'Post new property listings',
+            onClick: onPostPropertyClick
+          },
+          {
+            name: 'My Listings',
+            href: '/my-listings',
             icon: ListBulletIcon,
-            description: 'Post and manage properties',
-            onClick: onPropertyListingClick
+            description: 'View and manage your property listings'
           }
         ];
       case 'BUYER':
         return [
           {
-            name: 'Property Listing',
+            name: 'Post Property',
             href: '#',
+            icon: PlusIcon,
+            description: 'Post new property listings',
+            onClick: onPostPropertyClick
+          },
+          {
+            name: 'My Listings',
+            href: '/my-listings',
             icon: ListBulletIcon,
-            description: 'Post and browse properties',
-            onClick: onPropertyListingClick
+            description: 'View and manage your property listings'
           }
         ];
       default:

@@ -141,6 +141,29 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
     return amenityList.slice(0, 3); // Show only first 3 amenities
   };
 
+  const formatPrice = (price?: number) => {
+    if (!price || price <= 0) return 'Price on request';
+    if (price >= 10000000) return `₹${(price / 10000000).toFixed(2)} Cr`;
+    if (price >= 100000) return `₹${(price / 100000).toFixed(2)} Lacs`;
+    return `₹${price.toLocaleString('en-IN')}`;
+  };
+
+  const getConfig = (project: NewProject) => {
+    if (project.available_bhk_types && project.available_bhk_types.length) {
+      const map: Record<string, string> = {
+        '1_rk': '1 RK',
+        '1_bhk': '1 BHK',
+        '2_bhk': '2 BHK',
+        '3_bhk': '3 BHK',
+        '4_bhk': '4 BHK',
+        '5_bhk': '5 BHK',
+        '5_plus_bhk': '5+ BHK'
+      };
+      return project.available_bhk_types.map(b => map[b] || b.replace('_', ' ').toUpperCase()).join(', ');
+    }
+    return project.project_type?.replace('_', ' ').toUpperCase() || 'Project';
+  };
+
   if (loading) {
     return (
       <div className="py-16 bg-white">
@@ -182,7 +205,7 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
   }
 
   return (
-    <div className="py-16 bg-white mt-8 sm:mt-12 md:mt-0">
+    <div className="py-16 bg-white">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -236,7 +259,7 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
                         <Link
                           key={project.id}
                           href={`/properties/new_project/${project.id}`}
-                          className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100"
+                          className="group bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl hover:border-gray-200 will-change-transform"
                         >
                           {/* Project Image */}
                           <div className="relative h-48 overflow-hidden">
@@ -244,12 +267,14 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
                               src={getProjectImage(project)}
                               alt={project.project_name}
                               fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src = '/placeholder-property.svg';
                               }}
                             />
+                            {/* Soft overlay on hover for depth */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                           {/* Verified Badge */}
                           <div className="absolute bottom-3 left-3">
                             <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium flex items-center shadow">
@@ -279,10 +304,21 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
 
                           {/* Project Details */}
                           <div className="p-4">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors duration-200 line-clamp-2">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-orange-600 transition-colors duration-200 line-clamp-2">
                               {project.project_name}
                             </h3>
+
+                            {/* Config */}
+                            <p className="text-sm text-gray-700 mb-1">
+                              {getConfig(project)}
+                            </p>
+
+                            {/* Price */}
+                            <p className="text-base font-bold text-gray-900 mb-2">
+                              {formatPrice(project.min_price || project.starting_price)}
+                            </p>
                             
+                            {/* Location */}
                             <p className="text-sm text-gray-600 flex items-center">
                               <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

@@ -36,6 +36,7 @@ interface Project {
 export default function BuilderDashboardPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth()
   const router = useRouter()
+  const [showPropertyForm, setShowPropertyForm] = useState(false)
   
   const [projects, setProjects] = useState<Project[]>([])
   const [stats, setStats] = useState<ProjectStats>({
@@ -160,7 +161,7 @@ export default function BuilderDashboardPage() {
   }
 
   return (
-    <DashboardLayout onPropertyListingClick={() => {}}>
+    <DashboardLayout onPostPropertyClick={() => setShowPropertyForm(true)}>
       <div className="min-h-screen bg-gray-50 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
@@ -333,6 +334,14 @@ export default function BuilderDashboardPage() {
           </div>
         </div>
       </div>
+      {/* Property Form Modal */}
+      <DashboardPropertyForm
+        isOpen={showPropertyForm}
+        onClose={() => setShowPropertyForm(false)}
+        onSuccess={() => {
+          setShowPropertyForm(false);
+        }}
+      />
     </DashboardLayout>
   )
 }

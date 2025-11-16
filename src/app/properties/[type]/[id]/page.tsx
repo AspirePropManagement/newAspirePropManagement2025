@@ -172,49 +172,121 @@ export default function PropertyDetailPage() {
     
     const specs: Record<string, any> = {};
     
-    // Basic specifications
-    if (property.furnishing_type) specs['Furnishing'] = property.furnishing_type.replace('_', ' ');
-    if (property.parking_type) specs['Parking'] = property.parking_type.replace('_', ' ');
+    // Common specifications for all property types
+    if (property.furnishing_type) specs['Furnishing'] = property.furnishing_type.replace(/_/g, ' ');
+    if (property.parking_type) specs['Parking'] = property.parking_type.replace(/_/g, ' ');
     if (property.facing) specs['Facing'] = property.facing;
     if (property.floor_no) specs['Floor'] = property.floor_no;
     if (property.wing_no) specs['Wing'] = property.wing_no;
     if (property.flat_no) specs['Flat No'] = property.flat_no;
     if (property.property_age) specs['Property Age'] = property.property_age;
-    if (property.is_negotiable !== undefined) specs['Negotiable'] = property.is_negotiable;
-    if (property.has_amenities !== undefined) specs['Amenities Available'] = property.has_amenities;
-    if (property.listed_by) specs['Listed By'] = property.listed_by;
-    if (property.ownership_type) specs['Ownership'] = property.ownership_type;
+    if (property.is_negotiable !== undefined) specs['Negotiable'] = property.is_negotiable ? 'Yes' : 'No';
+    if (property.has_amenities !== undefined) specs['Amenities Available'] = property.has_amenities ? 'Yes' : 'No';
+    if (property.listed_by) specs['Listed By'] = property.listed_by.charAt(0).toUpperCase() + property.listed_by.slice(1);
+    if (property.ownership_type) specs['Ownership'] = property.ownership_type.replace(/_/g, ' ');
     if (property.rera_id) specs['RERA ID'] = property.rera_id;
     if (property.flats_per_floor) specs['Flats per Floor'] = property.flats_per_floor;
     if (property.society_area_size) specs['Society Area Size'] = property.society_area_size;
     if (property.reason_for_sale) specs['Reason for Sale'] = property.reason_for_sale;
+    if (property.society_name) specs['Society Name'] = property.society_name;
+    if (property.address_line) specs['Address'] = property.address_line;
+    if (property.city) specs['City'] = property.city;
+    if (property.state) specs['State'] = property.state;
+    if (property.country) specs['Country'] = property.country;
+    if (property.postal_code) specs['Postal Code'] = property.postal_code;
+    if (property.latitude && property.longitude) specs['Coordinates'] = `${property.latitude}, ${property.longitude}`;
+    
+    // Loan information
     if (typeof property.loan_on_property === 'boolean') {
       const loanSummary = property.loan_on_property
         ? `Yes${property.loan_amount ? `, ₹${Number(property.loan_amount).toLocaleString()}` : ''}${property.bank_name ? `, ${property.bank_name}` : ''}`
         : 'No';
       specs['Loan on Property'] = loanSummary;
     }
+    
+    // Visit details
     if (property.visit_days_weekend) specs['Visit Days (Weekend)'] = property.visit_days_weekend;
     if (property.visit_timing_weekend) specs['Visit Timing (Weekend)'] = property.visit_timing_weekend;
     if (property.visit_days_weekdays) specs['Visit Days (Weekdays)'] = property.visit_days_weekdays;
     if (property.visit_timing_weekdays) specs['Visit Timing (Weekdays)'] = property.visit_timing_weekdays;
+    if (property.visit_details) specs['Visit Details'] = property.visit_details;
     
     // Rental specific
-    if (property.type === 'rental') {
-      if (property.deposit_amount) specs['Deposit'] = `₹${property.deposit_amount.toLocaleString()}`;
-      if (property.allowed_for_family !== undefined) specs['Family Allowed'] = property.allowed_for_family;
-      if (property.allowed_for_bachelor !== undefined) specs['Bachelor Allowed'] = property.allowed_for_bachelor;
-      if (property.pets_allowed !== undefined) specs['Pets Allowed'] = property.pets_allowed;
-      if (property.immediate_possession !== undefined) specs['Immediate Possession'] = property.immediate_possession;
+    if (type === 'rental' || property.type === 'rental') {
+      if (property.rent_amount) specs['Rent Amount'] = `₹${Number(property.rent_amount).toLocaleString()}`;
+      if (property.deposit_amount) specs['Deposit'] = `₹${Number(property.deposit_amount).toLocaleString()}`;
+      if (property.rent_negotiable !== undefined) specs['Rent Negotiable'] = property.rent_negotiable ? 'Yes' : 'No';
+      if (property.deposit_negotiable !== undefined) specs['Deposit Negotiable'] = property.deposit_negotiable ? 'Yes' : 'No';
+      if (property.pets_allowed !== undefined) specs['Pets Allowed'] = property.pets_allowed ? 'Yes' : 'No';
+      if (property.immediate_possession !== undefined) specs['Immediate Possession'] = property.immediate_possession ? 'Yes' : 'No';
+      if (property.available_from_date) specs['Available From'] = property.available_from_date;
+      if (property.tenant_type) specs['Tenant Type'] = property.tenant_type.charAt(0).toUpperCase() + property.tenant_type.slice(1);
+      if (property.submission_date) specs['Submission Date'] = property.submission_date;
+      if (property.owner_name) specs['Owner Name'] = property.owner_name;
+      if (property.owner_email) specs['Owner Email'] = property.owner_email;
+      if (property.owner_contact_no) specs['Owner Contact'] = property.owner_contact_no;
+      if (property.owner_alternate_no) specs['Owner Alternate Contact'] = property.owner_alternate_no;
+    }
+    
+    // Resale specific
+    if (type === 'resale' || property.type === 'resale') {
+      if (property.asking_price) specs['Asking Price'] = `₹${Number(property.asking_price).toLocaleString()}`;
+      if (property.square_feet) specs['Square Feet'] = `${property.square_feet} sq ft`;
+      if (property.carpet_area) specs['Carpet Area'] = `${property.carpet_area} sq ft`;
+      if (property.maintenance_charge) specs['Maintenance Charge'] = `₹${Number(property.maintenance_charge).toLocaleString()}`;
+      if (property.maintenance_frequency) specs['Maintenance Frequency'] = property.maintenance_frequency.charAt(0).toUpperCase() + property.maintenance_frequency.slice(1);
+      if (property.possession_status) specs['Possession Status'] = property.possession_status.replace(/_/g, ' ');
+      if (property.possession_date) specs['Possession Date'] = property.possession_date;
+      if (property.available_from) specs['Available From'] = property.available_from;
+      if (property.submission_date) specs['Submission Date'] = property.submission_date;
+      if (property.seller_name) specs['Seller Name'] = property.seller_name;
+      if (property.seller_email) specs['Seller Email'] = property.seller_email;
+      if (property.seller_contact_no) specs['Seller Contact'] = property.seller_contact_no;
+      if (property.seller_alternate_no) specs['Seller Alternate Contact'] = property.seller_alternate_no;
     }
     
     // New project specific
-    if (property.type === 'new_project') {
-      if (property.total_units) specs['Total Units'] = property.total_units;
-      if (property.available_units) specs['Available Units'] = property.available_units;
-      if (property.possession_date) specs['Possession Date'] = property.possession_date;
+    if (type === 'new_project' || property.type === 'new_project') {
+      if (property.project_name) specs['Project Name'] = property.project_name;
+      if (property.project_type) specs['Project Type'] = property.project_type.replace(/_/g, ' ');
+      if (property.construction_type) specs['Construction Type'] = property.construction_type.replace(/_/g, ' ');
+      if (property.project_location) specs['Project Location'] = property.project_location;
+      if (property.crafted_by) specs['Crafted By'] = property.crafted_by;
+      if (property.total_project_area_size) specs['Total Project Area'] = property.total_project_area_size;
+      if (property.towers_count) specs['Towers Count'] = property.towers_count;
+      if (property.total_floors) specs['Total Floors'] = property.total_floors;
+      if (property.flats_per_floor) specs['Flats per Floor'] = property.flats_per_floor;
+      if (property.rooms_per_floor) specs['Rooms per Floor'] = property.rooms_per_floor;
+      if (property.cp_sables) specs['CP Sables'] = property.cp_sables;
+      if (property.other_notes) specs['Other Notes'] = property.other_notes;
+      if (property.contact_name_1) specs['Contact Name 1'] = property.contact_name_1;
+      if (property.contact_number_1) specs['Contact Number 1'] = property.contact_number_1;
+      if (property.contact_name_2) specs['Contact Name 2'] = property.contact_name_2;
+      if (property.contact_number_2) specs['Contact Number 2'] = property.contact_number_2;
+      if (property.is_govt_approved !== undefined) specs['Govt Approved'] = property.is_govt_approved ? 'Yes' : 'No';
+      if (property.is_rera_approved !== undefined) specs['RERA Approved'] = property.is_rera_approved ? 'Yes' : 'No';
       if (property.rera_number) specs['RERA Number'] = property.rera_number;
-      if (property.project_status) specs['Project Status'] = property.project_status.replace('_', ' ');
+      if (property.loan_available !== undefined) specs['Loan Available'] = property.loan_available ? 'Yes' : 'No';
+      if (property.social_media_marketing_allowed !== undefined) specs['Social Media Marketing'] = property.social_media_marketing_allowed ? 'Allowed' : 'Not Allowed';
+      if (property.important_notes) specs['Important Notes'] = property.important_notes;
+      if (property.units_available_for_sale) specs['Units Available'] = property.units_available_for_sale;
+      if (property.project_conversion_rate) specs['Conversion Rate'] = property.project_conversion_rate;
+      if (property.roi) specs['ROI'] = property.roi;
+      if (property.rental_yield) specs['Rental Yield'] = `${property.rental_yield}%`;
+      if (property.marketed_by) specs['Marketed By'] = property.marketed_by;
+      if (property.launch_date) specs['Launch Date'] = property.launch_date;
+      if (property.possession_date) specs['Possession Date'] = property.possession_date;
+      if (property.min_price) specs['Min Price'] = `₹${Number(property.min_price).toLocaleString()}`;
+      if (property.starting_price) specs['Starting Price'] = `₹${Number(property.starting_price).toLocaleString()}`;
+      if (property.currency_code) specs['Currency'] = property.currency_code;
+      if (property.website_url) specs['Website'] = property.website_url;
+      if (property.brochure_url) specs['Brochure'] = property.brochure_url;
+      if (property.puggestion_date) specs['Puggestion Date'] = property.puggestion_date;
+      if (property.puggestion_year) specs['Puggestion Year'] = property.puggestion_year;
+      if (property.facing_vastu) specs['Facing Vastu'] = property.facing_vastu;
+      if (property.available_bhk_types && Array.isArray(property.available_bhk_types) && property.available_bhk_types.length > 0) {
+        specs['Available BHK Types'] = property.available_bhk_types.join(', ');
+      }
     }
     
     return specs;

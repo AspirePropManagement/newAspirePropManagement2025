@@ -60,86 +60,114 @@ export default function HomePage() {
       <div className="h-48 sm:h-56 md:h-40 lg:h-32"></div>
 
       {/* New Projects Section */}
-      <NewProjectsCarousel projects={newProjects} loading={projectsLoading} />
+      <div className="mt-24">
+        <NewProjectsCarousel projects={newProjects} loading={projectsLoading} />
+      </div>
 
       {/* Ads Banner Section */}
-      <AdsBannerSection location="home_middle" />
+      <div className="mt-0">
+        <AdsBannerSection location="home_middle" />
+      </div>
 
       {/* Property Types Section */}
-      <PropertyTypesSection />
+      <div className="mt-0">
+        <PropertyTypesSection />
+      </div>
 
       {/* Resale Properties Section */}
-      <ResalePropertiesCarousel properties={resaleProperties} />
+      <div className="mt-0">
+        <ResalePropertiesCarousel properties={resaleProperties} />
+      </div>
 
       {/* Services Section */}
-      <ServicesCarousel services={services} />
+      <div className="mt-0">
+        <ServicesCarousel services={services} />
+      </div>
 
       {/* Rental Properties Section */}
-      <RentalPropertiesCarousel properties={rentalProperties} />
+      <div className="mt-0">
+        <RentalPropertiesCarousel properties={rentalProperties} />
+      </div>
 
       {/* Tools Section */}
-      <div className="container mx-auto px-4 py-16 relative z-0">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Real Estate Tools</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Use our comprehensive tools to make informed real estate decisions and calculate your investment potential.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* EMI Calculator */}
-          <Link href="/tools/emi-calculator" className="text-center space-y-4 group cursor-pointer">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-orange-200 transition-colors duration-200">
-              <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">EMI Calculator</h3>
-            <p className="text-gray-600">Calculate your monthly EMI payments for home loans and property investments.</p>
-          </Link>
+      <div className="mt-0">
+        <div className="container mx-auto px-4 py-8 relative z-0">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Real Estate Tools</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Use our comprehensive tools to make informed real estate decisions and calculate your investment potential.
+            </p>
+          </div>
           
-          {/* Loan Calculator */}
-          <Link href="/tools/loan-calculator" className="text-center space-y-4 group cursor-pointer">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-orange-200 transition-colors duration-200">
-              <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">Loan Calculator</h3>
-            <p className="text-gray-600">Determine your loan eligibility and calculate maximum loan amount you can get.</p>
-          </Link>
-          
-          {/* Property Valuation */}
-          <Link href="/tools/property-valuation" className="text-center space-y-4 group cursor-pointer">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-orange-200 transition-colors duration-200">
-              <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">Property Valuation</h3>
-            <p className="text-gray-600">Get instant property valuation and market price estimates for your property.</p>
-          </Link>
-          
-          {/* Rent Calculator */}
-          <Link href="/tools/rent-calculator" className="text-center space-y-4 group cursor-pointer">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-orange-200 transition-colors duration-200">
-              <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">Rent Calculator</h3>
-            <p className="text-gray-600">Calculate rental yield, ROI, and determine optimal rent for your property.</p>
-          </Link>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* EMI Calculator */}
+            <Link href="/tools/emi-calculator" className="text-center space-y-4 group cursor-pointer">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-orange-200 transition-colors duration-200">
+                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">EMI Calculator</h3>
+              <p className="text-gray-600">Calculate your monthly EMI payments for home loans and property investments.</p>
+            </Link>
+            
+            {/* Loan Calculator */}
+            <Link href="/tools/loan-calculator" className="text-center space-y-4 group cursor-pointer">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-orange-200 transition-colors duration-200">
+                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">Loan Calculator</h3>
+              <p className="text-gray-600">Determine your loan eligibility and calculate maximum loan amount you can get.</p>
+            </Link>
+            
+            {/* Property Valuation */}
+            <Link href="/tools/property-valuation" className="text-center space-y-4 group cursor-pointer">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-orange-200 transition-colors duration-200">
+                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">Property Valuation</h3>
+              <p className="text-gray-600">Get instant property valuation and market price estimates for your property.</p>
+            </Link>
+            
+            {/* ROI Calculator */}
+            <Link href="/tools/roi-calculator" className="text-center space-y-4 group cursor-pointer">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-orange-200 transition-colors duration-200">
+                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 11V3m0 8a4 4 0 100 8 4 4 0 000-8zm-7 1a8 8 0 1114.32 4.906L21 21l-2 2-2.68-2.68A8 8 0 014 12z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">ROI Calculator</h3>
+              <p className="text-gray-600">Estimate ROI, cap rate and rental yield to evaluate investment viability.</p>
+            </Link>
+            
+            {/* Rent Calculator */}
+            <Link href="/tools/rent-calculator" className="text-center space-y-4 group cursor-pointer">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto group-hover:bg-orange-200 transition-colors duration-200">
+                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors duration-200">Rent Calculator</h3>
+              <p className="text-gray-600">Calculate rental yield, ROI, and determine optimal rent for your property.</p>
+            </Link>
+          </div>
+
         </div>
 
       </div>
 
       {/* Top Builders Section */}
-      <TopBuildersCarousel />
+      <div className="mt-0">
+        <TopBuildersCarousel />
+      </div>
 
       {/* Enquiry Form Section */}
-      <div className="py-16 bg-white">
+      <div className="mt-0 py-8 bg-white">
         <div className="container mx-auto px-4">
           <EnquiryForm />
         </div>

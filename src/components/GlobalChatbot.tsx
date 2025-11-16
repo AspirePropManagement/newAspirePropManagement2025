@@ -61,6 +61,18 @@ const GlobalChatbot: React.FC = () => {
     }
   }, [isOpen, hasOpened])
 
+  useEffect(() => {
+    const handler = () => setIsOpen(true)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('open-chatbot', handler as EventListener)
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('open-chatbot', handler as EventListener)
+      }
+    }
+  }, [])
+
   // Handle sending messages
   const handleSendMessage = async () => {
     if (!inputText.trim()) return

@@ -227,7 +227,7 @@ export default function AdminAgentsPage() {
 
   if (loading) {
     return (
-      <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
+      <DashboardLayout onPostPropertyClick={() => setShowPropertyForm(true)}>
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Agent Management</h1>
@@ -241,7 +241,7 @@ export default function AdminAgentsPage() {
 
   if (error) {
     return (
-      <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
+      <DashboardLayout onPostPropertyClick={() => setShowPropertyForm(true)}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center py-12">
             <div className="text-red-600 text-6xl mb-4">⚠️</div>

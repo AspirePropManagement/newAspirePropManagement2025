@@ -24,6 +24,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Flaticon UIcons (brands) for fi fi-brands-* icons */}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons/css/brands/all.css" />
+      </head>
       <body className={inter.className}>
         <div className="min-h-screen flex flex-col overflow-x-hidden">
           <Navbar />

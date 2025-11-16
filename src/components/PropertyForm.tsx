@@ -262,8 +262,8 @@ interface FormData {
   rentalYield: string;
   marketedBy: string;
   facingVastu: string;
-  suggestionDate: string;
-  suggestionYear: string;
+  puggestionDate: string;
+  puggestionYear: string;
   availableBhkTypes: string[];
   
   // Property details fields
@@ -393,8 +393,8 @@ export function PropertyForm({
     rentalYield: '',
     marketedBy: '',
     facingVastu: '',
-    suggestionDate: '',
-    suggestionYear: '',
+    puggestionDate: '',
+    puggestionYear: '',
     availableBhkTypes: [] as string[],
     
     // Property details fields
@@ -1256,24 +1256,24 @@ export function PropertyForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
-            Suggestion Date
+            Puggestion Date
           </label>
           <input
             type="date"
-            value={formData.suggestionDate}
-            onChange={(e) => handleInputChange('suggestionDate', e.target.value)}
+            value={formData.puggestionDate}
+            onChange={(e) => handleInputChange('puggestionDate', e.target.value)}
             className={inputClass}
           />
         </div>
 
         <div>
           <label className={labelClass}>
-            Suggestion Year
+            Puggestion Year
           </label>
           <input
             type="number"
-            value={formData.suggestionYear}
-            onChange={(e) => handleInputChange('suggestionYear', e.target.value)}
+            value={formData.puggestionYear}
+            onChange={(e) => handleInputChange('puggestionYear', e.target.value)}
             className={inputClass}
             placeholder="e.g., 2025"
           />

@@ -207,23 +207,6 @@ export const HeroCarousel: React.FC = () => {
                     resetTrigger={currentIndex}
                   />
                 </div>
-                {image.description && (
-                  <div 
-                    className="overflow-clip"
-                    style={{ 
-                      minHeight: '2rem',
-                      maxHeight: '8rem',
-                      overflow: 'clip'
-                    }}
-                  >
-                    <TypewriterText 
-                      text={image.description}
-                      className="text-base sm:text-lg md:text-xl text-gray-200 block break-words leading-relaxed"
-                      delay={1000}
-                      resetTrigger={currentIndex}
-                    />
-                  </div>
-                )}
               </div>
             </div>
           </div>

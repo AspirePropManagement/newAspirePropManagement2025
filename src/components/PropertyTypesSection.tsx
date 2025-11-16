@@ -72,7 +72,7 @@ export function PropertyTypesSection() {
   ];
 
   return (
-    <div className="py-16 bg-white">
+    <div className="py-6 bg-white">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center lg:items-center justify-between gap-8">
           {/* Left Content */}

@@ -43,14 +43,14 @@ export function PropertyLayout({
   specifications,
   className = ''
 }: PropertyLayoutProps) {
-  const [activeTab, setActiveTab] = useState<'gallery' | 'floorplans' | 'details' | 'amenities'>('gallery');
+  const [activeTab, setActiveTab] = useState<'gallery' | 'floorplans' | 'details' | 'amenities'>('details');
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { toasts, removeToast, showSuccess, showError, showInfo } = useToast();
 
   const tabs = [
-    { id: 'gallery', label: 'Gallery', icon: '🖼️' },
-    { id: 'floorplans', label: 'Floor Plans', icon: '📐' },
     { id: 'details', label: 'Details', icon: '📋' },
+    { id: 'floorplans', label: 'Floor Plans', icon: '📐' },
+    { id: 'gallery', label: 'Gallery', icon: '🖼️' },
     { id: 'amenities', label: 'Amenities', icon: '🏊' }
   ];
 

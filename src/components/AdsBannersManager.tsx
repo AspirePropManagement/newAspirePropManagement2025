@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { ScrollArrow } from './ScrollArrow';
 import { 
@@ -50,8 +50,9 @@ interface BannerRow {
 
 /**
  * AdsBannersManager provides UI to upload and manage ads banners
- * - Image must be 4:1 aspect ratio (leaderboard). Tolerance ±5%.
+ * - Image must be 4:1 aspect ratio (leaderboard). Recommended: 1600x400 pixels. Tolerance ±5%.
  * - Stores base64 and MIME type in `ads_banners`.
+ * - Maximum 2 banners allowed.
  */
 export function AdsBannersManager() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -75,10 +76,31 @@ export function AdsBannersManager() {
     endAt: ''
   });
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [authUser, setAuthUser] = useState<any>(null);
 
   React.useEffect(() => {
     void fetchBanners();
+    void checkAuth();
   }, []);
+
+  async function checkAuth() {
+    try {
+      // Check localStorage for user (custom auth system)
+      if (typeof window !== 'undefined') {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          setAuthUser(user);
+          console.log('Current auth user from localStorage:', user);
+        } else {
+          setAuthUser(null);
+          console.log('No user found in localStorage');
+        }
+      }
+    } catch (err) {
+      console.error('Auth check error:', err);
+    }
+  }
 
   async function fetchBanners() {
     try {
@@ -91,7 +113,8 @@ export function AdsBannersManager() {
         .order('sort_order', { ascending: true })
         .order('id', { ascending: true });
       if (error) throw error;
-      setBanners((data as BannerRow[]) || []);
+      const bannersData = (data as BannerRow[]) || [];
+      setBanners(bannersData);
     } catch (err: any) {
       setError(err.message || 'Failed to load banners');
     } finally {
@@ -117,7 +140,7 @@ export function AdsBannersManager() {
         const img = new Image();
         img.onload = () => {
           if (!withinRatio(img.width, img.height)) {
-            setError('Image must be 4:1 aspect ratio (e.g., 1600x400). Current: ' + img.width + 'x' + img.height);
+            setError(`Image must be 4:1 aspect ratio (1600x400 pixels). Current: ${img.width}x${img.height}`);
             setIsUploading(false);
             return;
           }
@@ -150,25 +173,90 @@ export function AdsBannersManager() {
       setError(null);
       if (!supabase) throw new Error('Database connection not available');
 
+      // Check if maximum limit of 2 banners is reached
+      const { data: existingBanners, error: countError } = await supabase
+        .from('ads_banners')
+        .select('id', { count: 'exact' });
+
+      if (countError) {
+        console.error('Error checking banner count:', countError);
+      } else {
+        const currentCount = existingBanners?.length || 0;
+        if (currentCount >= 2) {
+          throw new Error('Maximum limit of 2 ads banners reached. Please delete an existing banner before uploading a new one.');
+        }
+      }
+
+      // Extract base64 string (remove data URL prefix if present)
+      let base64String = form.imageBase64;
+      if (base64String.includes(',')) {
+        base64String = base64String.split(',')[1];
+      }
+      
+      // Validate base64 string length (database constraint requires >= 64)
+      if (!base64String || base64String.length < 64) {
+        throw new Error('Invalid image data. Please upload a valid image file.');
+      }
+
+      // Prepare the insert data
+      const insertData = {
+        title: form.title.trim(),
+        image_base64: base64String,
+        image_mime: form.imageMime,
+        link_url: form.linkUrl?.trim() || null,
+        alt_text: form.altText?.trim() || null,
+        display_location: form.displayLocation,
+        sort_order: form.sortOrder,
+        is_active: form.isActive,
+        start_at: form.startAt || null,
+        end_at: form.endAt || null
+      };
+
+      // Check authentication from localStorage (custom auth system)
+      let currentUser = null;
+      if (typeof window !== 'undefined') {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          currentUser = JSON.parse(storedUser);
+        }
+      }
+
+      if (!currentUser || !currentUser.id) {
+        throw new Error('You must be logged in to upload banners. Please sign in and try again.');
+      }
+
+      // Check if user is admin
+      if (currentUser.role !== 'ADMIN') {
+        throw new Error('Only administrators can upload banners. Please contact an admin.');
+      }
+
+      console.log('Attempting to insert banner:', {
+        title: insertData.title,
+        image_base64_length: insertData.image_base64.length,
+        image_mime: insertData.image_mime,
+        display_location: insertData.display_location,
+        has_base64: !!insertData.image_base64,
+        user_id: currentUser.id,
+        user_email: currentUser.email,
+        user_role: currentUser.role
+      });
+
       const { data, error } = await supabase
         .from('ads_banners')
-        .insert([{
-          title: form.title.trim(),
-          image_base64: form.imageBase64.split(',')[1],
-          image_mime: form.imageMime,
-          link_url: form.linkUrl?.trim() || null,
-          alt_text: form.altText?.trim() || null,
-          display_location: form.displayLocation,
-          sort_order: form.sortOrder,
-          is_active: form.isActive,
-          start_at: form.startAt || null,
-          end_at: form.endAt || null
-        }])
+        .insert([insertData])
         .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase insert error:', error);
+        throw error;
+      }
 
-      setSuccess('Banner uploaded successfully!');
+      console.log('Banner inserted successfully:', data);
+
+      const bannerCount = (await supabase.from('ads_banners').select('id', { count: 'exact' })).data?.length || 0;
+      const remainingSlots = 2 - bannerCount;
+      
+      setSuccess(`Banner uploaded successfully! ${remainingSlots > 0 ? `You can upload ${remainingSlots} more banner${remainingSlots > 1 ? 's' : ''}.` : 'Maximum limit reached (2 banners).'}`);
       setForm({
         title: '',
         imageBase64: '',
@@ -186,7 +274,15 @@ export function AdsBannersManager() {
       }
       await fetchBanners();
     } catch (err: any) {
-      setError(err.message || 'Failed to upload banner');
+      console.error('Banner upload error:', err);
+      // Show detailed error message
+      const errorMessage = err.message || err.error?.message || 'Failed to upload banner';
+      setError(errorMessage);
+      
+      // If it's an RLS error, provide helpful guidance
+      if (errorMessage.includes('row-level security') || errorMessage.includes('policy')) {
+        setError(`${errorMessage}. Please ensure you are logged in as an admin user and RLS policies are properly configured.`);
+      }
     } finally {
       setLoading(false);
     }
@@ -272,7 +368,7 @@ export function AdsBannersManager() {
           {/* Image Upload */}
           <div className="space-y-4">
             <label className="block text-sm font-semibold text-gray-700">
-              Banner Image (4:1 Aspect Ratio)
+              Banner Image (4:1 Aspect Ratio - 1600x400 pixels)
             </label>
             
             {/* Drag & Drop Area */}
@@ -321,7 +417,7 @@ export function AdsBannersManager() {
                   <div>
                     <p className="text-lg font-medium text-gray-700">Drop your image here</p>
                     <p className="text-gray-500">or click to browse files</p>
-                    <p className="text-sm text-gray-400 mt-2">PNG, JPG, WEBP • 4:1 ratio (e.g., 1600x400)</p>
+                    <p className="text-sm text-gray-400 mt-2">PNG, JPG, WEBP • 1600x400 pixels (4:1 ratio)</p>
                   </div>
                 </div>
               )}

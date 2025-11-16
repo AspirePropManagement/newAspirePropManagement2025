@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import DashboardLayout from '@/components/DashboardLayout'
+import DashboardPropertyForm from '@/components/DashboardPropertyForm'
 import { ScrollArrow } from '@/components/ScrollArrow'
 import Link from 'next/link'
 import { PlusIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
@@ -37,6 +38,7 @@ export default function AgentDashboardPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth()
   const router = useRouter()
   
+  const [showPropertyForm, setShowPropertyForm] = useState(false)
   const [properties, setProperties] = useState<Property[]>([])
   const [stats, setStats] = useState<PropertyStats>({
     totalProperties: 0,
@@ -186,7 +188,7 @@ export default function AgentDashboardPage() {
   }
 
   return (
-    <DashboardLayout onPropertyListingClick={() => {}}>
+    <DashboardLayout onPostPropertyClick={() => setShowPropertyForm(true)}>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-6">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           {/* Header - Mobile Responsive */}
@@ -451,6 +453,17 @@ export default function AgentDashboardPage() {
         </div>
       </div>
       <ScrollArrow />
+
+      {/* Property Form Modal */}
+      <DashboardPropertyForm
+        isOpen={showPropertyForm}
+        onClose={() => setShowPropertyForm(false)}
+        onSuccess={() => {
+          setShowPropertyForm(false);
+          // Refresh properties list
+          window.location.reload();
+        }}
+      />
     </DashboardLayout>
   )
 }

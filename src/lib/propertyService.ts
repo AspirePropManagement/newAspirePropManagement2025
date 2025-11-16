@@ -393,8 +393,8 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     if ((data as any).totalProjectAreaSize) insertData.total_project_area_size = (data as any).totalProjectAreaSize;
     if ((data as any).towersCount) insertData.towers_count = parseInt((data as any).towersCount);
     if ((data as any).totalFloors) insertData.total_floors = parseInt((data as any).totalFloors);
-    if ((data as any).suggestionDate) insertData.suggestion_date = (data as any).suggestionDate;
-    if ((data as any).suggestionYear) insertData.suggestion_year = parseInt((data as any).suggestionYear);
+    if ((data as any).puggestionDate) insertData.puggestion_date = (data as any).puggestionDate;
+    if ((data as any).puggestionYear) insertData.puggestion_year = parseInt((data as any).puggestionYear);
     if ((data as any).flatsPerFloor) insertData.flats_per_floor = (data as any).flatsPerFloor;
     if ((data as any).roi) insertData.roi = (data as any).roi;
     if ((data as any).rentalYield) insertData.rental_yield = parseFloat((data as any).rentalYield);

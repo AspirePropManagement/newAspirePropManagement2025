@@ -9,29 +9,41 @@ export class AdsBannerService {
    * Fetches active ads banners for a specific location
    */
   static async getActiveBannersByLocation(location: BannerLocation): Promise<AdsBanner[]> {
-  try {
-    const now = new Date().toISOString();
-    
-    if (!supabase) {
-      throw new Error('Database connection not available');
-    }
-    
-    const { data, error } = await supabase
+    try {
+      if (!supabase) {
+        throw new Error('Database connection not available');
+      }
+      
+      // Fetch all active banners (same as admin panel - no location filter for now)
+      // This will show banners regardless of display_location
+      // TODO: If you want to filter by location, uncomment the .eq('display_location', location) line
+      const { data, error } = await supabase
         .from('ads_banners')
         .select('*')
-        .eq('display_location', location)
+        // .eq('display_location', location)  // Temporarily disabled to show all active banners
         .eq('is_active', true)
-        .or(`start_at.is.null,start_at.lte.${now}`)
-        .or(`end_at.is.null,end_at.gte.${now}`)
         .order('sort_order', { ascending: true })
-        .order('created_at', { ascending: false });
+        .order('id', { ascending: true });
 
       if (error) {
         console.error('Error fetching ads banners:', error);
         throw new Error(`Failed to fetch ads banners: ${error.message}`);
       }
 
-      return data || [];
+      const banners = (data || []) as AdsBanner[];
+
+      console.log('Fetched banners for location:', {
+        location,
+        count: banners.length,
+        banners: banners.map(b => ({ 
+          id: b.id, 
+          title: b.title, 
+          is_active: b.is_active, 
+          display_location: b.display_location
+        }))
+      });
+
+      return banners;
     } catch (error) {
       console.error('Error in getActiveBannersByLocation:', error);
       throw error;

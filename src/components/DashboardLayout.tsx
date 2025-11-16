@@ -7,10 +7,10 @@ import Sidebar from './Sidebar';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  onPropertyListingClick?: () => void;
+  onPostPropertyClick?: () => void;
 }
 
-export default function DashboardLayout({ children, onPropertyListingClick }: DashboardLayoutProps) {
+export default function DashboardLayout({ children, onPostPropertyClick }: DashboardLayoutProps) {
   const { user, isAuthenticated, loading } = useAuth();
   const router = useRouter();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -88,7 +88,7 @@ export default function DashboardLayout({ children, onPropertyListingClick }: Da
           onToggle={() => setMobileSidebarOpen(false)}
           userRole={user.role}
           isMobile={true}
-          onPropertyListingClick={onPropertyListingClick}
+          onPostPropertyClick={onPostPropertyClick}
         />
       </div>
 
@@ -99,7 +99,7 @@ export default function DashboardLayout({ children, onPropertyListingClick }: Da
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
           userRole={user.role}
           isMobile={false}
-          onPropertyListingClick={onPropertyListingClick}
+          onPostPropertyClick={onPostPropertyClick}
         />
       </div>
 

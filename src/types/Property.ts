@@ -209,8 +209,8 @@ export interface NewProject {
   total_project_area_size?: string;
   towers_count?: number;
   total_floors?: number;
-  suggestion_date?: string;
-  suggestion_year?: number;
+  puggestion_date?: string;
+  puggestion_year?: number;
   flats_per_floor?: string;
   roi?: string;
   rental_yield?: number;
