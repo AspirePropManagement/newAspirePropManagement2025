@@ -260,7 +260,7 @@ export default function AdminAgentsPage() {
   }
 
   return (
-    <DashboardLayout onPropertyListingClick={() => setShowPropertyForm(true)}>
+    <DashboardLayout>
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Agent Management</h1>
