@@ -52,7 +52,7 @@ interface BannerRow {
  * AdsBannersManager provides UI to upload and manage ads banners
  * - Image must be 4:1 aspect ratio (leaderboard). Recommended: 1600x400 pixels. Tolerance ±5%.
  * - Stores base64 and MIME type in `ads_banners`.
- * - Maximum 2 banners allowed.
+ * - Maximum 10 banners allowed.
  */
 export function AdsBannersManager() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -62,6 +62,7 @@ export function AdsBannersManager() {
   const [success, setSuccess] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const [form, setForm] = useState<CreateBannerForm>({
     title: '',
@@ -122,6 +123,36 @@ export function AdsBannersManager() {
     }
   }
 
+  async function handleDeleteBanner(id: number) {
+    try {
+      setError(null);
+      if (typeof window !== 'undefined') {
+        const confirmed = window.confirm('Are you sure you want to delete this banner? This action cannot be undone.');
+        if (!confirmed) return;
+      }
+
+      if (!supabase) throw new Error('Database connection not available');
+      setDeletingId(id);
+
+      const { error } = await supabase
+        .from('ads_banners')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error deleting banner:', error);
+        throw new Error(error.message || 'Failed to delete banner');
+      }
+
+      setSuccess('Banner deleted successfully.');
+      await fetchBanners();
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete banner');
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   function withinRatio(width: number, height: number): boolean {
     const ratio = width / height;
     const target = 4 / 1; // 4:1
@@ -173,7 +204,7 @@ export function AdsBannersManager() {
       setError(null);
       if (!supabase) throw new Error('Database connection not available');
 
-      // Check if maximum limit of 2 banners is reached
+      // Check if maximum limit of 10 banners is reached
       const { data: existingBanners, error: countError } = await supabase
         .from('ads_banners')
         .select('id', { count: 'exact' });
@@ -182,8 +213,8 @@ export function AdsBannersManager() {
         console.error('Error checking banner count:', countError);
       } else {
         const currentCount = existingBanners?.length || 0;
-        if (currentCount >= 2) {
-          throw new Error('Maximum limit of 2 ads banners reached. Please delete an existing banner before uploading a new one.');
+        if (currentCount >= 10) {
+          throw new Error('Maximum limit of 10 ads banners reached. Please delete an existing banner before uploading a new one.');
         }
       }
 
@@ -254,9 +285,9 @@ export function AdsBannersManager() {
       console.log('Banner inserted successfully:', data);
 
       const bannerCount = (await supabase.from('ads_banners').select('id', { count: 'exact' })).data?.length || 0;
-      const remainingSlots = 2 - bannerCount;
+      const remainingSlots = 10 - bannerCount;
       
-      setSuccess(`Banner uploaded successfully! ${remainingSlots > 0 ? `You can upload ${remainingSlots} more banner${remainingSlots > 1 ? 's' : ''}.` : 'Maximum limit reached (2 banners).'}`);
+      setSuccess(`Banner uploaded successfully! ${remainingSlots > 0 ? `You can upload ${remainingSlots} more banner${remainingSlots > 1 ? 's' : ''}.` : 'Maximum limit reached (10 banners).'}`);
       setForm({
         title: '',
         imageBase64: '',
@@ -617,8 +648,18 @@ export function AdsBannersManager() {
                         <button className="p-1.5 sm:p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
                           <PencilIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>
-                        <button className="p-1.5 sm:p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
-                          <TrashIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <button
+                          onClick={() => handleDeleteBanner(banner.id)}
+                          disabled={deletingId === banner.id}
+                          className={`p-1.5 sm:p-2 rounded-full transition-colors ${deletingId === banner.id ? 'bg-red-300 text-white cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-600'}`}
+                          aria-label="Delete banner"
+                          title="Delete banner"
+                        >
+                          {deletingId === banner.id ? (
+                            <span className="block w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <TrashIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                          )}
                         </button>
                       </div>
                     </div>

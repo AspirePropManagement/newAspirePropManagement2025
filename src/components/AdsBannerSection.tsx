@@ -20,12 +20,11 @@ export function AdsBannerSection({ location }: AdsBannerSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Always show one ad at a time (carousel)
-  // If 1 ad: show single ad full width
-  // If 2 ads: show them one by one in carousel
+  // Works for any number of ads (1..10)
   const totalSlides = banners.length || 1;
   const maxIndex = Math.max(0, totalSlides - 1);
 
-  // Auto-rotate carousel if there are 2 ads
+  // Auto-rotate carousel if there are multiple ads
   useEffect(() => {
     if (banners.length > 1) {
       const interval = setInterval(() => {
@@ -91,7 +90,7 @@ export function AdsBannerSection({ location }: AdsBannerSectionProps) {
 
           {/* Ads Carousel */}
           <div className="relative">
-            {/* Navigation Buttons - Only show if there are 2 ads */}
+            {/* Navigation Buttons - Only show if there are multiple ads */}
             {banners.length > 1 && (
               <>
                 <button
@@ -111,7 +110,7 @@ export function AdsBannerSection({ location }: AdsBannerSectionProps) {
               </>
             )}
 
-            {/* Carousel Indicators - Only show if there are 2 ads */}
+            {/* Carousel Indicators - hidden by design */}
             {false && banners.length > 1 && (
               <div className="flex justify-center mt-4 space-x-2">
                 {banners.map((_, index) => (
