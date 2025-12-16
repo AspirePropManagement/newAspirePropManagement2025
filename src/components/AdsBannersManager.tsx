@@ -197,8 +197,7 @@ export function AdsBannersManager() {
     if (!form.imageBase64) {
       setError('Image is required');
       return;
-    }
-
+    }//
     try {
       setLoading(true);
       setError(null);
