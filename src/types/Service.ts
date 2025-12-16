@@ -13,11 +13,12 @@ export interface ServiceImage {
 export interface Service {
   id: string;
   service_name: string;
-  slug: string;
   short_description?: string;
   description?: string;
   image_path?: string;
   image_alt?: string;
+  min_price?: number;
+  max_price?: number;
   is_active: boolean;
   sort_order: number;
   created_by?: string;
@@ -30,11 +31,12 @@ export interface Service {
 
 export interface ServiceCreateData {
   service_name: string;
-  slug: string;
   short_description?: string;
   description?: string;
   image_path?: string;
   image_alt?: string;
+  min_price?: number;
+  max_price?: number;
   is_active?: boolean;
   sort_order?: number;
   created_by?: string;
@@ -43,11 +45,12 @@ export interface ServiceCreateData {
 
 export interface ServiceUpdateData {
   service_name?: string;
-  slug?: string;
   short_description?: string;
   description?: string;
   image_path?: string;
   image_alt?: string;
+  min_price?: number;
+  max_price?: number;
   is_active?: boolean;
   sort_order?: number;
   image_data?: string;

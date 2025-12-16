@@ -152,7 +152,7 @@ export default function AdminBlogsPage() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Title</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Slug</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Date</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
                     <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
                   </tr>
@@ -164,7 +164,12 @@ export default function AdminBlogsPage() {
                         <div className="text-sm sm:text-base font-medium text-gray-900 truncate max-w-32 sm:max-w-48">{b.title}</div>
                         <div className="text-xs sm:text-sm text-gray-500 line-clamp-2">{b.excerpt}</div>
                       </td>
-                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700 truncate max-w-24 sm:max-w-32">{b.slug}</td>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">
+                        {b.published_at 
+                          ? new Date(b.published_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })
+                          : new Date(b.created_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })
+                        }
+                      </td>
                       <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <span className="px-2 py-1 text-xs rounded whitespace-nowrap bg-gray-100 text-gray-700">{b.status}</span>
                       </td>

@@ -20,20 +20,26 @@ export function AdsBannerSection({ location }: AdsBannerSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Always show one ad at a time (carousel)
-  // Works for any number of ads (1..10)
+  // Works for any number of ads (1..10) - shows all uploaded banners
   const totalSlides = banners.length || 1;
   const maxIndex = Math.max(0, totalSlides - 1);
+  
+  // Check if user can control (has navigation buttons)
+  const hasUserControls = banners.length > 1;
 
-  // Auto-rotate carousel if there are multiple ads
+  // Auto-rotate carousel only if user has controls (navigation buttons)
+  // If user can control: slow down auto-scroll (8 seconds)
+  // If user cannot control: no auto-scroll
   useEffect(() => {
-    if (banners.length > 1) {
+    if (hasUserControls && banners.length > 1) {
       const interval = setInterval(() => {
         setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
-      }, 5000); // Change slide every 5 seconds
+      }, 8000); // Change slide every 8 seconds (slower than before)
 
       return () => clearInterval(interval);
     }
-  }, [banners.length, maxIndex]);
+    // If no user controls, don't auto-scroll
+  }, [banners.length, maxIndex, hasUserControls]);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));

@@ -196,8 +196,8 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
-      <div className="bg-white/95 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden border border-gray-100">
+    <div className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center ${tabSelected ? '' : 'p-2 sm:p-4'}`}>
+      <div className={`bg-white overflow-hidden ${tabSelected ? 'w-full h-full' : 'w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100'}`}>
         {/* Header - Mobile Responsive - Only show when tabs are visible */}
         {!tabSelected && (
           <div className="flex items-center justify-between p-4 sm:p-6 md:p-8 bg-gradient-to-r from-orange-50 to-red-50 border-b border-orange-100">
@@ -269,7 +269,7 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
 
         {/* Property Form - Mobile Responsive - Only show if tab is selected */}
         {tabSelected && activeTab && (
-          <div className="overflow-y-auto max-h-[calc(95vh-180px)] sm:max-h-[calc(90vh-200px)] bg-gradient-to-br from-white to-gray-50 custom-scrollbar">
+          <div className={`overflow-y-auto bg-gradient-to-br from-white to-gray-50 custom-scrollbar ${tabSelected ? 'h-full' : ''}`} style={tabSelected ? { height: 'calc(100vh - 80px)' } : { maxHeight: 'calc(95vh - 180px)' }}>
             {/* Form Type Heading */}
             <div className="sticky top-0 z-10 bg-gradient-to-r from-orange-50 to-red-50 border-b border-orange-100 px-4 sm:px-6 py-3 sm:py-4">
               <div className="flex items-center space-x-3">

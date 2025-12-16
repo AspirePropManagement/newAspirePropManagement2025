@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { CheckBadgeIcon } from '@heroicons/react/24/solid';
+import { extractPropertyImages, getImageSrc, isBase64Image } from '@/utils/imageUtils';
 
 interface NewProject {
   id: string;
@@ -38,21 +39,63 @@ interface NewProject {
     security?: boolean;
   };
   status?: string;
+  is_rera_approved?: boolean;
   created_at: string;
 }
 
 interface NewProjectsCarouselProps {
   projects: NewProject[];
   loading?: boolean;
+  title?: string;
+  subtitle?: string;
+  shuffle?: boolean;
 }
 
 /**
  * NewProjectsCarousel component displays new projects in a horizontal carousel
  * Shows 4 cards at a time with navigation controls
  */
-export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCarouselProps) {
+export function NewProjectsCarousel({ projects, loading = false, title = 'New Projects', subtitle = 'Discover the latest real estate projects and investment opportunities in prime locations.', shuffle = false }: NewProjectsCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsPerSlide, setCardsPerSlide] = useState(1);
+
+  // Remove duplicates based on project ID, and also by project name + location if IDs are different
+  const uniqueProjects = React.useMemo(() => {
+    const seenIds = new Set<string>();
+    const seenProjects = new Set<string>(); // For name + location deduplication
+    
+    const deduplicated = projects.filter((project) => {
+      // First check by ID
+      if (seenIds.has(project.id)) {
+        console.log('Duplicate project found by ID:', project.id, project.project_name);
+        return false;
+      }
+      
+      // Also check by project name + location combination
+      const projectKey = `${project.project_name?.toLowerCase().trim()}_${project.project_location?.toLowerCase().trim()}`;
+      if (seenProjects.has(projectKey)) {
+        console.log('Duplicate project found by name+location:', project.project_name, project.project_location);
+        return false;
+      }
+      
+      seenIds.add(project.id);
+      seenProjects.add(projectKey);
+      return true;
+    });
+    
+    // Shuffle the array if shuffle prop is true
+    if (shuffle) {
+      const shuffled = [...deduplicated];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+    
+    console.log('Original projects count:', projects.length, 'Unique projects count:', deduplicated.length);
+    return deduplicated;
+  }, [projects, shuffle]);
 
   // Update cards per slide based on screen size
   useEffect(() => {
@@ -71,11 +114,20 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
     return () => window.removeEventListener('resize', updateCardsPerSlide);
   }, []);
 
-  // Calculate how many slides we need
-  const totalSlides = Math.ceil(projects.length / cardsPerSlide);
+  // Calculate how many slides we need based on unique projects
+  const totalSlides = Math.ceil(uniqueProjects.length / cardsPerSlide);
   const maxIndex = Math.max(0, totalSlides - 1);
 
-  // Remove the local loading state management - use prop instead
+  // Auto-scroll carousel (only if we have more than one slide)
+  useEffect(() => {
+    if (totalSlides <= 1 || loading || uniqueProjects.length <= cardsPerSlide) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 5000); // Auto-scroll every 5 seconds
+    
+    return () => clearInterval(interval);
+  }, [totalSlides, maxIndex, loading, uniqueProjects.length, cardsPerSlide]);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
@@ -90,35 +142,11 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
   };
 
   /**
-   * Gets the primary image for a project
-   * Prioritizes exterior photos, then project images, then general photos
+   * Gets all images for a project from all categories
    */
-  const getProjectImage = (project: NewProject): string => {
-    const images = project.property_images;
-    
-    // Try exterior photos first
-    if (images?.general_photos?.exterior?.length) {
-      return images.general_photos.exterior[0];
-    }
-    
-    // Try project images
-    if (images?.project_images?.club_house?.length) {
-      return images.project_images.club_house[0];
-    }
-    if (images?.project_images?.swimming_pool?.length) {
-      return images.project_images.swimming_pool[0];
-    }
-    if (images?.project_images?.gym?.length) {
-      return images.project_images.gym[0];
-    }
-    
-    // Try interior photos
-    if (images?.general_photos?.interior?.length) {
-      return images.general_photos.interior[0];
-    }
-    
-    // Default placeholder
-    return '/placeholder-property.svg';
+  const getProjectImages = (project: NewProject): string[] => {
+    const images = extractPropertyImages(project);
+    return images.length > 0 ? images : ['/placeholder-property.svg'];
   };
 
   /**
@@ -188,7 +216,7 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
     );
   }
 
-  if (projects.length === 0 && !loading) {
+  if (uniqueProjects.length === 0 && !loading) {
     return (
       <div className="py-16 bg-white">
         <div className="container mx-auto px-4 text-center">
@@ -209,9 +237,9 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">New Projects</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">{title}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Discover the latest real estate projects and investment opportunities in prime locations.
+            {subtitle}
           </p>
         </div>
 
@@ -253,82 +281,18 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
                     cardsPerSlide === 2 ? 'grid-cols-1 md:grid-cols-2' :
                     'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
                   }`} style={{ maxWidth: '100%' }}>
-                    {projects
+                    {uniqueProjects
                       .slice(slideIndex * cardsPerSlide, (slideIndex + 1) * cardsPerSlide)
-                      .map((project) => (
-                        <Link
-                          key={project.id}
-                          href={`/properties/new_project/${project.id}`}
-                          className="group bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl hover:border-gray-200 will-change-transform"
-                        >
-                          {/* Project Image */}
-                          <div className="relative h-48 overflow-hidden">
-                            <Image
-                              src={getProjectImage(project)}
-                              alt={project.project_name}
-                              fill
-                              className="object-cover transition-transform duration-500 group-hover:scale-105"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = '/placeholder-property.svg';
-                              }}
-                            />
-                            {/* Soft overlay on hover for depth */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                          {/* Verified Badge */}
-                          <div className="absolute bottom-3 left-3">
-                            <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium flex items-center shadow">
-                              <CheckBadgeIcon className="w-3.5 h-3.5 mr-1 text-white" />
-                              100% Verified
-                            </span>
-                          </div>
-                            {/* Status Badge */}
-                            {project.status && (
-                              <div className="absolute top-3 left-3">
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  project.status === 'active' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-gray-100 text-gray-800'
-                                }`}>
-                                  {project.status}
-                                </span>
-                              </div>
-                            )}
-                            {/* Construction Type Badge */}
-                            <div className="absolute top-3 right-3">
-                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                {project.construction_type.replace('_', ' ').toUpperCase()}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Project Details */}
-                          <div className="p-4">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-orange-600 transition-colors duration-200 line-clamp-2">
-                              {project.project_name}
-                            </h3>
-
-                            {/* Config */}
-                            <p className="text-sm text-gray-700 mb-1">
-                              {getConfig(project)}
-                            </p>
-
-                            {/* Price */}
-                            <p className="text-base font-bold text-gray-900 mb-2">
-                              {formatPrice(project.min_price || project.starting_price)}
-                            </p>
-                            
-                            {/* Location */}
-                            <p className="text-sm text-gray-600 flex items-center">
-                              <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                              </svg>
-                              {project.project_location}
-                            </p>
-                          </div>
-                        </Link>
-                      ))}
+                      .map((project) => {
+                        const projectImages = getProjectImages(project);
+                        return (
+                          <ProjectCardWithImageCarousel
+                            key={project.id}
+                            project={project}
+                            images={projectImages}
+                          />
+                        );
+                      })}
                   </div>
                 </div>
               ))}
@@ -339,5 +303,143 @@ export function NewProjectsCarousel({ projects, loading = false }: NewProjectsCa
 
       </div>
     </div>
+  );
+}
+
+/**
+ * Project card component with image carousel
+ */
+function ProjectCardWithImageCarousel({ project, images }: { project: NewProject; images: string[] }) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Auto-scroll images
+  useEffect(() => {
+    if (images.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, 3000); // Change image every 3 seconds
+    
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  const formatPrice = (price?: number) => {
+    if (!price || price <= 0) return 'Price on request';
+    if (price >= 10000000) return `₹${(price / 10000000).toFixed(2)} Cr`;
+    if (price >= 100000) return `₹${(price / 100000).toFixed(2)} Lacs`;
+    return `₹${price.toLocaleString('en-IN')}`;
+  };
+
+  const getConfig = (project: NewProject) => {
+    if (project.available_bhk_types && project.available_bhk_types.length) {
+      const map: Record<string, string> = {
+        '1_rk': '1 RK',
+        '1_bhk': '1 BHK',
+        '2_bhk': '2 BHK',
+        '3_bhk': '3 BHK',
+        '4_bhk': '4 BHK',
+        '5_bhk': '5 BHK',
+        '5_plus_bhk': '5+ BHK'
+      };
+      return project.available_bhk_types.map(b => map[b] || b.replace('_', ' ').toUpperCase()).join(', ');
+    }
+    return project.project_type?.replace('_', ' ').toUpperCase() || 'Project';
+  };
+
+  return (
+    <Link
+      href={`/properties/new_project/${project.id}`}
+      className="group bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl hover:border-gray-200 will-change-transform"
+    >
+      {/* Project Image Carousel */}
+      <div className="relative h-48 overflow-hidden">
+        <div className="relative w-full h-full">
+          {images.map((imageSrc, index) => (
+            <Image
+              key={index}
+              src={getImageSrc(imageSrc)}
+              alt={project.project_name}
+              fill
+              className={`object-cover transition-opacity duration-500 ${
+                index === currentImageIndex ? 'opacity-100' : 'opacity-0 absolute'
+              }`}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/placeholder-property.svg';
+              }}
+              unoptimized={isBase64Image(imageSrc)}
+            />
+          ))}
+        </div>
+        {/* Soft overlay on hover for depth */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Verified Badge */}
+        <div className="absolute bottom-3 left-3">
+          <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium flex items-center shadow">
+            <CheckBadgeIcon className="w-3.5 h-3.5 mr-1 text-white" />
+            100% Verified
+          </span>
+        </div>
+        {/* RERA Approved Badge - Always shown for new projects */}
+        <div className="absolute top-3 left-3">
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 flex items-center">
+            <CheckBadgeIcon className="w-3.5 h-3.5 mr-1" />
+            RERA Approved
+          </span>
+        </div>
+        {/* Construction Type Badge */}
+        <div className="absolute top-3 right-3">
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+            {project.construction_type.replace('_', ' ').toUpperCase()}
+          </span>
+        </div>
+        {/* Image Dots */}
+        {images.length > 1 && (
+          <div className="absolute bottom-3 right-3">
+            <div className="flex space-x-1 bg-black/30 backdrop-blur-sm rounded-full px-2 py-1">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setCurrentImageIndex(index);
+                  }}
+                  className={`w-1.5 h-1.5 rounded-full transition-all ${
+                    index === currentImageIndex ? 'bg-white w-4' : 'bg-white/60'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Project Details */}
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-orange-600 transition-colors duration-200 line-clamp-2">
+          {project.project_name}
+        </h3>
+
+        {/* Config */}
+        <p className="text-sm text-gray-700 mb-1">
+          {getConfig(project)}
+        </p>
+
+        {/* Price */}
+        <p className="text-base font-bold text-gray-900 mb-2">
+          {formatPrice(project.min_price || project.starting_price)}
+        </p>
+        
+        {/* Location */}
+        <p className="text-sm text-gray-600 flex items-center">
+          <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          {project.project_location}
+        </p>
+      </div>
+    </Link>
   );
 }

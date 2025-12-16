@@ -7,6 +7,54 @@ import { Service, ServiceCreateData, ServiceUpdateData } from '@/types/Service'
 import { InlinePreloader } from '@/components/Preloader'
 import { ScrollArrow } from '@/components/ScrollArrow'
 
+// Custom styles for dual range slider thumbs
+const rangeSliderStyles = `
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #3b82f6;
+    border: 3px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 30;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #3b82f6;
+    border: 3px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 30;
+  }
+  input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 8px;
+    background: transparent;
+  }
+  input[type="range"]::-moz-range-track {
+    height: 8px;
+    background: transparent;
+  }
+`
+
 export default function AdminServicesPage() {
   const [services, setServices] = useState<Service[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -18,11 +66,12 @@ export default function AdminServicesPage() {
 
   const emptyForm: ServiceCreateData = {
     service_name: '',
-    slug: '',
     short_description: '',
     description: '',
     image_data: '',
     image_alt: '',
+    min_price: 0,
+    max_price: 100000,
     is_active: true,
     sort_order: 0,
   }
@@ -59,8 +108,7 @@ export default function AdminServicesPage() {
     if (!search) return services
     const q = search.toLowerCase()
     return services.filter(s =>
-      s.service_name.toLowerCase().includes(q) ||
-      s.slug.toLowerCase().includes(q)
+      s.service_name.toLowerCase().includes(q)
     )
   }, [services, search])
 
@@ -110,6 +158,7 @@ export default function AdminServicesPage() {
 
   return (
     <DashboardLayout>
+      <style>{rangeSliderStyles}</style>
       <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
           <div>
@@ -153,7 +202,7 @@ export default function AdminServicesPage() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Service</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Slug</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Price Range</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Active</th>
                     <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
                   </tr>
@@ -165,7 +214,12 @@ export default function AdminServicesPage() {
                         <div className="text-sm sm:text-base font-medium text-gray-900 truncate max-w-32 sm:max-w-48">{s.service_name}</div>
                         <div className="text-xs sm:text-sm text-gray-500 line-clamp-2">{s.short_description}</div>
                       </td>
-                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700 truncate max-w-24 sm:max-w-32">{s.slug}</td>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">
+                        {s.min_price !== undefined && s.max_price !== undefined 
+                          ? `₹${s.min_price.toLocaleString('en-IN')} - ₹${s.max_price.toLocaleString('en-IN')}`
+                          : 'Not set'
+                        }
+                      </td>
                       <td className="px-3 sm:px-6 py-3 sm:py-4">
                         <span className={`px-2 py-1 text-xs rounded whitespace-nowrap ${s.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                           {s.is_active ? 'Active' : 'Inactive'}
@@ -179,11 +233,12 @@ export default function AdminServicesPage() {
                               setEditing(s)
                               setForm({
                                 service_name: s.service_name,
-                                slug: s.slug,
                                 short_description: s.short_description ?? '',
                                 description: s.description ?? '',
                                 image_data: s.image_data ?? '',
                                 image_alt: s.image_alt ?? '',
+                                min_price: s.min_price ?? 0,
+                                max_price: s.max_price ?? 100000,
                                 is_active: s.is_active,
                                 sort_order: s.sort_order,
                               })
@@ -221,10 +276,6 @@ export default function AdminServicesPage() {
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Service Name</label>
                   <input value={form.service_name} onChange={(e)=>setForm({...form, service_name: e.target.value})} className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg text-sm sm:text-base" />
                 </div>
-                <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Slug</label>
-                  <input value={form.slug} onChange={(e)=>setForm({...form, slug: e.target.value})} className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg text-sm sm:text-base" />
-                </div>
                 <div className="sm:col-span-2">
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Short Description</label>
                   <input value={form.short_description ?? ''} onChange={(e)=>setForm({...form, short_description: e.target.value})} className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg text-sm sm:text-base" />
@@ -260,6 +311,122 @@ export default function AdminServicesPage() {
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Image Alt</label>
                   <input value={form.image_alt ?? ''} onChange={(e)=>setForm({...form, image_alt: e.target.value})} className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg text-sm sm:text-base" />
                 </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-3">Price Range (₹)</label>
+                  <div className="space-y-4">
+                    {/* Dual Range Slider - Single slider with two thumbs */}
+                    <div className="relative py-8">
+                      {/* Track background */}
+                      <div className="relative h-2 bg-gray-200 rounded-lg">
+                        {/* Active range track (highlighted portion between min and max) */}
+                        <div
+                          className="absolute h-2 bg-blue-600 rounded-lg"
+                          style={{
+                            left: `${((form.min_price ?? 0) / 10000000) * 100}%`,
+                            width: `${(((form.max_price ?? 100000) - (form.min_price ?? 0)) / 10000000) * 100}%`
+                          }}
+                        />
+                      </div>
+                      
+                      {/* Min range input (left thumb) */}
+                      <input
+                        type="range"
+                        min="0"
+                        max="10000000"
+                        step="1000"
+                        value={form.min_price ?? 0}
+                        onChange={(e) => {
+                          const newMin = Number(e.target.value);
+                          if (newMin <= (form.max_price ?? 100000)) {
+                            setForm({ ...form, min_price: newMin });
+                          }
+                        }}
+                        className="absolute top-0 w-full h-2 bg-transparent appearance-none cursor-pointer z-10 pointer-events-auto"
+                        style={{
+                          background: 'transparent'
+                        }}
+                      />
+                      
+                      {/* Max range input (right thumb) */}
+                      <input
+                        type="range"
+                        min="0"
+                        max="10000000"
+                        step="1000"
+                        value={form.max_price ?? 100000}
+                        onChange={(e) => {
+                          const newMax = Number(e.target.value);
+                          if (newMax >= (form.min_price ?? 0)) {
+                            setForm({ ...form, max_price: newMax });
+                          }
+                        }}
+                        className="absolute top-0 w-full h-2 bg-transparent appearance-none cursor-pointer z-20 pointer-events-auto"
+                        style={{
+                          background: 'transparent'
+                        }}
+                      />
+                      
+                      {/* Value labels above thumbs */}
+                      <div className="relative -mt-6">
+                        <div
+                          className="absolute transform -translate-x-1/2 text-center"
+                          style={{
+                            left: `${((form.min_price ?? 0) / 10000000) * 100}%`
+                          }}
+                        >
+                          <div className="text-xs font-semibold text-blue-600 bg-white px-2 py-1 rounded shadow-sm border border-blue-200">
+                            ₹{((form.min_price ?? 0) / 1000).toFixed(0)}K
+                          </div>
+                        </div>
+                        <div
+                          className="absolute transform -translate-x-1/2 text-center"
+                          style={{
+                            left: `${((form.max_price ?? 100000) / 10000000) * 100}%`
+                          }}
+                        >
+                          <div className="text-xs font-semibold text-blue-600 bg-white px-2 py-1 rounded shadow-sm border border-blue-200">
+                            ₹{((form.max_price ?? 100000) / 1000).toFixed(0)}K
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Number inputs for precise values */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Minimum Price (₹)</label>
+                        <input
+                          type="number"
+                          min="0"
+                          max={form.max_price ?? 100000}
+                          value={form.min_price ?? 0}
+                          onChange={(e) => {
+                            const newMin = Number(e.target.value);
+                            if (newMin <= (form.max_price ?? 100000)) {
+                              setForm({ ...form, min_price: newMin });
+                            }
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Maximum Price (₹)</label>
+                        <input
+                          type="number"
+                          min={form.min_price ?? 0}
+                          max="10000000"
+                          value={form.max_price ?? 100000}
+                          onChange={(e) => {
+                            const newMax = Number(e.target.value);
+                            if (newMax >= (form.min_price ?? 0)) {
+                              setForm({ ...form, max_price: newMax });
+                            }
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Sort Order</label>
                   <input type="number" value={form.sort_order ?? 0} onChange={(e)=>setForm({...form, sort_order: Number(e.target.value)})} className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg text-sm sm:text-base" />
@@ -274,7 +441,7 @@ export default function AdminServicesPage() {
                 <button className="px-4 py-2.5 sm:py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base w-full sm:w-auto" onClick={()=>{ setShowForm(false); setEditing(null); }}>Cancel</button>
                 <button
                   className="px-4 py-2.5 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm sm:text-base w-full sm:w-auto"
-                  disabled={saving || !form.service_name || !form.slug}
+                  disabled={saving || !form.service_name}
                   onClick={editing ? handleUpdate : handleCreate}
                 >
                   {saving ? 'Saving...' : (editing ? 'Update' : 'Create')}

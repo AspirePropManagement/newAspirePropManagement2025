@@ -30,6 +30,9 @@ interface PropertyLayoutProps {
   amenities: string[];
   specifications: Record<string, any>;
   className?: string;
+  depositAmount?: number;
+  enquirySubmitted?: boolean;
+  onEnquirySubmitted?: () => void;
 }
 
 /**
@@ -41,7 +44,10 @@ export function PropertyLayout({
   propertyDetails,
   amenities,
   specifications,
-  className = ''
+  className = '',
+  depositAmount,
+  enquirySubmitted = false,
+  onEnquirySubmitted
 }: PropertyLayoutProps) {
   const [activeTab, setActiveTab] = useState<'gallery' | 'floorplans' | 'details' | 'amenities'>('details');
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -49,9 +55,9 @@ export function PropertyLayout({
 
   const tabs = [
     { id: 'details', label: 'Details', icon: '📋' },
-    { id: 'floorplans', label: 'Floor Plans', icon: '📐' },
     { id: 'gallery', label: 'Gallery', icon: '🖼️' },
-    { id: 'amenities', label: 'Amenities', icon: '🏊' }
+    { id: 'amenities', label: 'Amenities', icon: '🏊' },
+    { id: 'floorplans', label: 'Floor Plans', icon: '📐' }
   ];
 
   return (
@@ -108,6 +114,9 @@ export function PropertyLayout({
               <PropertyDetails 
                 details={propertyDetails}
                 specifications={specifications}
+                depositAmount={depositAmount}
+                enquirySubmitted={enquirySubmitted}
+                onEnquirySubmitted={onEnquirySubmitted}
               />
             </div>
           )}

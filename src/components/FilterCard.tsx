@@ -390,18 +390,143 @@ export const FilterCard: React.FC = () => {
                 </select>
               </div>
             </div>
-          ) : (
-            <div className="grid grid-cols-5 gap-4">
-              {activeTab === 'rental' && renderRentalFilters()}
-              {activeTab === 'resale' && renderResaleFilters()}
-              {/* Search Button */}
-              <div className="space-y-2 flex flex-col">
-                <label className="block text-sm font-medium text-gray-700 opacity-0 h-[20px]">Search</label>
-                <Link href={getSearchUrl()} className="flex items-end">
-                  <button onClick={handleSearchClick} className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg h-[42px] flex items-center justify-center">
+          ) : activeTab === 'rental' ? (
+            <div className="grid grid-cols-4 gap-4">
+              {/* First row: Wide Location (spans 3 columns) */}
+              <div className="col-span-3 space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Location</label>
+                <GooglePlacesAutocomplete
+                  value={filters.location}
+                  onChange={(value) => handleFilterChange('location', value)}
+                  placeholder="Search location (e.g., Pune, Maharashtra)"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                />
+              </div>
+
+              {/* Search button spanning two rows, vertically centered */}
+              <div className="row-span-2 flex items-center justify-center my-auto">
+                <Link href={getSearchUrl()} className="w-full">
+                  <button onClick={handleSearchClick} className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg h-[56px] flex items-center justify-center">
                     Search
                   </button>
                 </Link>
+              </div>
+
+              {/* Second row: 3 selects */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">BHK Type</label>
+                <select 
+                  value={filters.bhkType}
+                  onChange={(e) => handleFilterChange('bhkType', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                >
+                  <option value="">Select BHK</option>
+                  <option value="1_rk">1 RK</option>
+                  <option value="1_bhk">1 BHK</option>
+                  <option value="2_bhk">2 BHK</option>
+                  <option value="3_bhk">3 BHK</option>
+                  <option value="4_bhk">4 BHK</option>
+                  <option value="5_bhk">5 BHK</option>
+                  <option value="5_plus_bhk">5+ BHK</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Furnishing</label>
+                <select 
+                  value={filters.furnishingType}
+                  onChange={(e) => handleFilterChange('furnishingType', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                >
+                  <option value="">Select Furnishing</option>
+                  <option value="fully_furnished">Fully Furnished</option>
+                  <option value="semi_furnished">Semi Furnished</option>
+                  <option value="un_furnished">Unfurnished</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Rent Range</label>
+                <select 
+                  value={filters.priceRange}
+                  onChange={(e) => handleFilterChange('priceRange', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                >
+                  <option value="">Select Rent Range</option>
+                  <option value="under-15k">Under ₹15,000</option>
+                  <option value="15k-25k">₹15,000 - ₹25,000</option>
+                  <option value="25k-40k">₹25,000 - ₹40,000</option>
+                  <option value="40k-60k">₹40,000 - ₹60,000</option>
+                  <option value="60k-1lac">₹60,000 - ₹1,00,000</option>
+                  <option value="above-1lac">Above ₹1,00,000</option>
+                </select>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-4 gap-4">
+              {/* First row: Wide Location (spans 3 columns) */}
+              <div className="col-span-3 space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Location</label>
+                <GooglePlacesAutocomplete
+                  value={filters.location}
+                  onChange={(value) => handleFilterChange('location', value)}
+                  placeholder="Search location (e.g., Pune, Maharashtra)"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                />
+              </div>
+
+              {/* Search button spanning two rows, vertically centered */}
+              <div className="row-span-2 flex items-center justify-center my-auto">
+                <Link href={getSearchUrl()} className="w-full">
+                  <button onClick={handleSearchClick} className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 shadow-lg h-[56px] flex items-center justify-center">
+                    Search
+                  </button>
+                </Link>
+              </div>
+
+              {/* Second row: 3 selects */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">BHK Type</label>
+                <select 
+                  value={filters.bhkType}
+                  onChange={(e) => handleFilterChange('bhkType', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                >
+                  <option value="">Select BHK</option>
+                  <option value="1_rk">1 RK</option>
+                  <option value="1_bhk">1 BHK</option>
+                  <option value="2_bhk">2 BHK</option>
+                  <option value="3_bhk">3 BHK</option>
+                  <option value="4_bhk">4 BHK</option>
+                  <option value="5_bhk">5 BHK</option>
+                  <option value="5_plus_bhk">5+ BHK</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Furnishing</label>
+                <select 
+                  value={filters.furnishingType}
+                  onChange={(e) => handleFilterChange('furnishingType', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                >
+                  <option value="">Select Furnishing</option>
+                  <option value="fully_furnished">Fully Furnished</option>
+                  <option value="semi_furnished">Semi Furnished</option>
+                  <option value="un_furnished">Unfurnished</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Price Range</label>
+                <select 
+                  value={filters.priceRange}
+                  onChange={(e) => handleFilterChange('priceRange', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                >
+                  <option value="">Select Price Range</option>
+                  <option value="under-40">Under ₹40 Lacs</option>
+                  <option value="40-70">₹40 Lacs - ₹70 Lacs</option>
+                  <option value="70-100">₹70 Lacs - ₹1 Crore</option>
+                  <option value="100-200">₹1 Crore - ₹2 Crore</option>
+                  <option value="above-200">Above ₹2 Crore</option>
+                </select>
               </div>
             </div>
           )}

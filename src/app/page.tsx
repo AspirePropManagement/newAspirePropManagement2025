@@ -89,6 +89,17 @@ export default function HomePage() {
         <RentalPropertiesCarousel properties={rentalProperties} />
       </div>
 
+      {/* Zero Brokerage Section */}
+      <div className="mt-0">
+        <NewProjectsCarousel 
+          projects={newProjects} 
+          loading={projectsLoading}
+          title="Zero Brokerage"
+          subtitle="Discover premium properties with zero brokerage fees. Exclusive deals on verified projects."
+          shuffle={true}
+        />
+      </div>
+
       {/* Tools Section */}
       <div className="mt-0">
         <div className="container mx-auto px-4 py-8 relative z-0">

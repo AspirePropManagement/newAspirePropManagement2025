@@ -73,8 +73,9 @@ export function RecommendedPropertiesCarousel({ projects }: RecommendedPropertie
 	return (
 		<div className="bg-white border-t border-gray-200">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-xl sm:text-2xl font-bold text-gray-900">Recommended Properties</h2>
+				<div className="text-center mb-6">
+					<h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2">Zero Brokerage Home</h2>
+					<p className="text-sm sm:text-base text-gray-600">Discover premium properties with zero brokerage fees. Exclusive deals on verified projects.</p>
 				</div>
 
 				<div className="overflow-hidden">

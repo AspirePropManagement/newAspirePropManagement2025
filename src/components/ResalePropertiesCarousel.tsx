@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { XMarkIcon } from '@heroicons/react/24/solid';
+import { XMarkIcon, CheckBadgeIcon } from '@heroicons/react/24/solid';
 import { ResaleProperty } from '@/types/ResaleProperty';
+import { extractPropertyImages, getImageSrc, isBase64Image } from '@/utils/imageUtils';
 
 interface ResalePropertiesCarouselProps {
   properties: ResaleProperty[];
@@ -21,6 +22,18 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
   const [selectedProperty, setSelectedProperty] = useState<ResaleProperty | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [cardsPerSlide, setCardsPerSlide] = useState(1);
+
+  // Remove duplicates based on property ID
+  const uniqueProperties = React.useMemo(() => {
+    const seen = new Set<string>();
+    return properties.filter((property) => {
+      if (seen.has(property.id)) {
+        return false;
+      }
+      seen.add(property.id);
+      return true;
+    });
+  }, [properties]);
 
   // Update cards per slide based on screen size
   useEffect(() => {
@@ -39,15 +52,26 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
     return () => window.removeEventListener('resize', updateCardsPerSlide);
   }, []);
 
-  // Calculate how many slides we need
-  const totalSlides = Math.ceil(properties.length / cardsPerSlide);
+  // Calculate how many slides we need based on unique properties
+  const totalSlides = Math.ceil(uniqueProperties.length / cardsPerSlide);
   const maxIndex = Math.max(0, totalSlides - 1);
 
   useEffect(() => {
-    if (properties.length > 0) {
+    if (uniqueProperties.length > 0) {
       setIsLoading(false);
     }
-  }, [properties]);
+  }, [uniqueProperties.length]);
+
+  // Auto-scroll carousel (only if we have more than one slide)
+  useEffect(() => {
+    if (totalSlides <= 1 || isLoading || uniqueProperties.length <= cardsPerSlide) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 5000); // Auto-scroll every 5 seconds
+    
+    return () => clearInterval(interval);
+  }, [totalSlides, maxIndex, isLoading, uniqueProperties.length, cardsPerSlide]);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
@@ -62,31 +86,15 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
   };
 
   /**
-   * Gets the primary image for a property
+   * Gets all images for a property from all categories
    */
-  const getPropertyImage = (property: ResaleProperty): string => {
-    // Try property images first
-    if (property.property_images?.exterior?.length) {
-      return property.property_images.exterior[0];
-    }
-    if (property.property_images?.interior?.length) {
-      return property.property_images.interior[0];
-    }
-    
-    // Try general photos
-    if (property.general_photos?.exterior?.length) {
-      return property.general_photos.exterior[0];
-    }
-    if (property.general_photos?.interior?.length) {
-      return property.general_photos.interior[0];
-    }
-    
-    // Default placeholder
-    return '/placeholder-property.svg';
+  const getPropertyImages = (property: ResaleProperty): string[] => {
+    const images = extractPropertyImages(property);
+    return images.length > 0 ? images : ['/placeholder-property.svg'];
   };
 
   /**
-   * Gets all available images for a property
+   * Gets all available images for a property (legacy function - keeping for compatibility)
    */
   const getAllPropertyImages = (property: ResaleProperty): string[] => {
     const images: string[] = [];
@@ -196,7 +204,7 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
     );
   }
 
-  if (properties.length === 0) {
+  if (uniqueProperties.length === 0) {
     return (
       <div className="py-6 bg-gray-50">
         <div className="container mx-auto px-4 text-center">
@@ -257,63 +265,24 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
                       cardsPerSlide === 2 ? 'grid-cols-1 md:grid-cols-2' :
                       'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
                     }`} style={{ maxWidth: '100%' }}>
-                      {properties
+                      {uniqueProperties
                         .slice(slideIndex * cardsPerSlide, (slideIndex + 1) * cardsPerSlide)
-                        .map((property) => (
-                          <Link
-                            key={property.id}
-                            href={`/properties/resale/${property.id}`}
-                            className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 cursor-pointer block"
-                          >
-                            {/* Property Image */}
-                            <div className="relative h-48 overflow-hidden">
-                              <Image
-                                src={getPropertyImage(property)}
-                                alt={formatPropertyName(property)}
-                                fill
-                                className="object-cover group-hover:scale-110 transition-transform duration-500"
-                                onError={(e) => {
-                                  const target = e.target as HTMLImageElement;
-                                  target.src = '/placeholder-property.svg';
-                                }}
-                              />
-                              
-                              {/* Price Badge */}
-                              <div className="absolute top-3 right-3">
-                                <span className="bg-green-600 text-white text-sm px-2 py-1 rounded-full font-semibold shadow-lg">
-                                  {formatPrice(property.asking_price)}
-                                </span>
-                              </div>
-
-                              {/* Property Type Badge */}
-                              <div className="absolute top-3 left-3">
-                                <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-medium">
-                                  {property.bhk_type.replace('_', ' ').toUpperCase()}
-                                </span>
-                              </div>
-                            </div>
-
-                            {/* Property Details */}
-                            <div className="p-4">
-                              <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors duration-200 line-clamp-2">
-                                {formatPropertyName(property)}
-                              </h3>
-                              
-                              <p className="text-sm text-gray-600 flex items-center">
-                                <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                                {property.location}
-                              </p>
-                            </div>
-                          </Link>
-                        ))}
+                        .map((property) => {
+                          const propertyImages = getPropertyImages(property);
+                          return (
+                            <ResalePropertyCardWithCarousel
+                              key={property.id}
+                              property={property}
+                              images={propertyImages}
+                            />
+                          );
+                        })}
                     </div>
                   </div>
                 ))}
               </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -324,7 +293,7 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
           <div className="relative max-w-4xl w-full h-full flex items-center justify-center">
             {/* Close Button */}
             <button
-              onClick={closeModal}
+              onClick={() => setSelectedProperty(null)}
               className="absolute top-4 right-4 z-20 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-2 transition-all duration-200"
             >
               <XMarkIcon className="w-6 h-6 text-white" />
@@ -334,13 +303,13 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
             {getAllPropertyImages(selectedProperty).length > 1 && (
               <>
                 <button
-                  onClick={prevImage}
+                  onClick={() => setSelectedImageIndex((prev) => (prev <= 0 ? getAllPropertyImages(selectedProperty).length - 1 : prev - 1))}
                   className="absolute left-4 z-20 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-2 transition-all duration-200"
                 >
                   <ChevronLeftIcon className="w-6 h-6 text-white" />
                 </button>
                 <button
-                  onClick={nextImage}
+                  onClick={() => setSelectedImageIndex((prev) => (prev >= getAllPropertyImages(selectedProperty).length - 1 ? 0 : prev + 1))}
                   className="absolute right-4 z-20 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-2 transition-all duration-200"
                 >
                   <ChevronRightIcon className="w-6 h-6 text-white" />
@@ -348,36 +317,161 @@ export function ResalePropertiesCarousel({ properties }: ResalePropertiesCarouse
               </>
             )}
 
-            {/* Main Image */}
-            <div className="relative w-full h-full max-h-[80vh] max-w-[90vw]">
-              <Image
-                src={getAllPropertyImages(selectedProperty)[selectedImageIndex]}
-                alt={formatPropertyName(selectedProperty)}
-                fill
-                className="object-contain"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/placeholder-property.svg';
-                }}
-              />
-            </div>
-
-            {/* Property Info Overlay */}
-            <div className="absolute bottom-4 left-4 right-4 bg-black bg-opacity-60 text-white p-4 rounded-lg">
-              <h3 className="text-xl font-bold mb-2">{formatPropertyName(selectedProperty)}</h3>
-              <p className="text-sm mb-1">{selectedProperty.location}</p>
-              <p className="text-lg font-semibold text-green-400">{formatPrice(selectedProperty.asking_price)}</p>
-              
-              {/* Image Counter */}
-              {getAllPropertyImages(selectedProperty).length > 1 && (
-                <p className="text-xs text-gray-300 mt-2">
-                  {selectedImageIndex + 1} of {getAllPropertyImages(selectedProperty).length}
-                </p>
-              )}
-            </div>
+            {/* Image Display */}
+            <Image
+              src={getAllPropertyImages(selectedProperty)[selectedImageIndex] || '/placeholder-property.svg'}
+              alt="Property"
+              fill
+              className="object-contain"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/placeholder-property.svg';
+              }}
+            />
           </div>
         </div>
       )}
     </>
+  );
+}
+
+/**
+ * Resale property card component with image carousel
+ */
+function ResalePropertyCardWithCarousel({ property, images }: { property: ResaleProperty; images: string[] }) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Auto-scroll images
+  useEffect(() => {
+    if (images.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, 3000); // Change image every 3 seconds
+    
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  const formatPrice = (price?: number) => {
+    if (!price || price <= 0) return 'Price on request';
+    if (price >= 10000000) return `₹${(price / 10000000).toFixed(2)} Cr`;
+    if (price >= 100000) return `₹${(price / 100000).toFixed(2)} Lacs`;
+    return `₹${price.toLocaleString('en-IN')}`;
+  };
+
+  const formatPropertyName = (property: ResaleProperty) => {
+    return property.society_name || property.property_type?.replace('_', ' ') || 'Resale Property';
+  };
+
+  const getBHKConfig = () => {
+    const bhkMap: { [key: string]: string } = {
+      '1_rk_1_bhk': '1 RK / 1 BHK',
+      '1_rk': '1 RK',
+      '1_bhk': '1 BHK',
+      '2_bhk': '2 BHK',
+      '3_bhk': '3 BHK',
+      '4_bhk': '4 BHK',
+      '5_bhk': '5 BHK',
+      '5_plus_bhk': '5+ BHK'
+    };
+    return bhkMap[property.bhk_type] || property.bhk_type.replace('_', ' ').toUpperCase();
+  };
+
+  return (
+    <Link
+      href={`/properties/resale/${property.id}`}
+      className="group bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl hover:border-gray-200 will-change-transform"
+    >
+      {/* Property Image Carousel */}
+      <div className="relative h-48 overflow-hidden">
+        <div className="relative w-full h-full">
+          {images.map((imageSrc, index) => (
+            <Image
+              key={index}
+              src={getImageSrc(imageSrc)}
+              alt={formatPropertyName(property)}
+              fill
+              className={`object-cover transition-opacity duration-500 ${
+                index === currentImageIndex ? 'opacity-100' : 'opacity-0 absolute'
+              }`}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/placeholder-property.svg';
+              }}
+              unoptimized={isBase64Image(imageSrc)}
+            />
+          ))}
+        </div>
+        {/* Soft overlay on hover for depth */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Verified Badge */}
+        <div className="absolute bottom-3 left-3">
+          <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium flex items-center shadow">
+            <CheckBadgeIcon className="w-3.5 h-3.5 mr-1 text-white" />
+            100% Verified
+          </span>
+        </div>
+        {/* BHK Type Badge */}
+        <div className="absolute top-3 left-3">
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            {getBHKConfig()}
+          </span>
+        </div>
+        {/* Furnishing Type Badge */}
+        {property.furnishing_type && (
+          <div className="absolute top-3 right-3">
+            <span className="px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+              {property.furnishing_type.replace('_', ' ').toUpperCase()}
+            </span>
+          </div>
+        )}
+        {/* Image Dots */}
+        {images.length > 1 && (
+          <div className="absolute bottom-3 right-3">
+            <div className="flex space-x-1 bg-black/30 backdrop-blur-sm rounded-full px-2 py-1">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setCurrentImageIndex(index);
+                  }}
+                  className={`w-1.5 h-1.5 rounded-full transition-all ${
+                    index === currentImageIndex ? 'bg-white w-4' : 'bg-white/60'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Property Details */}
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-orange-600 transition-colors duration-200 line-clamp-2">
+          {formatPropertyName(property)}
+        </h3>
+
+        {/* Config */}
+        <p className="text-sm text-gray-700 mb-1">
+          {getBHKConfig()}
+        </p>
+
+        {/* Price */}
+        <p className="text-base font-bold text-gray-900 mb-2">
+          {formatPrice(property.asking_price)}
+        </p>
+        
+        {/* Location */}
+        <p className="text-sm text-gray-600 flex items-center">
+          <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          {property.location}
+        </p>
+      </div>
+    </Link>
   );
 }

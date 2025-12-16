@@ -807,36 +807,107 @@ export function PropertyForm({
         </select>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Location *
-        </label>
-        <GooglePlacesAutocomplete
-          value={formData.location}
-          onChange={(value, place) => {
-            handleInputChange('location', value);
-            // Optionally store additional place data
-            if (place) {
-              console.log('Selected place:', place);
-              // You can store place_id, coordinates, etc. if needed
-            }
-          }}
-          placeholder="Enter property location (e.g., Pune, Maharashtra)"
-          className={inputClass}
-          required
-        />
-      </div>
-
+      {/* For Rental: Left column (Society Name + Price Range), Right column (Location + Amount) */}
       {propertyType === 'rental' && (
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          {/* Left Column */}
+          <div className="w-full space-y-4 sm:space-y-6">
+            <div className="w-full">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Society Name
+              </label>
+              <input
+                type="text"
+                value={formData.societyName}
+                onChange={(e) => handleInputChange('societyName', e.target.value)}
+                className={inputClass}
+                placeholder="Enter society name"
+              />
+            </div>
+            <div className="w-full">
+              <PriceRangeSlider
+                value={formData.rentAmount}
+                onChange={(value) => handleInputChange('rentAmount', value)}
+                min={1000}
+                max={500000}
+                step={1000}
+                label="Rent Amount"
+                placeholder="Enter monthly rent amount"
+              />
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="w-full space-y-4 sm:space-y-6">
+            <div className="w-full">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Location *
+              </label>
+              <GooglePlacesAutocomplete
+                value={formData.location}
+                onChange={(value, place) => {
+                  handleInputChange('location', value);
+                  // Optionally store additional place data
+                  if (place) {
+                    console.log('Selected place:', place);
+                    // You can store place_id, coordinates, etc. if needed
+                  }
+                }}
+                placeholder="Enter property location (e.g., Pune, Maharashtra)"
+                className={inputClass}
+                required
+              />
+            </div>
+            <div className="w-full">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Rent Amount (₹)
+              </label>
+              <input
+                type="text"
+                value={formData.rentAmount ? `₹${parseFloat(formData.rentAmount).toLocaleString('en-IN')}` : ''}
+                readOnly
+                className={inputClass + ' bg-gray-50 cursor-not-allowed'}
+                placeholder="Amount will appear here"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* For non-rental: Location only */}
+      {propertyType !== 'rental' && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Location *
+          </label>
+          <GooglePlacesAutocomplete
+            value={formData.location}
+            onChange={(value, place) => {
+              handleInputChange('location', value);
+              // Optionally store additional place data
+              if (place) {
+                console.log('Selected place:', place);
+                // You can store place_id, coordinates, etc. if needed
+              }
+            }}
+            placeholder="Enter property location (e.g., Pune, Maharashtra)"
+            className={inputClass}
+            required
+          />
+        </div>
+      )}
+
+      {/* For resale: Asking Price slider */}
+      {propertyType === 'resale' && (
         <div>
           <PriceRangeSlider
-            value={formData.rentAmount}
-            onChange={(value) => handleInputChange('rentAmount', value)}
+            value={formData.askingPrice}
+            onChange={(value) => handleInputChange('askingPrice', value)}
             min={1000}
-            max={500000}
+            max={10000000}
             step={1000}
-            label="Rent Amount"
-            placeholder="Enter monthly rent amount"
+            label="Asking Price"
+            placeholder="Enter asking price"
           />
         </div>
       )}
@@ -1942,21 +2013,8 @@ export function PropertyForm({
 
   const renderRentalDetails = () => (
     <div className="space-y-4 sm:space-y-6">
-      {/* First Row - Basic Info */}
+      {/* First Row - Basic Info (Society Name moved to step 1) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Society Name
-          </label>
-          <input
-            type="text"
-            value={formData.societyName}
-            onChange={(e) => handleInputChange('societyName', e.target.value)}
-            className={inputClass}
-            placeholder="Enter society name"
-          />
-        </div>
-
         <div>
           <label className={labelClass}>
             Floor Number

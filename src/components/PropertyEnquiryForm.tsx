@@ -9,6 +9,7 @@ interface PropertyEnquiryFormProps {
 	propertyType: string;
 	propertyPrice?: string;
 	propertyLocation?: string;
+	onEnquirySubmitted?: () => void;
 }
 
 /**
@@ -16,7 +17,7 @@ interface PropertyEnquiryFormProps {
  * Compact enquiry form for property detail page (right-side card)
  * Submits to the same SMTP-backed /api/enquiry endpoint
  */
-export function PropertyEnquiryForm({ propertyTitle, propertyId, propertyType, propertyPrice, propertyLocation }: PropertyEnquiryFormProps) {
+export function PropertyEnquiryForm({ propertyTitle, propertyId, propertyType, propertyPrice, propertyLocation, onEnquirySubmitted }: PropertyEnquiryFormProps) {
 	const [formData, setFormData] = useState({
 		fullName: '',
 		mobileNumber: '',
@@ -74,7 +75,11 @@ export function PropertyEnquiryForm({ propertyTitle, propertyId, propertyType, p
 			const data = await response.json();
 			if (response.ok) {
 				showToast('Enquiry sent successfully! We will contact you soon.', 'success');
-					setFormData({ fullName: '', mobileNumber: '', email: '' });
+				setFormData({ fullName: '', mobileNumber: '', email: '' });
+				// Call callback to reveal owner information
+				if (onEnquirySubmitted) {
+					onEnquirySubmitted();
+				}
 			} else {
 				showToast(data.error || 'Failed to submit enquiry. Please try again.', 'error');
 			}

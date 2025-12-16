@@ -78,13 +78,13 @@ export const HeroCarousel: React.FC = () => {
     fetchCarouselImages();
   }, []);
 
-  // Auto-rotate carousel every 5 seconds
+  // Auto-rotate carousel every 10 seconds (slower for better viewing)
   useEffect(() => {
     if (images.length <= 1) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 5000);
+    }, 10000); // Changed from 5000ms to 10000ms (10 seconds)
 
     return () => clearInterval(interval);
   }, [images.length]);

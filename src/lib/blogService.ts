@@ -23,6 +23,21 @@ export class BlogService {
     return data || []
   }
 
+  static async getBySlug(slug: string): Promise<BlogPost | null> {
+    if (!supabase) throw new Error('Database connection not available')
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('slug', slug)
+      .eq('status', 'PUBLISHED')
+      .single()
+    if (error) {
+      if (error.code === 'PGRST116') return null // No rows returned
+      throw error
+    }
+    return data as BlogPost
+  }
+
   static async create(payload: CreateBlogPost): Promise<BlogPost> {
     if (!supabase) throw new Error('Database connection not available')
     const { data, error } = await supabase

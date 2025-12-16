@@ -44,6 +44,7 @@ export default function PropertyDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [enquirySubmitted, setEnquirySubmitted] = useState(false);
   // Hooks for functionality
   const { toasts, removeToast, showSuccess, showError, showInfo } = useToast();
 
@@ -154,8 +155,8 @@ export default function PropertyDetailPage() {
       price: price,
       location: property.location || property.project_location || 'Location not specified',
       bhkType: getBHKConfig(),
-      carpetArea: property.carpet_area || property.square_feet || 0,
-      squareFeet: property.square_feet || property.carpet_area || 0,
+      carpetArea: property.carpet_area ? Number(property.carpet_area) : (property.square_feet ? Number(property.square_feet) : 0),
+      squareFeet: property.square_feet ? Number(property.square_feet) : (property.carpet_area ? Number(property.carpet_area) : 0),
       propertyType: type === 'new_project' 
         ? (property.project_type?.replace('_', ' ').toUpperCase() || 'Project')
         : (property.property_type?.replace('_', ' ').toUpperCase() || 'Property'),
@@ -221,28 +222,46 @@ export default function PropertyDetailPage() {
       if (property.immediate_possession !== undefined) specs['Immediate Possession'] = property.immediate_possession ? 'Yes' : 'No';
       if (property.available_from_date) specs['Available From'] = property.available_from_date;
       if (property.tenant_type) specs['Tenant Type'] = property.tenant_type.charAt(0).toUpperCase() + property.tenant_type.slice(1);
-      if (property.submission_date) specs['Submission Date'] = property.submission_date;
-      if (property.owner_name) specs['Owner Name'] = property.owner_name;
-      if (property.owner_email) specs['Owner Email'] = property.owner_email;
-      if (property.owner_contact_no) specs['Owner Contact'] = property.owner_contact_no;
-      if (property.owner_alternate_no) specs['Owner Alternate Contact'] = property.owner_alternate_no;
+      if (property.submission_date) specs['Puggestion Date'] = property.submission_date;
+      // Owner information - only show if enquiry is submitted
+      if (enquirySubmitted) {
+        if (property.owner_name) specs['Owner Name'] = property.owner_name;
+        if (property.owner_email) specs['Owner Email'] = property.owner_email;
+        if (property.owner_contact_no) specs['Owner Contact'] = property.owner_contact_no;
+        if (property.owner_alternate_no) specs['Owner Alternate Contact'] = property.owner_alternate_no;
+      } else {
+        // Show blurred placeholder
+        if (property.owner_name) specs['Owner Name'] = '●●●●●●●●';
+        if (property.owner_email) specs['Owner Email'] = '●●●●●●●●●●●●';
+        if (property.owner_contact_no) specs['Owner Contact'] = '●●●●●●●●●●';
+        if (property.owner_alternate_no) specs['Owner Alternate Contact'] = '●●●●●●●●●●';
+      }
     }
     
     // Resale specific
     if (type === 'resale' || property.type === 'resale') {
       if (property.asking_price) specs['Asking Price'] = `₹${Number(property.asking_price).toLocaleString()}`;
-      if (property.square_feet) specs['Square Feet'] = `${property.square_feet} sq ft`;
-      if (property.carpet_area) specs['Carpet Area'] = `${property.carpet_area} sq ft`;
+      if (property.square_feet && Number(property.square_feet) > 0) specs['Square Feet'] = `${Number(property.square_feet)} sq ft`;
+      if (property.carpet_area && Number(property.carpet_area) > 0) specs['Carpet Area'] = `${Number(property.carpet_area)} sq ft`;
       if (property.maintenance_charge) specs['Maintenance Charge'] = `₹${Number(property.maintenance_charge).toLocaleString()}`;
       if (property.maintenance_frequency) specs['Maintenance Frequency'] = property.maintenance_frequency.charAt(0).toUpperCase() + property.maintenance_frequency.slice(1);
       if (property.possession_status) specs['Possession Status'] = property.possession_status.replace(/_/g, ' ');
       if (property.possession_date) specs['Possession Date'] = property.possession_date;
       if (property.available_from) specs['Available From'] = property.available_from;
-      if (property.submission_date) specs['Submission Date'] = property.submission_date;
-      if (property.seller_name) specs['Seller Name'] = property.seller_name;
-      if (property.seller_email) specs['Seller Email'] = property.seller_email;
-      if (property.seller_contact_no) specs['Seller Contact'] = property.seller_contact_no;
-      if (property.seller_alternate_no) specs['Seller Alternate Contact'] = property.seller_alternate_no;
+      if (property.submission_date) specs['Puggestion Date'] = property.submission_date;
+      // Seller information - only show if enquiry is submitted
+      if (enquirySubmitted) {
+        if (property.seller_name) specs['Seller Name'] = property.seller_name;
+        if (property.seller_email) specs['Seller Email'] = property.seller_email;
+        if (property.seller_contact_no) specs['Seller Contact'] = property.seller_contact_no;
+        if (property.seller_alternate_no) specs['Seller Alternate Contact'] = property.seller_alternate_no;
+      } else {
+        // Show blurred placeholder
+        if (property.seller_name) specs['Seller Name'] = '●●●●●●●●';
+        if (property.seller_email) specs['Seller Email'] = '●●●●●●●●●●●●';
+        if (property.seller_contact_no) specs['Seller Contact'] = '●●●●●●●●●●';
+        if (property.seller_alternate_no) specs['Seller Alternate Contact'] = '●●●●●●●●●●';
+      }
     }
     
     // New project specific
@@ -287,6 +306,8 @@ export default function PropertyDetailPage() {
       if (property.available_bhk_types && Array.isArray(property.available_bhk_types) && property.available_bhk_types.length > 0) {
         specs['Available BHK Types'] = property.available_bhk_types.join(', ');
       }
+      if (property.square_feet && Number(property.square_feet) > 0) specs['Square Feet'] = `${Number(property.square_feet)} sq ft`;
+      if (property.carpet_area && Number(property.carpet_area) > 0) specs['Carpet Area'] = `${Number(property.carpet_area)} sq ft`;
     }
     
     return specs;
@@ -619,10 +640,12 @@ export default function PropertyDetailPage() {
                     <span className="text-gray-600">BHK Type</span>
                     <span className="font-semibold text-gray-900">{getBHKConfig()}</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Carpet Area</span>
-                    <span className="font-semibold text-gray-900">{property.carpet_area || 'N/A'} sq.ft</span>
-                  </div>
+                  {property.carpet_area && property.carpet_area > 0 && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Carpet Area</span>
+                      <span className="font-semibold text-gray-900">{property.carpet_area} sq.ft</span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">{type === 'new_project' ? 'Project Type' : 'Property Type'}</span>
                     <span className="font-semibold text-gray-900">
@@ -635,27 +658,50 @@ export default function PropertyDetailPage() {
                 </div>
               </div>
 
-              {/* Price Card */}
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-100 p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                  <CurrencyRupeeIcon className="w-5 h-5 mr-2 text-green-600" />
-                  Pricing
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Price</span>
-                    <span className="font-bold text-2xl text-green-600">{getPropertyPrice()}</span>
-                  </div>
-                  {property.carpet_area && property.asking_price && (
+              {/* Price Card - For rental: Rent and Deposit in same card */}
+              {type === 'rental' ? (
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-100 p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <CurrencyRupeeIcon className="w-5 h-5 mr-2 text-green-600" />
+                    Pricing
+                  </h3>
+                  <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Price/sq.ft</span>
-                      <span className="font-semibold text-gray-900">
-                        ₹{Math.round(property.asking_price / property.carpet_area).toLocaleString()}
-                      </span>
+                      <span className="text-gray-600">Rent Amount</span>
+                      <span className="font-bold text-2xl text-green-600">{getPropertyPrice()}</span>
                     </div>
-                  )}
+                    {property.deposit_amount && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600">Deposit Amount</span>
+                        <span className="font-semibold text-xl text-gray-900">
+                          ₹{Number(property.deposit_amount).toLocaleString('en-IN')}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-100 p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <CurrencyRupeeIcon className="w-5 h-5 mr-2 text-green-600" />
+                    Pricing
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600">Price</span>
+                      <span className="font-bold text-2xl text-green-600">{getPropertyPrice()}</span>
+                    </div>
+                    {property.carpet_area && property.asking_price && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600">Price/sq.ft</span>
+                        <span className="font-semibold text-gray-900">
+                          ₹{Math.round(property.asking_price / property.carpet_area).toLocaleString()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -703,6 +749,7 @@ export default function PropertyDetailPage() {
                 propertyType={property.type}
                 propertyPrice={getPropertyPrice()}
                 propertyLocation={property.location || 'Location not specified'}
+                onEnquirySubmitted={() => setEnquirySubmitted(true)}
               />
             </div>
           </div>
@@ -735,6 +782,9 @@ export default function PropertyDetailPage() {
         }}
         amenities={getPropertyAmenities()}
         specifications={getPropertySpecifications()}
+        depositAmount={type === 'rental' ? property.deposit_amount : undefined}
+        enquirySubmitted={enquirySubmitted}
+        onEnquirySubmitted={() => setEnquirySubmitted(true)}
       />
 
       {/* Recommended Properties */}

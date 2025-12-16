@@ -210,13 +210,21 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
   // Auto-rotate carousel if multiple images
   React.useEffect(() => {
-    if (!images || images.length <= 1) return;
+    if (!images || images.length <= 1) {
+      setImageIndex(0);
+      return;
+    }
+    
+    // Reset to first image when images change
+    setImageIndex(0);
+    
     const id = setInterval(() => {
       setImageError(false);
       setImageIndex((prev) => (prev + 1) % images.length);
-    }, 4000);
+    }, 3000); // Auto-scroll every 3 seconds
+    
     return () => clearInterval(id);
-  }, [images.length]);
+  }, [images]);
 
   return (
     <div className="group bg-white rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-500 cursor-pointer relative">
@@ -248,11 +256,18 @@ export function PropertyCard({ property }: PropertyCardProps) {
         {/* Image Navigation - removed per request */}
         {/* (left/right buttons deleted) */}
 
-        {/* Property Type Badge */}
+        {/* Property Type Badge / RERA Approved Badge for New Projects */}
         <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
-          <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] sm:text-xs px-2 sm:px-3 py-1 rounded-full font-semibold shadow-lg group-hover:scale-105 transition-transform duration-300">
-            {getPropertyTypeLabel()}
-          </span>
+          {property.type === 'new_project' ? (
+            <span className="bg-gradient-to-r from-green-600 to-emerald-600 text-white text-[10px] sm:text-xs px-2 sm:px-3 py-1 rounded-full font-semibold shadow-lg group-hover:scale-105 transition-transform duration-300 flex items-center">
+              <CheckBadgeIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" />
+              RERA Approved
+            </span>
+          ) : (
+            <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] sm:text-xs px-2 sm:px-3 py-1 rounded-full font-semibold shadow-lg group-hover:scale-105 transition-transform duration-300">
+              {getPropertyTypeLabel()}
+            </span>
+          )}
         </div>
 
 

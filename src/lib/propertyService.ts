@@ -153,8 +153,18 @@ export async function createResaleProperty(data: ResalePropertyData, userId?: st
     // Optional basic fields
     if (data.alternateNumber) insertData.seller_alternate_no = data.alternateNumber;
     if (data.societyName) insertData.society_name = data.societyName;
-    if (data.squareFeet) insertData.square_feet = parseInt(data.squareFeet);
-    if (data.carpetArea) insertData.carpet_area = parseInt(data.carpetArea);
+    if (data.squareFeet && data.squareFeet.trim() !== '') {
+      const squareFeetValue = parseInt(data.squareFeet, 10);
+      if (!isNaN(squareFeetValue) && squareFeetValue > 0) {
+        insertData.square_feet = squareFeetValue;
+      }
+    }
+    if (data.carpetArea && data.carpetArea.trim() !== '') {
+      const carpetAreaValue = parseInt(data.carpetArea, 10);
+      if (!isNaN(carpetAreaValue) && carpetAreaValue > 0) {
+        insertData.carpet_area = carpetAreaValue;
+      }
+    }
     if (data.floorNo) insertData.floor_no = data.floorNo;
     if (data.facing) insertData.facing = data.facing;
     if (data.parkingType) insertData.parking_type = data.parkingType;
@@ -410,8 +420,18 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     }
 
     // Property details fields
-    if ((data as any).carpetArea) insertData.carpet_area = parseFloat((data as any).carpetArea);
-    if ((data as any).squareFeet) insertData.square_feet = parseFloat((data as any).squareFeet);
+    if ((data as any).carpetArea && String((data as any).carpetArea).trim() !== '') {
+      const carpetAreaValue = parseFloat(String((data as any).carpetArea));
+      if (!isNaN(carpetAreaValue) && carpetAreaValue > 0) {
+        insertData.carpet_area = carpetAreaValue;
+      }
+    }
+    if ((data as any).squareFeet && String((data as any).squareFeet).trim() !== '') {
+      const squareFeetValue = parseFloat(String((data as any).squareFeet));
+      if (!isNaN(squareFeetValue) && squareFeetValue > 0) {
+        insertData.square_feet = squareFeetValue;
+      }
+    }
     if ((data as any).propertyAge) insertData.property_age = (data as any).propertyAge;
     if ((data as any).floorNo) insertData.floor_no = (data as any).floorNo;
     if ((data as any).facing) insertData.facing = (data as any).facing;
