@@ -60,7 +60,7 @@ export default function HomePage() {
       <div className="h-48 sm:h-56 md:h-40 lg:h-32"></div>
 
       {/* New Projects Section */}
-      <div className="mt-0 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
+      <div className="mt-0 pt-24 sm:pt-20 md:pt-24 lg:pt-28">
         <NewProjectsCarousel projects={newProjects} loading={projectsLoading} />
       </div>
 
