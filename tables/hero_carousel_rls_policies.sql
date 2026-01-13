@@ -4,6 +4,13 @@
 -- Enable RLS on the table
 ALTER TABLE hero_carousel_images ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist (to avoid conflicts)
+DROP POLICY IF EXISTS "Allow anonymous users to view active hero carousel images" ON hero_carousel_images;
+DROP POLICY IF EXISTS "Allow authenticated users to view all hero carousel images" ON hero_carousel_images;
+DROP POLICY IF EXISTS "Allow authenticated users to insert hero carousel images" ON hero_carousel_images;
+DROP POLICY IF EXISTS "Allow authenticated users to update hero carousel images" ON hero_carousel_images;
+DROP POLICY IF EXISTS "Allow authenticated users to delete hero carousel images" ON hero_carousel_images;
+
 -- Policy to allow anonymous users to SELECT active images
 CREATE POLICY "Allow anonymous users to view active hero carousel images"
 ON hero_carousel_images
