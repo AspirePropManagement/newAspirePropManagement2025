@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { ServicesService } from '@/lib/serviceService';
+import { ServicesService as ServiceServicePublic } from '@/lib/serviceService';
+import { ServicesService } from '@/lib/servicesService';
 import { Service } from '@/types/Service';
 
 /**
@@ -18,7 +19,7 @@ export function useServices(limit?: number) {
     try {
       setLoading(true);
       setError(null);
-      const data = await ServicesService.getActive();
+      const data = await ServiceServicePublic.getActive();
       // Apply limit if specified
       const limitedData = limit ? data.slice(0, limit) : data;
       setServices(limitedData);
