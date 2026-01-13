@@ -241,7 +241,7 @@ export function TopBuildersCarousel() {
   }
 
   return (
-    <div className="py-6 bg-white">
+    <div className="py-2 bg-white">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">

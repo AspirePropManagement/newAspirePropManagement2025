@@ -103,7 +103,7 @@ export function PropertyEnquiryForm({ propertyTitle, propertyId, propertyType, p
 						name="fullName"
 						value={formData.fullName}
 						onChange={handleInputChange}
-						className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+						className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
 						placeholder="Enter your full name"
 						required
 					/>
@@ -117,7 +117,7 @@ export function PropertyEnquiryForm({ propertyTitle, propertyId, propertyType, p
 						name="mobileNumber"
 						value={formData.mobileNumber}
 						onChange={handleInputChange}
-						className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+						className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
 						placeholder="10-digit mobile number"
 						maxLength={10}
 						required
@@ -132,7 +132,7 @@ export function PropertyEnquiryForm({ propertyTitle, propertyId, propertyType, p
 						name="email"
 						value={formData.email}
 						onChange={handleInputChange}
-						className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+						className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
 						placeholder="Enter your email"
 						required
 					/>

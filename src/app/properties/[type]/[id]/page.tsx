@@ -161,7 +161,7 @@ export default function PropertyDetailPage() {
         ? (property.project_type?.replace('_', ' ').toUpperCase() || 'Project')
         : (property.property_type?.replace('_', ' ').toUpperCase() || 'Property'),
       status: property.status || 'Available',
-      description: property.description || property.notes || property.other_notes || 'No description available',
+      description: property.description || property.notes || property.project_description || 'No description available',
       id: property.id,
       type: type as string
     };
@@ -277,7 +277,7 @@ export default function PropertyDetailPage() {
       if (property.flats_per_floor) specs['Flats per Floor'] = property.flats_per_floor;
       if (property.rooms_per_floor) specs['Rooms per Floor'] = property.rooms_per_floor;
       if (property.cp_sables) specs['CP Sables'] = property.cp_sables;
-      if (property.other_notes) specs['Other Notes'] = property.other_notes;
+      if (property.project_description) specs['Project Description'] = property.project_description;
       if (property.contact_name_1) specs['Contact Name 1'] = property.contact_name_1;
       if (property.contact_number_1) specs['Contact Number 1'] = property.contact_number_1;
       if (property.contact_name_2) specs['Contact Name 2'] = property.contact_name_2;
@@ -307,7 +307,7 @@ export default function PropertyDetailPage() {
         specs['Available BHK Types'] = property.available_bhk_types.join(', ');
       }
       if (property.square_feet && Number(property.square_feet) > 0) specs['Square Feet'] = `${Number(property.square_feet)} sq ft`;
-      if (property.carpet_area && Number(property.carpet_area) > 0) specs['Carpet Area'] = `${Number(property.carpet_area)} sq ft`;
+      if (property.carpet_area && Number(property.carpet_area) > 0) specs['Starting Carpet'] = `${Number(property.carpet_area)} sq ft`;
     }
     
     return specs;
@@ -642,7 +642,7 @@ export default function PropertyDetailPage() {
                   </div>
                   {property.carpet_area && property.carpet_area > 0 && (
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Carpet Area</span>
+                      <span className="text-gray-600">{type === 'new_project' ? 'Starting Carpet' : 'Carpet Area'}</span>
                       <span className="font-semibold text-gray-900">{property.carpet_area} sq.ft</span>
                     </div>
                   )}
@@ -686,6 +686,11 @@ export default function PropertyDetailPage() {
                     <CurrencyRupeeIcon className="w-5 h-5 mr-2 text-green-600" />
                     Pricing
                   </h3>
+                  {type === 'new_project' && (
+                    <div className="mb-3">
+                      <p className="text-sm text-gray-600 italic">As per vastu compliances</p>
+                    </div>
+                  )}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600">Price</span>

@@ -444,7 +444,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             // Project details
             rooms_per_floor: updatedProperty.rooms_per_floor,
             cp_sables: updatedProperty.cp_sables,
-            other_notes: updatedProperty.other_notes,
+            project_description: updatedProperty.project_description,
             is_govt_approved: updatedProperty.is_govt_approved,
             is_rera_approved: updatedProperty.is_rera_approved,
             loan_available: updatedProperty.loan_available,
@@ -1589,14 +1589,14 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Other Notes
+                      Project Description
                     </label>
                     <textarea
-                      value={formData.other_notes || ''}
-                      onChange={(e) => handleInputChange('other_notes', e.target.value)}
+                      value={formData.project_description || formData.other_notes || ''}
+                      onChange={(e) => handleInputChange('project_description', e.target.value)}
                       className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-vertical"
                       rows={3}
-                      placeholder="Any additional notes about the project"
+                      placeholder="Enter project description"
                     />
                   </div>
 

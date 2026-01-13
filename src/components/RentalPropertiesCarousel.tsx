@@ -71,7 +71,7 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
       } else if (window.innerWidth < 1024) {
         setCardsPerSlide(2); // Tablet: 2 cards
       } else {
-        setCardsPerSlide(4); // Desktop: 4 cards
+        setCardsPerSlide(3); // Desktop: 3 cards (wider cards)
       }
     };
 
@@ -153,7 +153,7 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
 
   if (isLoading) {
     return (
-      <div className="py-6 bg-gray-50">
+      <div className="py-2 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <div className="animate-pulse">
@@ -161,7 +161,7 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
               <div className="h-4 bg-gray-200 rounded w-96 mx-auto"></div>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(4)].map((_, index) => (
               <div key={index} className="animate-pulse">
                 <div className="bg-gray-200 rounded-lg h-48 mb-4"></div>
@@ -177,7 +177,7 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
 
   if (uniqueProperties.length === 0) {
     return (
-      <div className="py-6 bg-gray-50">
+      <div className="py-2 bg-gray-50">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Rental Properties</h2>
           <p className="text-gray-600">No rental properties available at the moment.</p>
@@ -187,7 +187,7 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
   }
 
   return (
-    <div className="py-6 bg-white">
+    <div className="py-2 bg-white">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -198,7 +198,7 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
         </div>
 
         {/* Carousel Container */}
-        <div className="relative mb-8">
+        <div className="relative">
           {/* Navigation Buttons */}
           {totalSlides > 1 && (
             <>
@@ -230,9 +230,9 @@ export function RentalPropertiesCarousel({ properties }: RentalPropertiesCarouse
             >
               {Array.from({ length: totalSlides }, (_, slideIndex) => (
                 <div key={slideIndex} className="w-full flex-shrink-0" style={{ maxWidth: '100%' }}>
-                  <div className={`grid gap-3 sm:gap-4 md:gap-6 px-1 sm:px-2 pb-8 ${
+                  <div className={`grid gap-3 sm:gap-4 md:gap-6 px-1 sm:px-2 pb-4 ${
                     cardsPerSlide === 2 ? 'grid-cols-2 md:grid-cols-2' :
-                    'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+                    'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                   }`} style={{ maxWidth: '100%' }}>
                     {uniqueProperties
                       .slice(slideIndex * cardsPerSlide, (slideIndex + 1) * cardsPerSlide)
@@ -284,7 +284,7 @@ function RentalPropertyCardWithCarousel({ property, images }: { property: Rental
   return (
     <Link
       href={`/properties/rental/${property.id}`}
-      className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-105 hover:-translate-y-2"
+      className="group bg-white rounded-t-lg border border-gray-100 overflow-hidden transform transition-all duration-300 hover:scale-105 hover:-translate-y-2 will-change-transform"
     >
       {/* Property Image Carousel */}
       <div className="relative h-36 sm:h-44 md:h-48 overflow-hidden">
@@ -306,28 +306,21 @@ function RentalPropertyCardWithCarousel({ property, images }: { property: Rental
             />
           ))}
         </div>
-        {/* Verified Badge */}
-        <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
-          <span className="bg-green-600 text-white text-[8px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full font-medium flex items-center shadow">
-            <CheckBadgeIcon className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 mr-0.5 sm:mr-1 text-white" />
-            <span className="hidden sm:inline">100% </span>Verified
-          </span>
-        </div>
         {/* Status Badge */}
         {property.status && (
-          <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
-            <span className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium ${
+          <div className="absolute top-2 left-2">
+            <span className={`px-1.5 py-0.5 rounded text-[9px] font-medium ${
               property.status === 'available' 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-gray-100 text-gray-800'
+                ? 'bg-green-600 text-white' 
+                : 'bg-gray-600 text-white'
             }`}>
               {property.status.charAt(0).toUpperCase() + property.status.slice(1).toLowerCase()}
             </span>
           </div>
         )}
         {/* Furnishing Badge */}
-        <div className="absolute top-2 right-2 sm:top-3 sm:right-3">
-          <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-blue-100 text-blue-800">
+        <div className="absolute top-2 right-2">
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-600 text-white">
             {property.furnishing_type.replace('_', ' ').toUpperCase()}
           </span>
         </div>

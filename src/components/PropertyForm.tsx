@@ -284,6 +284,7 @@ interface FormData {
   websiteUrl: string;
   brochureUrl: string;
   roomsPerFloor: string;
+  openSpace: string;
   cpSables: string;
   unitsAvailableForSale: string;
   contactName1: string;
@@ -415,6 +416,7 @@ export function PropertyForm({
     websiteUrl: '',
     brochureUrl: '',
     roomsPerFloor: '',
+    openSpace: '',
     cpSables: '',
     unitsAvailableForSale: '',
     contactName1: '',
@@ -874,8 +876,8 @@ export function PropertyForm({
         </div>
       )}
 
-      {/* For non-rental: Location only */}
-      {propertyType !== 'rental' && (
+      {/* For non-rental and non-resale: Location only */}
+      {propertyType !== 'rental' && propertyType !== 'resale' && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Location *
@@ -898,20 +900,6 @@ export function PropertyForm({
       )}
 
       {/* For resale: Asking Price slider */}
-      {propertyType === 'resale' && (
-        <div>
-          <PriceRangeSlider
-            value={formData.askingPrice}
-            onChange={(value) => handleInputChange('askingPrice', value)}
-            min={1000}
-            max={10000000}
-            step={1000}
-            label="Asking Price"
-            placeholder="Enter asking price"
-          />
-        </div>
-      )}
-
       {propertyType === 'resale' && (
         <div>
           <PriceRangeSlider
@@ -1089,52 +1077,19 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Available BHK Types */}
-      <div>
-        <label className={labelClass}>
-          Available BHK Types *
-        </label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-2">
-          {['1_rk', '1_bhk', '2_bhk', '3_bhk', '4_bhk', '5_bhk', '5_plus_bhk'].map((bhk) => (
-            <label key={bhk} className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.availableBhkTypes.includes(bhk)}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setFormData((prev: FormData) => ({
-                      ...prev,
-                      availableBhkTypes: [...prev.availableBhkTypes, bhk]
-                    }));
-                  } else {
-                    setFormData((prev: FormData) => ({
-                      ...prev,
-                      availableBhkTypes: prev.availableBhkTypes.filter(type => type !== bhk)
-                    }));
-                  }
-                }}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded flex-shrink-0"
-              />
-              <span className="text-xs sm:text-sm text-gray-700">
-                {bhk.replace('_', ' ').toUpperCase()}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
 
       {/* Property Details */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
-            Carpet Area (sq ft)
+            Carpet Area as per RERA (sq ft)
           </label>
           <input
             type="number"
             value={formData.carpetArea}
             onChange={(e) => handleInputChange('carpetArea', e.target.value)}
             className={inputClass}
-            placeholder="Enter carpet area"
+            placeholder="Enter carpet area as per RERA"
           />
         </div>
 
@@ -1152,109 +1107,6 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Property Details Row 2 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Floor Number
-          </label>
-          <input
-            type="text"
-            value={formData.floorNo}
-            onChange={(e) => handleInputChange('floorNo', e.target.value)}
-            className={inputClass}
-            placeholder="e.g., 5th Floor, Ground Floor"
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Facing Direction
-          </label>
-          <select
-            value={formData.facing}
-            onChange={(e) => handleInputChange('facing', e.target.value)}
-            className={selectClass}
-          >
-            <option value="">Select Facing</option>
-            <option value="north">North</option>
-            <option value="south">South</option>
-            <option value="east">East</option>
-            <option value="west">West</option>
-            <option value="north_east">North East</option>
-            <option value="north_west">North West</option>
-            <option value="south_east">South East</option>
-            <option value="south_west">South West</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Property Details Row 3 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Society Name
-          </label>
-          <input
-            type="text"
-            value={formData.societyName}
-            onChange={(e) => handleInputChange('societyName', e.target.value)}
-            className={inputClass}
-            placeholder="Enter society or building name"
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Parking Type
-          </label>
-          <select
-            value={formData.parkingType}
-            onChange={(e) => handleInputChange('parkingType', e.target.value)}
-            className={selectClass}
-          >
-            <option value="">Select Parking Type</option>
-            <option value="covered_parking">Covered Parking</option>
-            <option value="open_parking">Open Parking</option>
-            <option value="shed_parking">Shed Parking</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Property Details Row 4 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Furnishing Type
-          </label>
-          <select
-            value={formData.furnishingType}
-            onChange={(e) => handleInputChange('furnishingType', e.target.value)}
-            className={selectClass}
-          >
-            <option value="">Select Furnishing Type</option>
-            <option value="fully_furnished">Fully Furnished</option>
-            <option value="semi_furnished">Semi Furnished</option>
-            <option value="un_furnished">Unfurnished</option>
-          </select>
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Property Age
-          </label>
-          <select
-            value={formData.propertyAge}
-            onChange={(e) => handleInputChange('propertyAge', e.target.value)}
-            className={selectClass}
-          >
-            <option value="">Select Property Age</option>
-            <option value="under_construction">Under Construction</option>
-            <option value="ready_to_move">Ready to Move</option>
-            <option value="partial_ready_to_move">Partial Ready to Move</option>
-          </select>
-        </div>
-      </div>
 
       {/* Description */}
       <div>
@@ -1299,59 +1151,8 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Sixth Row - Compliance */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Facing (As per Vastu Compliances)
-          </label>
-          <select
-            value={formData.facingVastu}
-            onChange={(e) => handleInputChange('facingVastu', e.target.value)}
-            className={selectClass}
-          >
-            <option value="">Select Facing</option>
-            <option value="north">North</option>
-            <option value="south">South</option>
-            <option value="east">East</option>
-            <option value="west">West</option>
-            <option value="northeast">North East</option>
-            <option value="northwest">North West</option>
-            <option value="southeast">South East</option>
-            <option value="southwest">South West</option>
-          </select>
-        </div>
-      </div>
 
-      {/* Seventh Row - Dates */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Puggestion Date
-          </label>
-          <input
-            type="date"
-            value={formData.puggestionDate}
-            onChange={(e) => handleInputChange('puggestionDate', e.target.value)}
-            className={inputClass}
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Puggestion Year
-          </label>
-          <input
-            type="number"
-            value={formData.puggestionYear}
-            onChange={(e) => handleInputChange('puggestionYear', e.target.value)}
-            className={inputClass}
-            placeholder="e.g., 2025"
-          />
-        </div>
-      </div>
-
-      {/* Eighth Row - Launch and Possession Dates */}
+      {/* Seventh Row - Launch and Possession Dates */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
@@ -1367,7 +1168,7 @@ export function PropertyForm({
 
         <div>
           <label className={labelClass}>
-            Possession Date
+            Possession Date as per RERA
           </label>
           <input
             type="date"
@@ -1378,47 +1179,34 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Ninth Row - Pricing and URLs */}
+      {/* Possession Year as per RERA */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
-            Minimum Price (₹)
+            Possession Year as per RERA
+          </label>
+          <input
+            type="number"
+            value={formData.puggestionYear}
+            onChange={(e) => handleInputChange('puggestionYear', e.target.value)}
+            className={inputClass}
+            placeholder="e.g., 2025"
+          />
+        </div>
+      </div>
+
+      {/* Eighth Row - Pricing */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
+            Starting Price (₹)
           </label>
           <input
             type="number"
             value={formData.minPrice}
             onChange={(e) => handleInputChange('minPrice', e.target.value)}
             className={inputClass}
-            placeholder="Enter minimum price"
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Website URL
-          </label>
-          <input
-            type="url"
-            value={formData.websiteUrl}
-            onChange={(e) => handleInputChange('websiteUrl', e.target.value)}
-            className={inputClass}
-            placeholder="https://example.com"
-          />
-        </div>
-      </div>
-
-      {/* Tenth Row - Additional URLs and Contact Info */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Brochure URL
-          </label>
-          <input
-            type="url"
-            value={formData.brochureUrl}
-            onChange={(e) => handleInputChange('brochureUrl', e.target.value)}
-            className={inputClass}
-            placeholder="https://example.com/brochure.pdf"
+            placeholder="Enter starting price"
           />
         </div>
 
@@ -1436,94 +1224,26 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Eleventh Row - Additional Project Details */}
+      {/* Open Space Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
-            CP Sables
+            Open Space (Percentage)
           </label>
           <input
-            type="text"
-            value={formData.cpSables}
-            onChange={(e) => handleInputChange('cpSables', e.target.value)}
+            type="number"
+            value={formData.openSpace}
+            onChange={(e) => handleInputChange('openSpace', e.target.value)}
             className={inputClass}
-            placeholder="Enter CP Sables information"
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Units Available for Sale
-          </label>
-          <input
-            type="text"
-            value={formData.unitsAvailableForSale}
-            onChange={(e) => handleInputChange('unitsAvailableForSale', e.target.value)}
-            className={inputClass}
-            placeholder="e.g., 150 units"
+            placeholder="Enter open space percentage (e.g., 25)"
+            min="0"
+            max="100"
+            step="0.01"
           />
         </div>
       </div>
 
-      {/* Twelfth Row - Contact Information */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Contact Name 1
-          </label>
-          <input
-            type="text"
-            value={formData.contactName1}
-            onChange={(e) => handleInputChange('contactName1', e.target.value)}
-            className={inputClass}
-            placeholder="Primary contact person"
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Contact Number 1
-          </label>
-          <input
-            type="tel"
-            value={formData.contactNumber1}
-            onChange={(e) => handleInputChange('contactNumber1', e.target.value)}
-            className={inputClass}
-            placeholder="10-15 digit number"
-          />
-        </div>
-      </div>
-
-      {/* Thirteenth Row - Secondary Contact */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Contact Name 2
-          </label>
-          <input
-            type="text"
-            value={formData.contactName2}
-            onChange={(e) => handleInputChange('contactName2', e.target.value)}
-            className={inputClass}
-            placeholder="Secondary contact person"
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>
-            Contact Number 2
-          </label>
-          <input
-            type="tel"
-            value={formData.contactNumber2}
-            onChange={(e) => handleInputChange('contactNumber2', e.target.value)}
-            className={inputClass}
-            placeholder="10-15 digit number"
-          />
-        </div>
-      </div>
-
-      {/* Fourteenth Row - Compliance Information */}
+      {/* Ninth Row - Compliance Information */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
@@ -1537,50 +1257,21 @@ export function PropertyForm({
             placeholder="Enter RERA registration number"
           />
         </div>
-
-        <div>
-          <label className={labelClass}>
-            Project Conversion Rate
-          </label>
-          <input
-            type="text"
-            value={formData.projectConversionRate}
-            onChange={(e) => handleInputChange('projectConversionRate', e.target.value)}
-            className={inputClass}
-            placeholder="e.g., 85%"
-          />
-        </div>
       </div>
 
 
-      {/* Sixteenth Row - Notes */}
+      {/* Tenth Row - Project Description */}
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
-            Other Notes
+            Project Description
           </label>
           <textarea
             value={formData.otherNotes}
             onChange={(e) => handleInputChange('otherNotes', e.target.value)}
             className={inputClass}
             rows={3}
-            placeholder="Any additional notes about the project"
-          />
-        </div>
-      </div>
-
-      {/* Seventeenth Row - Important Notes */}
-      <div className="grid grid-cols-1 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Important Notes
-          </label>
-          <textarea
-            value={formData.importantNotes}
-            onChange={(e) => handleInputChange('importantNotes', e.target.value)}
-            className={inputClass}
-            rows={3}
-            placeholder="Important information about the project"
+            placeholder="Enter project description"
           />
         </div>
       </div>
@@ -1619,7 +1310,7 @@ export function PropertyForm({
 
   const renderResaleDetails = () => (
     <div className="space-y-4 sm:space-y-6">
-      {/* First Row - Basic Info */}
+      {/* First Row - Society Name (Left) and Location (Right) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
@@ -1636,6 +1327,27 @@ export function PropertyForm({
 
         <div>
           <label className={labelClass}>
+            Location *
+          </label>
+          <GooglePlacesAutocomplete
+            value={formData.location}
+            onChange={(value, place) => {
+              handleInputChange('location', value);
+              if (place) {
+                console.log('Selected place:', place);
+              }
+            }}
+            placeholder="Enter property location (e.g., Pune, Maharashtra)"
+            className={inputClass}
+            required
+          />
+        </div>
+      </div>
+
+      {/* Second Row - Floor Number */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div>
+          <label className={labelClass}>
             Floor Number
           </label>
           <input
@@ -1648,7 +1360,7 @@ export function PropertyForm({
         </div>
       </div>
 
-      {/* Second Row - Property Details */}
+      {/* Third Row - Property Details */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
@@ -1668,6 +1380,20 @@ export function PropertyForm({
             <option value="northwest">North West</option>
             <option value="southeast">South East</option>
             <option value="southwest">South West</option>
+            <option value="north-northeast">North-North East</option>
+            <option value="north-northwest">North-North West</option>
+            <option value="south-southeast">South-South East</option>
+            <option value="south-southwest">South-South West</option>
+            <option value="east-northeast">East-North East</option>
+            <option value="east-southeast">East-South East</option>
+            <option value="west-northwest">West-North West</option>
+            <option value="west-southwest">West-South West</option>
+            <option value="east-west">East–West</option>
+            <option value="west-east">West–East</option>
+            <option value="east-north">East + North</option>
+            <option value="east-south">East + South</option>
+            <option value="west-north">West + North</option>
+            <option value="west-south">West + South</option>
           </select>
         </div>
 
@@ -1998,14 +1724,14 @@ export function PropertyForm({
 
       <div className="col-span-2">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Notes
+          Short Property Description
         </label>
         <textarea
           value={formData.notes}
           onChange={(e) => handleInputChange('notes', e.target.value)}
           rows={4}
           className={selectClass}
-          placeholder="Additional details about the property..."
+          placeholder="Enter a short description of the property..."
         />
       </div>
     </div>

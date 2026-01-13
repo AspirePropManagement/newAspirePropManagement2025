@@ -38,7 +38,7 @@ export interface FooterConfig {
 
 export const footerConfig: FooterConfig = {
   company: {
-    name: 'ASPIRE PROP',
+    name: 'Aspire Prop Management',
     tagline: 'NO ONE TARGETS YOUR NEED BETTER',
     description: 'Your trusted partner in property management and real estate services. We provide comprehensive solutions for buyers, agents, and builders with cutting-edge technology and personalized service.',
     logo: '/logo.png'
@@ -52,7 +52,7 @@ export const footerConfig: FooterConfig = {
     facebook: '#',
     twitter: '#',
     linkedin: '#',
-    instagram: '#'
+    instagram: 'https://www.instagram.com/aspirepropmanagement?igsh=MWtya3gyb2t5NDV1cA=='
   },
   links: {
     quick: [

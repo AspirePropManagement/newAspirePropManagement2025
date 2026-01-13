@@ -111,7 +111,7 @@ export default function AdminDashboardPage() {
         const transformedNewProjects = (newProjectData || []).map(prop => ({
           ...prop,
           title: prop.project_name || 'New Project',
-          description: prop.other_notes || prop.important_notes || '',
+          description: prop.project_description || '',
           price: 0,
           type: 'new_project',
           starting_price: 0,

@@ -46,7 +46,7 @@ export function PropertyDetails({ details, specifications, className = '', depos
       value: details.propertyType || 'N/A' 
     },
     { label: 'BHK Type', value: details.bhkType || 'N/A' },
-    ...(details.carpetArea && details.carpetArea > 0 ? [{ label: 'Carpet Area', value: `${details.carpetArea} sq ft` }] : []),
+    ...(details.carpetArea && details.carpetArea > 0 ? [{ label: details.type === 'new_project' ? 'Starting Carpet' : 'Carpet Area', value: `${details.carpetArea} sq ft` }] : []),
     { label: 'Built-up Area', value: details.squareFeet && details.squareFeet > 0 ? `${details.squareFeet} sq ft` : 'N/A' },
     { label: 'Status', value: details.status || 'Available' },
     { label: 'Location', value: details.location || 'Location not specified' },

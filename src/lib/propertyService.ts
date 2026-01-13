@@ -92,6 +92,7 @@ export interface NewProjectData extends PropertyFormData {
   constructionType: string;
   projectLocation: string;
   roomsPerFloor?: string;
+  openSpace?: string;
   cpSables?: string;
   otherNotes?: string;
   contactName1?: string;
@@ -383,8 +384,9 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
 
     // Optional basic fields
     if (data.roomsPerFloor) insertData.rooms_per_floor = data.roomsPerFloor;
+    if (data.openSpace) insertData.open_space = parseFloat(data.openSpace);
     if (data.cpSables) insertData.cp_sables = data.cpSables;
-    if (data.otherNotes) insertData.other_notes = data.otherNotes;
+    if (data.otherNotes) insertData.project_description = data.otherNotes;
     if (data.contactName1 || data.sellerName) insertData.contact_name_1 = data.contactName1 || data.sellerName;
     if (data.contactNumber1 || data.contactNumber) insertData.contact_number_1 = data.contactNumber1 || data.contactNumber;
     if (data.contactName2) insertData.contact_name_2 = data.contactName2;
@@ -394,7 +396,6 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     insertData.is_rera_approved = false;
     insertData.loan_available = false;
     insertData.social_media_marketing_allowed = false;
-    if (data.importantNotes) insertData.important_notes = data.importantNotes;
     if (data.unitsAvailableForSale) insertData.units_available_for_sale = data.unitsAvailableForSale;
     if (data.reraNumber) insertData.rera_number = data.reraNumber;
     if (data.projectConversionRate) insertData.project_conversion_rate = data.projectConversionRate;

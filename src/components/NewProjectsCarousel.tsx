@@ -105,7 +105,7 @@ export function NewProjectsCarousel({ projects, loading = false, title = 'New Pr
       } else if (window.innerWidth < 1024) {
         setCardsPerSlide(2); // Tablet: 2 cards
       } else {
-        setCardsPerSlide(4); // Desktop: 4 cards
+        setCardsPerSlide(3); // Desktop: 3 cards (wider cards)
       }
     };
 
@@ -194,7 +194,7 @@ export function NewProjectsCarousel({ projects, loading = false, title = 'New Pr
 
   if (loading) {
     return (
-      <div className="py-16 bg-white">
+      <div className="py-2 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <div className="animate-pulse">
@@ -202,7 +202,7 @@ export function NewProjectsCarousel({ projects, loading = false, title = 'New Pr
               <div className="h-4 bg-gray-200 rounded w-96 mx-auto"></div>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(4)].map((_, index) => (
               <div key={index} className="animate-pulse">
                 <div className="bg-gray-200 rounded-lg h-48 mb-4"></div>
@@ -218,7 +218,7 @@ export function NewProjectsCarousel({ projects, loading = false, title = 'New Pr
 
   if (uniqueProjects.length === 0 && !loading) {
     return (
-      <div className="py-16 bg-white">
+      <div className="py-2 bg-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">New Projects</h2>
           <p className="text-gray-600 mb-6">No new projects available at the moment.</p>
@@ -233,7 +233,7 @@ export function NewProjectsCarousel({ projects, loading = false, title = 'New Pr
   }
 
   return (
-    <div className="py-16 bg-white">
+    <div className="py-2 bg-white">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -244,7 +244,7 @@ export function NewProjectsCarousel({ projects, loading = false, title = 'New Pr
         </div>
 
         {/* Carousel Container */}
-        <div className="relative mb-8">
+        <div className="relative">
           {/* Navigation Buttons */}
           {totalSlides > 1 && (
             <>
@@ -276,10 +276,10 @@ export function NewProjectsCarousel({ projects, loading = false, title = 'New Pr
             >
               {Array.from({ length: totalSlides }, (_, slideIndex) => (
                 <div key={slideIndex} className="w-full flex-shrink-0" style={{ maxWidth: '100%' }}>
-                  <div className={`grid gap-4 sm:gap-6 px-1 sm:px-2 pb-8 ${
+                  <div className={`grid gap-4 sm:gap-6 px-1 sm:px-2 pb-4 ${
                     cardsPerSlide === 1 ? 'grid-cols-1' :
                     cardsPerSlide === 2 ? 'grid-cols-1 md:grid-cols-2' :
-                    'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+                    'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                   }`} style={{ maxWidth: '100%' }}>
                     {uniqueProjects
                       .slice(slideIndex * cardsPerSlide, (slideIndex + 1) * cardsPerSlide)
@@ -349,7 +349,7 @@ function ProjectCardWithImageCarousel({ project, images }: { project: NewProject
   return (
     <Link
       href={`/properties/new_project/${project.id}`}
-      className="group bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl hover:border-gray-200 will-change-transform"
+      className="group bg-white rounded-t-xl border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:border-gray-200 will-change-transform"
     >
       {/* Project Image Carousel */}
       <div className="relative h-48 overflow-hidden">
@@ -373,23 +373,16 @@ function ProjectCardWithImageCarousel({ project, images }: { project: NewProject
         </div>
         {/* Soft overlay on hover for depth */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        {/* Verified Badge */}
-        <div className="absolute bottom-3 left-3">
-          <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium flex items-center shadow">
-            <CheckBadgeIcon className="w-3.5 h-3.5 mr-1 text-white" />
-            100% Verified
-          </span>
-        </div>
         {/* RERA Approved Badge - Always shown for new projects */}
-        <div className="absolute top-3 left-3">
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 flex items-center">
-            <CheckBadgeIcon className="w-3.5 h-3.5 mr-1" />
-            RERA Approved
+        <div className="absolute top-2 left-2">
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-medium bg-green-600 text-white flex items-center shadow-sm">
+            <CheckBadgeIcon className="w-2.5 h-2.5 mr-0.5" />
+            RERA
           </span>
         </div>
         {/* Construction Type Badge */}
-        <div className="absolute top-3 right-3">
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+        <div className="absolute top-2 right-2">
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-medium bg-orange-600 text-white shadow-sm">
             {project.construction_type.replace('_', ' ').toUpperCase()}
           </span>
         </div>

@@ -221,7 +221,7 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -238,7 +238,7 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
                     placeholder="Enter your email address"
                   />
                 </div>
@@ -254,7 +254,7 @@ export default function ContactPage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
                     placeholder="Enter your phone number"
                   />
                 </div>
@@ -378,7 +378,7 @@ export default function ContactPage() {
                         value={formData.location}
                         onChange={handleLocationChange}
                         placeholder="Enter preferred location (e.g., Pune, Maharashtra)"
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg"
                         id="location"
                         name="location"
                       />
@@ -417,7 +417,7 @@ export default function ContactPage() {
                     onChange={handleInputChange}
                     required
                     rows={4}
-                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg resize-none"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-sm sm:text-base md:text-lg resize-none"
                     placeholder="Tell us how we can help you..."
                   />
                 </div>

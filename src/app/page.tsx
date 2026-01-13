@@ -15,7 +15,7 @@ import { AdsBannerSection } from '@/components/AdsBannerSection';
 import { PropertyTypesSection } from '@/components/PropertyTypesSection';
 import { ResalePropertiesCarousel } from '@/components/ResalePropertiesCarousel';
 import { useResaleProperties } from '@/hooks/useResaleProperties';
-import { ServicesCarousel } from '@/components/ServicesCarousel';
+import { ServicesGrid } from '@/components/ServicesGrid';
 import { useServices } from '@/hooks/useServices';
 import { TopBuildersCarousel } from '@/components/TopBuildersCarousel';
 
@@ -60,7 +60,7 @@ export default function HomePage() {
       <div className="h-48 sm:h-56 md:h-40 lg:h-32"></div>
 
       {/* New Projects Section */}
-      <div className="mt-24">
+      <div className="mt-0 pt-16 sm:pt-20 md:pt-24 lg:pt-28">
         <NewProjectsCarousel projects={newProjects} loading={projectsLoading} />
       </div>
 
@@ -81,7 +81,7 @@ export default function HomePage() {
 
       {/* Services Section */}
       <div className="mt-0">
-        <ServicesCarousel services={services} />
+        <ServicesGrid services={services} loading={servicesLoading} />
       </div>
 
       {/* Rental Properties Section */}
@@ -102,7 +102,7 @@ export default function HomePage() {
 
       {/* Tools Section */}
       <div className="mt-0">
-        <div className="container mx-auto px-4 py-8 relative z-0">
+        <div className="container mx-auto px-4 py-2 relative z-0">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Real Estate Tools</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
@@ -178,7 +178,7 @@ export default function HomePage() {
       </div>
 
       {/* Enquiry Form Section */}
-      <div className="mt-0 py-8 bg-white">
+      <div className="mt-0 py-2 bg-white">
         <div className="container mx-auto px-4">
           <EnquiryForm />
         </div>

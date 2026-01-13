@@ -109,7 +109,7 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
 
   if (isLoading) {
     return (
-      <div className="py-6 bg-white">
+      <div className="py-2 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <div className="animate-pulse">
@@ -132,7 +132,7 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
 
   if (services.length === 0 && !isLoading) {
     return (
-      <div className="py-6 bg-white">
+      <div className="py-2 bg-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Services</h2>
           <p className="text-gray-600">No services available at the moment.</p>
@@ -142,7 +142,7 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
   }
 
   return (
-    <div className="py-6 bg-white">
+    <div className="py-2 bg-white">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -153,7 +153,7 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
         </div>
 
         {/* Carousel Container */}
-        <div className="relative mb-8">
+        <div className="relative">
           {/* Navigation Buttons */}
           {totalSlides > 1 && (
             <>
@@ -185,7 +185,7 @@ export function ServicesCarousel({ services }: ServicesCarouselProps) {
             >
               {Array.from({ length: totalSlides }, (_, slideIndex) => (
                 <div key={slideIndex} className="w-full flex-shrink-0" style={{ maxWidth: '100%' }}>
-                  <div className={`grid gap-2 px-1 sm:px-2 pb-8 ${
+                  <div className={`grid gap-2 px-1 sm:px-2 ${
                     cardsPerSlide === 4 ? 'grid-cols-2' :
                     'grid-cols-2 md:grid-cols-3 lg:grid-cols-6'
                   }`} style={{ maxWidth: '100%' }}>

@@ -215,7 +215,7 @@ export default function AdminServicesPage() {
                         <div className="text-xs sm:text-sm text-gray-500 line-clamp-2">{s.short_description}</div>
                       </td>
                       <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-700">
-                        {s.min_price !== undefined && s.max_price !== undefined 
+                        {s.min_price != null && s.max_price != null 
                           ? `₹${s.min_price.toLocaleString('en-IN')} - ₹${s.max_price.toLocaleString('en-IN')}`
                           : 'Not set'
                         }

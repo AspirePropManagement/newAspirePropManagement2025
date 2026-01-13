@@ -76,7 +76,7 @@ export const FilterCard: React.FC = () => {
           value={filters.location}
           onChange={(value) => handleFilterChange('location', value)}
           placeholder="Search location (e.g., Pune, Maharashtra)"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         />
       </div>
 
@@ -86,7 +86,7 @@ export const FilterCard: React.FC = () => {
         <select 
           value={filters.propertyType}
           onChange={(e) => handleFilterChange('propertyType', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select Type</option>
           <option value="residence">Residence</option>
@@ -102,7 +102,7 @@ export const FilterCard: React.FC = () => {
         <select 
           value={filters.constructionType}
           onChange={(e) => handleFilterChange('constructionType', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select Status</option>
           <option value="new_launching">New Launching</option>
@@ -117,7 +117,7 @@ export const FilterCard: React.FC = () => {
         <select 
           value={filters.budget}
           onChange={(e) => handleFilterChange('budget', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select Budget</option>
           <option value="under-40">Under 40 Lacs</option>
@@ -139,7 +139,7 @@ export const FilterCard: React.FC = () => {
           value={filters.location}
           onChange={(value) => handleFilterChange('location', value)}
           placeholder="Search location (e.g., Pune, Maharashtra)"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         />
       </div>
 
@@ -149,7 +149,7 @@ export const FilterCard: React.FC = () => {
         <select 
           value={filters.bhkType}
           onChange={(e) => handleFilterChange('bhkType', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select BHK</option>
           <option value="1_rk">1 RK</option>
@@ -168,7 +168,7 @@ export const FilterCard: React.FC = () => {
         <select 
           value={filters.furnishingType}
           onChange={(e) => handleFilterChange('furnishingType', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select Furnishing</option>
           <option value="fully_furnished">Fully Furnished</option>
@@ -183,7 +183,7 @@ export const FilterCard: React.FC = () => {
         <select 
           value={filters.priceRange}
           onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select Rent Range</option>
           <option value="under-15k">Under ₹15,000</option>
@@ -206,7 +206,7 @@ export const FilterCard: React.FC = () => {
           value={filters.location}
           onChange={(value) => handleFilterChange('location', value)}
           placeholder="Search location (e.g., Pune, Maharashtra)"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         />
       </div>
 
@@ -216,7 +216,7 @@ export const FilterCard: React.FC = () => {
         <select 
           value={filters.bhkType}
           onChange={(e) => handleFilterChange('bhkType', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select BHK</option>
           <option value="1_rk">1 RK</option>
@@ -235,7 +235,7 @@ export const FilterCard: React.FC = () => {
         <select 
           value={filters.furnishingType}
           onChange={(e) => handleFilterChange('furnishingType', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select Furnishing</option>
           <option value="fully_furnished">Fully Furnished</option>
@@ -250,7 +250,7 @@ export const FilterCard: React.FC = () => {
         <select 
           value={filters.priceRange}
           onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+          className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
         >
           <option value="">Select Price Range</option>
           <option value="under-40">Under ₹40 Lacs</option>
@@ -333,7 +333,7 @@ export const FilterCard: React.FC = () => {
                   value={filters.location}
                   onChange={(value) => handleFilterChange('location', value)}
                   placeholder="Search location (e.g., Pune, Maharashtra)"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 />
               </div>
 
@@ -352,7 +352,7 @@ export const FilterCard: React.FC = () => {
                 <select 
                   value={filters.propertyType}
                   onChange={(e) => handleFilterChange('propertyType', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 >
                   <option value="">Select Type</option>
                   <option value="residence">Residence</option>
@@ -366,7 +366,7 @@ export const FilterCard: React.FC = () => {
                 <select 
                   value={filters.constructionType}
                   onChange={(e) => handleFilterChange('constructionType', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 >
                   <option value="">Select Status</option>
                   <option value="new_launching">New Launching</option>
@@ -379,7 +379,7 @@ export const FilterCard: React.FC = () => {
                 <select 
                   value={filters.budget}
                   onChange={(e) => handleFilterChange('budget', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 >
                   <option value="">Select Budget</option>
                   <option value="under-40">Under 40 Lacs</option>
@@ -399,7 +399,7 @@ export const FilterCard: React.FC = () => {
                   value={filters.location}
                   onChange={(value) => handleFilterChange('location', value)}
                   placeholder="Search location (e.g., Pune, Maharashtra)"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 />
               </div>
 
@@ -418,7 +418,7 @@ export const FilterCard: React.FC = () => {
                 <select 
                   value={filters.bhkType}
                   onChange={(e) => handleFilterChange('bhkType', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 >
                   <option value="">Select BHK</option>
                   <option value="1_rk">1 RK</option>
@@ -435,7 +435,7 @@ export const FilterCard: React.FC = () => {
                 <select 
                   value={filters.furnishingType}
                   onChange={(e) => handleFilterChange('furnishingType', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 >
                   <option value="">Select Furnishing</option>
                   <option value="fully_furnished">Fully Furnished</option>
@@ -448,7 +448,7 @@ export const FilterCard: React.FC = () => {
                 <select 
                   value={filters.priceRange}
                   onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 >
                   <option value="">Select Rent Range</option>
                   <option value="under-15k">Under ₹15,000</option>
@@ -469,7 +469,7 @@ export const FilterCard: React.FC = () => {
                   value={filters.location}
                   onChange={(value) => handleFilterChange('location', value)}
                   placeholder="Search location (e.g., Pune, Maharashtra)"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 />
               </div>
 
@@ -488,7 +488,7 @@ export const FilterCard: React.FC = () => {
                 <select 
                   value={filters.bhkType}
                   onChange={(e) => handleFilterChange('bhkType', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 >
                   <option value="">Select BHK</option>
                   <option value="1_rk">1 RK</option>
@@ -505,7 +505,7 @@ export const FilterCard: React.FC = () => {
                 <select 
                   value={filters.furnishingType}
                   onChange={(e) => handleFilterChange('furnishingType', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 >
                   <option value="">Select Furnishing</option>
                   <option value="fully_furnished">Fully Furnished</option>
@@ -518,7 +518,7 @@ export const FilterCard: React.FC = () => {
                 <select 
                   value={filters.priceRange}
                   onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
+                  className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 h-[42px]"
                 >
                   <option value="">Select Price Range</option>
                   <option value="under-40">Under ₹40 Lacs</option>

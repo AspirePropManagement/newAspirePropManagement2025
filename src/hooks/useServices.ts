@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ServicesService } from '@/lib/servicesService';
+import { ServicesService } from '@/lib/serviceService';
 import { Service } from '@/types/Service';
 
 /**
@@ -18,8 +18,10 @@ export function useServices(limit?: number) {
     try {
       setLoading(true);
       setError(null);
-      const data = await ServicesService.getActiveServices(limit);
-      setServices(data);
+      const data = await ServicesService.getActive();
+      // Apply limit if specified
+      const limitedData = limit ? data.slice(0, limit) : data;
+      setServices(limitedData);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch services';
       setError(errorMessage);

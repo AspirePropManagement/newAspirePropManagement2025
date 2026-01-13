@@ -261,7 +261,7 @@ function PropertiesListingContent() {
         const transformedNewProjects = (newProjectData || []).map(prop => ({
           ...prop,
           title: prop.project_name || 'New Project',
-          description: prop.other_notes || prop.important_notes || '',
+          description: prop.project_description || '',
           price: 0, // New projects don't have price in this schema
           type: 'new_project', // PropertyCard expects 'type' not 'property_type'
           starting_price: 0, // New projects don't have price in this schema
@@ -430,7 +430,7 @@ function PropertiesListingContent() {
         )}
         
          {/* Left Sidebar - Scrollable Filters */}
-         <div className={`w-full max-w-[320px] lg:w-80 lg:block ${showFilters ? 'block' : 'hidden'} bg-white/95 backdrop-blur-lg border-r border-gray-200/50 flex-shrink-0 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:z-30 fixed top-0 left-0 h-full z-30 overflow-y-auto shadow-2xl transform transition-transform duration-300 ease-in-out ${showFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+         <div className={`w-full max-w-[320px] lg:w-80 lg:block ${showFilters ? 'block' : 'hidden'} bg-white/95 backdrop-blur-lg border-r border-gray-200/50 flex-shrink-0 lg:z-30 fixed top-0 left-0 h-full z-30 overflow-y-auto lg:relative lg:h-auto lg:overflow-visible shadow-2xl lg:shadow-none transform transition-transform duration-300 ease-in-out ${showFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
           <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Mobile Close Button */}
             <div className="flex items-center justify-between lg:hidden">
@@ -478,7 +478,7 @@ function PropertiesListingContent() {
                 value={selectedFilters.location}
                 onChange={(value) => handleFilterChange('location', value)}
                 placeholder="Search location (e.g., Pune, Maharashtra)"
-                className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white"
+                className="w-full px-4 py-3 bg-white text-gray-900 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm backdrop-blur-sm transition-all duration-300 hover:bg-white"
               />
             </div>
 
@@ -499,7 +499,7 @@ function PropertiesListingContent() {
                       type="checkbox"
                       checked={selectedFilters.budget.includes(option.value)}
                       onChange={() => handleCheckboxChange('budget', option.value)}
-                      className="w-4 h-4 text-green-500 border-green-300 rounded focus:ring-green-500 focus:ring-2 transition-all duration-200"
+                      className="w-4 h-4 bg-white text-green-500 border-green-300 rounded focus:ring-green-500 focus:ring-2 transition-all duration-200"
                     />
                     <span className="text-sm text-gray-700 font-medium group-hover/item:text-gray-900 transition-colors duration-200">{option.label}</span>
                   </label>
@@ -530,7 +530,7 @@ function PropertiesListingContent() {
                       type="checkbox"
                       checked={selectedFilters.bhkType.includes(option.value)}
                       onChange={() => handleCheckboxChange('bhkType', option.value)}
-                      className="w-4 h-4 text-purple-500 border-purple-300 rounded focus:ring-purple-500 focus:ring-2 transition-all duration-200"
+                      className="w-4 h-4 bg-white text-purple-500 border-purple-300 rounded focus:ring-purple-500 focus:ring-2 transition-all duration-200"
                     />
                     <span className="text-sm text-gray-700 font-medium group-hover/item:text-gray-900 transition-colors duration-200">{option.label}</span>
                   </label>
@@ -557,7 +557,7 @@ function PropertiesListingContent() {
                       type="checkbox"
                       checked={selectedFilters.propertyType.includes(option.value)}
                       onChange={() => handleCheckboxChange('propertyType', option.value)}
-                      className="w-4 h-4 text-cyan-500 border-cyan-300 rounded focus:ring-cyan-500 focus:ring-2 transition-all duration-200"
+                      className="w-4 h-4 bg-white text-cyan-500 border-cyan-300 rounded focus:ring-cyan-500 focus:ring-2 transition-all duration-200"
                     />
                     <span className="text-lg">{option.icon}</span>
                     <span className="text-sm text-gray-700 font-medium group-hover/item:text-gray-900 transition-colors duration-200">{option.label}</span>
@@ -580,7 +580,7 @@ function PropertiesListingContent() {
                     type="checkbox"
                     checked={selectedFilters.listedBy.includes('builder')}
                     onChange={() => handleCheckboxChange('listedBy', 'builder')}
-                    className="w-4 h-4 text-yellow-500 border-yellow-300 rounded focus:ring-yellow-500 focus:ring-2 transition-all duration-200"
+                    className="w-4 h-4 bg-white text-yellow-500 border-yellow-300 rounded focus:ring-yellow-500 focus:ring-2 transition-all duration-200"
                   />
                   <span className="text-sm text-gray-700 font-medium group-hover/item:text-gray-900 transition-colors duration-200">🏢 Developer</span>
                 </label>
@@ -589,7 +589,7 @@ function PropertiesListingContent() {
                     type="checkbox"
                     checked={selectedFilters.listedBy.includes('individual')}
                     onChange={() => handleCheckboxChange('listedBy', 'individual')}
-                    className="w-4 h-4 text-yellow-500 border-yellow-300 rounded focus:ring-yellow-500 focus:ring-2 transition-all duration-200"
+                    className="w-4 h-4 bg-white text-yellow-500 border-yellow-300 rounded focus:ring-yellow-500 focus:ring-2 transition-all duration-200"
                   />
                   <span className="text-sm text-gray-700 font-medium group-hover/item:text-gray-900 transition-colors duration-200">👤 Individual Owner</span>
                 </label>
@@ -598,7 +598,7 @@ function PropertiesListingContent() {
                     type="checkbox"
                     checked={selectedFilters.listedBy.includes('agent')}
                     onChange={() => handleCheckboxChange('listedBy', 'agent')}
-                    className="w-4 h-4 text-yellow-500 border-yellow-300 rounded focus:ring-yellow-500 focus:ring-2 transition-all duration-200"
+                    className="w-4 h-4 bg-white text-yellow-500 border-yellow-300 rounded focus:ring-yellow-500 focus:ring-2 transition-all duration-200"
                   />
                   <span className="text-sm text-gray-700 font-medium group-hover/item:text-gray-900 transition-colors duration-200">🏘️ Real Estate Agent</span>
                 </label>
@@ -626,7 +626,7 @@ function PropertiesListingContent() {
                       type="checkbox"
                       checked={selectedFilters.ageOfProperty.includes(option.value)}
                       onChange={() => handleCheckboxChange('ageOfProperty', option.value)}
-                      className="w-4 h-4 text-teal-500 border-teal-300 rounded focus:ring-teal-500 focus:ring-2 transition-all duration-200"
+                      className="w-4 h-4 bg-white text-teal-500 border-teal-300 rounded focus:ring-teal-500 focus:ring-2 transition-all duration-200"
                     />
                     <span className="text-lg">{option.icon}</span>
                     <span className="text-sm text-gray-700 font-medium group-hover/item:text-gray-900 transition-colors duration-200">{option.label}</span>
@@ -695,7 +695,7 @@ function PropertiesListingContent() {
                   value={selectedFilters.location}
                   onChange={(value) => handleFilterChange('location', value)}
                   placeholder="Enter location (e.g., Pune)"
-                  className="w-full px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 md:py-4 border border-blue-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base bg-white/90 backdrop-blur-sm transition-all duration-300 hover:bg-white shadow-lg focus:shadow-xl"
+                  className="w-full px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 md:py-4 bg-white text-gray-900 border border-blue-200 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base backdrop-blur-sm transition-all duration-300 hover:bg-white shadow-lg focus:shadow-xl"
                 />
               </div>
             </div>

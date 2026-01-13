@@ -166,8 +166,9 @@ export interface NewProject {
   construction_type: 'new_launching' | 'under_construction' | 'ready_to_move' | 'partial_ready_to_move';
   project_location: string;
   rooms_per_floor?: string;
+  open_space?: number;
   cp_sables?: string;
-  other_notes?: string;
+  project_description?: string;
   contact_name_1?: string;
   contact_number_1?: string;
   contact_name_2?: string;
