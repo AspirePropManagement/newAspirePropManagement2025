@@ -213,7 +213,7 @@ export default function AuthPage() {
                     required={!isLogin}
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                     placeholder="First name"
                   />
                 </div>
@@ -229,7 +229,7 @@ export default function AuthPage() {
                     required={!isLogin}
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                     placeholder="Last name"
                   />
                 </div>
@@ -249,7 +249,7 @@ export default function AuthPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                 placeholder="Enter your email"
               />
             </div>
@@ -270,7 +270,7 @@ export default function AuthPage() {
                     required={!isLogin}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                     placeholder="Enter your phone number"
                   />
                 </div>
@@ -290,7 +290,7 @@ export default function AuthPage() {
                           required
                           value={agentFirmName}
                           onChange={(e) => setAgentFirmName(e.target.value)}
-                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                           placeholder="Enter firm name"
                         />
                       </div>
@@ -304,7 +304,7 @@ export default function AuthPage() {
                           type="text"
                           value={agentReraId}
                           onChange={(e) => setAgentReraId(e.target.value)}
-                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                           placeholder="Enter RERA ID/Number"
                         />
                       </div>
@@ -326,7 +326,7 @@ export default function AuthPage() {
                           min="0"
                           value={ownerPropertiesCount}
                           onChange={(e) => setOwnerPropertiesCount(e.target.value)}
-                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                           placeholder="Enter number of properties"
                         />
                       </div>
@@ -340,7 +340,7 @@ export default function AuthPage() {
                           type="text"
                           value={ownerPrimaryLocation}
                           onChange={(e) => setOwnerPrimaryLocation(e.target.value)}
-                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                           placeholder="Enter primary location"
                         />
                       </div>
@@ -362,7 +362,7 @@ export default function AuthPage() {
                           required
                           value={builderCompanyName}
                           onChange={(e) => setBuilderCompanyName(e.target.value)}
-                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                           placeholder="Enter company name"
                         />
                       </div>
@@ -376,7 +376,7 @@ export default function AuthPage() {
                           type="text"
                           value={builderReraId}
                           onChange={(e) => setBuilderReraId(e.target.value)}
-                          className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                           placeholder="Enter RERA ID/Number"
                         />
                       </div>
@@ -392,7 +392,7 @@ export default function AuthPage() {
                         min="0"
                         value={builderYearsExperience}
                         onChange={(e) => setBuilderYearsExperience(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                        className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                         placeholder="Enter years of experience"
                       />
                     </div>
@@ -415,7 +415,7 @@ export default function AuthPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-12 bg-white text-gray-900 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-sm sm:text-base"
                   placeholder="Enter your password"
                 />
                 <button

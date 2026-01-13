@@ -92,6 +92,7 @@ export const HeroCarousel: React.FC = () => {
   const fetchCarouselImages = async () => {
     try {
       setLoading(true);
+      setError(null);
       
       if (!supabase) {
         setError('Database connection not available');
@@ -105,11 +106,17 @@ export const HeroCarousel: React.FC = () => {
         .eq('is_active', true)
         .order('display_order', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error fetching carousel images:', error);
+        throw error;
+      }
+      
+      console.log('Fetched carousel images:', data?.length || 0, 'images');
       setImages(data || []);
     } catch (err) {
       console.error('Error fetching carousel images:', err);
       setError('Failed to load carousel images');
+      setImages([]);
     } finally {
       setLoading(false);
     }
