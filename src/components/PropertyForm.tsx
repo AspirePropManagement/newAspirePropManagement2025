@@ -2077,21 +2077,74 @@ export function PropertyForm({
           <div>
             <h4 className="font-medium text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">Property Details</h4>
             <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
-              <p><span className="font-medium">Society:</span> {formData.societyName || 'Not provided'}</p>
-              <p><span className="font-medium">Furnishing:</span> {formData.furnishingType ? formData.furnishingType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
-              <p><span className="font-medium">Square Feet:</span> {formData.squareFeet || 'Not provided'}</p>
-              {propertyType === 'rental' && (
-                <p><span className="font-medium">Rent:</span> ₹{formData.rentAmount || 'Not provided'}</p>
-              )}
-              {propertyType === 'resale' && (
-                <p><span className="font-medium">Price:</span> ₹{formData.askingPrice || 'Not provided'}</p>
-              )}
               {propertyType === 'new_project' && (
                 <>
                   <p><span className="font-medium">Project Name:</span> {formData.projectName || 'Not provided'}</p>
                   <p><span className="font-medium">Crafted By:</span> {formData.craftedBy || 'Not provided'}</p>
                   <p><span className="font-medium">Construction Type:</span> {formData.constructionType ? formData.constructionType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
-                  <p><span className="font-medium">Min Price:</span> ₹{formData.minPrice || 'Not provided'}</p>
+                  <p><span className="font-medium">Total Project Area:</span> {formData.totalProjectAreaSize || 'Not provided'}</p>
+                  <p><span className="font-medium">Number of Towers:</span> {formData.towersCount || 'Not provided'}</p>
+                  <p><span className="font-medium">Total Floors:</span> {formData.totalFloors || 'Not provided'}</p>
+                  <p><span className="font-medium">Flats per Floor:</span> {formData.flatsPerFloor || 'Not provided'}</p>
+                  <p><span className="font-medium">Rooms per Floor:</span> {formData.roomsPerFloor || 'Not provided'}</p>
+                  <p><span className="font-medium">ROI:</span> {formData.roi || 'Not provided'}</p>
+                  <p><span className="font-medium">Carpet Area (RERA):</span> {formData.carpetArea ? `${formData.carpetArea} sq ft` : 'Not provided'}</p>
+                  <p><span className="font-medium">Built-up Area:</span> {formData.squareFeet ? `${formData.squareFeet} sq ft` : 'Not provided'}</p>
+                  <p><span className="font-medium">Open Space:</span> {formData.openSpace ? `${formData.openSpace}%` : 'Not provided'}</p>
+                  <p><span className="font-medium">RERA Number:</span> {formData.reraNumber || 'Not provided'}</p>
+                  <p><span className="font-medium">Starting Price:</span> ₹{formData.minPrice || 'Not provided'}</p>
+                  <p><span className="font-medium">Rental Yield:</span> {formData.rentalYield ? `${formData.rentalYield}%` : 'Not provided'}</p>
+                  <p><span className="font-medium">Marketed By:</span> {formData.marketedBy || 'Not provided'}</p>
+                  <p><span className="font-medium">Launch Date:</span> {formData.launchDate || 'Not provided'}</p>
+                  <p><span className="font-medium">Possession Date:</span> {formData.possessionDate || 'Not provided'}</p>
+                  <p><span className="font-medium">Possession Year:</span> {formData.puggestionYear || 'Not provided'}</p>
+                  {formData.description && <p><span className="font-medium">Description:</span> {formData.description}</p>}
+                  {formData.otherNotes && <p><span className="font-medium">Project Description:</span> {formData.otherNotes}</p>}
+                  {formData.availableBhkTypes && formData.availableBhkTypes.length > 0 && (
+                    <p><span className="font-medium">Available BHK Types:</span> {formData.availableBhkTypes.map(b => b.replace('_', ' ').toUpperCase()).join(', ')}</p>
+                  )}
+                </>
+              )}
+              {propertyType === 'rental' && (
+                <>
+                  <p><span className="font-medium">Society:</span> {formData.societyName || 'Not provided'}</p>
+                  <p><span className="font-medium">Furnishing:</span> {formData.furnishingType ? formData.furnishingType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
+                  <p><span className="font-medium">Square Feet:</span> {formData.squareFeet || 'Not provided'}</p>
+                  <p><span className="font-medium">Carpet Area:</span> {formData.carpetArea || 'Not provided'}</p>
+                  <p><span className="font-medium">Rent:</span> ₹{formData.rentAmount || 'Not provided'}</p>
+                  <p><span className="font-medium">Deposit:</span> ₹{formData.depositAmount || 'Not provided'}</p>
+                  <p><span className="font-medium">Rent Negotiable:</span> {formData.isNegotiable ? 'Yes' : 'No'}</p>
+                  <p><span className="font-medium">Property Age:</span> {formData.propertyAge ? formData.propertyAge.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
+                  <p><span className="font-medium">Parking Type:</span> {formData.parkingType ? formData.parkingType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
+                  <p><span className="font-medium">Tenant Type:</span> {formData.tenantType ? formData.tenantType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
+                  <p><span className="font-medium">Available From:</span> {formData.availableFromDate || 'Not provided'}</p>
+                  <p><span className="font-medium">Pets Allowed:</span> {formData.petsAllowed ? 'Yes' : 'No'}</p>
+                  {formData.notes && <p><span className="font-medium">Notes:</span> {formData.notes}</p>}
+                </>
+              )}
+              {propertyType === 'resale' && (
+                <>
+                  <p><span className="font-medium">Society:</span> {formData.societyName || 'Not provided'}</p>
+                  <p><span className="font-medium">Furnishing:</span> {formData.furnishingType ? formData.furnishingType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
+                  <p><span className="font-medium">Square Feet:</span> {formData.squareFeet || 'Not provided'}</p>
+                  <p><span className="font-medium">Price:</span> ₹{formData.askingPrice || 'Not provided'}</p>
+                  <p><span className="font-medium">Price Negotiable:</span> {formData.isNegotiable ? 'Yes' : 'No'}</p>
+                  <p><span className="font-medium">Property Age:</span> {formData.propertyAge ? formData.propertyAge.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
+                  <p><span className="font-medium">Floor Number:</span> {formData.floorNo || 'Not provided'}</p>
+                  <p><span className="font-medium">Facing:</span> {formData.facing ? formData.facing.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
+                  <p><span className="font-medium">Parking Type:</span> {formData.parkingType ? formData.parkingType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
+                  <p><span className="font-medium">Ownership Type:</span> {formData.ownershipType ? formData.ownershipType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not provided'}</p>
+                  <p><span className="font-medium">Loan on Property:</span> {formData.loanOnProperty === 'true' ? 'Yes' : formData.loanOnProperty === 'false' ? 'No' : 'Not provided'}</p>
+                  {formData.loanOnProperty === 'true' && (
+                    <>
+                      <p><span className="font-medium">Loan Amount:</span> ₹{formData.loanAmount || 'Not provided'}</p>
+                      <p><span className="font-medium">Bank Name:</span> {formData.bankName || 'Not provided'}</p>
+                    </>
+                  )}
+                  <p><span className="font-medium">Flats per Floor:</span> {formData.flatsPerFloor || 'Not provided'}</p>
+                  <p><span className="font-medium">Society Area Size:</span> {formData.societyAreaSize || 'Not provided'}</p>
+                  <p><span className="font-medium">RERA ID:</span> {formData.reraId || 'Not provided'}</p>
+                  {formData.reasonForSale && <p><span className="font-medium">Reason for Sale:</span> {formData.reasonForSale}</p>}
                 </>
               )}
             </div>
@@ -2297,14 +2350,20 @@ export function PropertyForm({
               { step: 5, label: 'Review', icon: '✅' }
             ].map(({ step, label, icon }) => (
               <div key={step} className="flex flex-col items-center relative z-10">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-300 transform bg-white ${
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-300 transform ${
                   currentStep >= step 
                     ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-110' 
-                    : 'text-gray-400 border-2 border-gray-200 hover:border-gray-300'
+                    : 'bg-white text-gray-400 border-2 border-gray-200 hover:border-gray-300'
                 }`}>
-                  {currentStep > step ? '✓' : step}
+                  {currentStep > step ? (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    step
+                  )}
                 </div>
-                <span className={`text-xs mt-1 font-medium transition-colors duration-300 ${
+                <span className={`text-xs mt-1 font-medium transition-colors duration-300 whitespace-nowrap ${
                   currentStep >= step ? 'text-blue-600' : 'text-gray-500'
                 }`}>
                   {label}
@@ -2335,7 +2394,7 @@ export function PropertyForm({
         {renderStepContent()}
       
       {/* Navigation and Submit buttons - Mobile Responsive */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 pt-6 border-t border-gray-200">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 pt-6 pb-4 border-t border-gray-200">
         {currentStep > 1 && (
           <button
             type="button"

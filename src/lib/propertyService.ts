@@ -7,6 +7,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 /**
  * Helper function to get current user ID from localStorage
+ * Validates that the ID is a valid UUID format
  */
 function getCurrentUserId(): string | null {
   try {
@@ -14,11 +15,32 @@ function getCurrentUserId(): string | null {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         const user = JSON.parse(storedUser);
-        return user.id;
+        const userId = user.id;
+        
+        // Validate UUID format
+        if (userId && typeof userId === 'string') {
+          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+          if (uuidRegex.test(userId)) {
+            return userId;
+          } else {
+            console.error('Invalid user ID format in localStorage:', userId);
+            console.error('User object:', user);
+            // Clear invalid user data
+            localStorage.removeItem('user');
+            localStorage.removeItem('isAuthenticated');
+            console.warn('Cleared invalid user data from localStorage. Please login again.');
+            return null;
+          }
+        }
       }
     }
   } catch (error) {
     console.error('Error reading user from localStorage:', error);
+    // Clear corrupted data
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('user');
+      localStorage.removeItem('isAuthenticated');
+    }
   }
   return null;
 }
@@ -128,13 +150,25 @@ export interface NewProjectData extends PropertyFormData {
 export async function createResaleProperty(data: ResalePropertyData, userId?: string) {
   try {
     // Get current user ID if not provided
-    const currentUserId = userId || getCurrentUserId();
+    let currentUserId = userId || getCurrentUserId();
     if (!currentUserId) {
-      return { success: false, error: 'No user logged in. Please login first.' };
+      return { success: false, error: 'No user logged in. Please login again to refresh your session.' };
+    }
+    
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(currentUserId)) {
+      console.error('Invalid user ID format:', currentUserId);
+      // Clear invalid user data
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('user');
+        localStorage.removeItem('isAuthenticated');
+      }
+      return { success: false, error: 'Invalid user session. Please logout and login again.' };
     }
     
     console.log('Creating resale property with data:', data);
-    console.log('User ID:', currentUserId);
+    console.log('User ID (validated):', currentUserId);
     
     // Build insert data with all available fields from the actual schema
     const insertData: any = {
@@ -254,9 +288,21 @@ export async function createResaleProperty(data: ResalePropertyData, userId?: st
 export async function createRentalProperty(data: RentalPropertyData, userId?: string) {
   try {
     // Get current user ID if not provided
-    const currentUserId = userId || getCurrentUserId();
+    let currentUserId = userId || getCurrentUserId();
     if (!currentUserId) {
-      return { success: false, error: 'No user logged in. Please login first.' };
+      return { success: false, error: 'No user logged in. Please login again to refresh your session.' };
+    }
+    
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(currentUserId)) {
+      console.error('Invalid user ID format:', currentUserId);
+      // Clear invalid user data
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('user');
+        localStorage.removeItem('isAuthenticated');
+      }
+      return { success: false, error: 'Invalid user session. Please logout and login again.' };
     }
     
     // Build insert data with all available fields from the actual schema
@@ -342,13 +388,26 @@ export async function createRentalProperty(data: RentalPropertyData, userId?: st
 export async function createNewProject(data: NewProjectData, userId?: string) {
   try {
     // Get current user ID if not provided
-    const currentUserId = userId || getCurrentUserId();
+    let currentUserId = userId || getCurrentUserId();
     if (!currentUserId) {
-      return { success: false, error: 'No user logged in. Please login first.' };
+      return { success: false, error: 'No user logged in. Please login again to refresh your session.' };
+    }
+    
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(currentUserId)) {
+      console.error('Invalid user ID format:', currentUserId);
+      // Clear invalid user data
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('user');
+        localStorage.removeItem('isAuthenticated');
+      }
+      return { success: false, error: 'Invalid user session. Please logout and login again.' };
     }
     
     // Debug: Log the incoming data
     console.log('New project data received:', data);
+    console.log('User ID (validated):', currentUserId);
     
     // Validate required fields
     const projectType = data.projectType || data.propertyType;

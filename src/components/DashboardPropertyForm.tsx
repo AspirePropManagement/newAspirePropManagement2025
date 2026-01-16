@@ -100,7 +100,8 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
       return;
     }
     
-    // Double-check localStorage for user ID
+    // Get user ID from localStorage to ensure we have the correct UUID
+    let userId: string | null = null;
     try {
       const storedUser = localStorage.getItem('user');
       if (!storedUser) {
@@ -108,11 +109,20 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
         return;
       }
       const parsedUser = JSON.parse(storedUser);
-      if (!parsedUser.id) {
+      userId = parsedUser.id;
+      if (!userId || typeof userId !== 'string') {
         setSubmitError('Invalid user session. Please login again.');
         return;
       }
+      // Validate that it's a UUID format
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(userId)) {
+        console.error('User ID is not a valid UUID:', userId);
+        setSubmitError('Invalid user ID format. Please login again.');
+        return;
+      }
     } catch (error) {
+      console.error('Error reading user session:', error);
       setSubmitError('Error reading user session. Please login again.');
       return;
     }
@@ -132,13 +142,13 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
       
       switch (activeTab) {
         case 'resale':
-          result = await createResaleProperty(formData as any, user.id);
+          result = await createResaleProperty(formData as any, userId);
           break;
         case 'rental':
-          result = await createRentalProperty(formData as any, user.id);
+          result = await createRentalProperty(formData as any, userId);
           break;
         case 'new_project':
-          result = await createNewProject(formData as any, user.id);
+          result = await createNewProject(formData as any, userId);
           break;
         default:
           throw new Error('Invalid property type');
@@ -196,8 +206,20 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center ${tabSelected ? '' : 'p-2 sm:p-4'}`}>
-      <div className={`bg-white overflow-hidden ${tabSelected ? 'w-full h-full' : 'w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100'}`}>
+    <>
+      {/* Full-screen loader overlay for form submission */}
+      {isSubmitting && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[10000] flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center space-y-4 max-w-md mx-4">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-500 border-t-transparent"></div>
+            <p className="text-lg font-semibold text-gray-900">Submitting your property...</p>
+            <p className="text-sm text-gray-600 text-center">Please wait while we process your request. This may take a few moments.</p>
+          </div>
+        </div>
+      )}
+
+      <div className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center ${tabSelected ? '' : 'p-2 sm:p-4'}`}>
+      <div className={`bg-white overflow-hidden relative ${tabSelected ? 'w-full h-full' : 'w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100'}`} style={tabSelected ? { maxHeight: '100vh' } : {}}>
         {/* Header - Mobile Responsive - Only show when tabs are visible */}
         {!tabSelected && (
           <div className="flex items-center justify-between p-4 sm:p-6 md:p-8 bg-gradient-to-r from-orange-50 to-red-50 border-b border-orange-100">
@@ -269,9 +291,9 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
 
         {/* Property Form - Mobile Responsive - Only show if tab is selected */}
         {tabSelected && activeTab && (
-          <div className={`overflow-y-auto bg-gradient-to-br from-white to-gray-50 custom-scrollbar ${tabSelected ? 'h-full' : ''}`} style={tabSelected ? { height: 'calc(100vh - 80px)' } : { maxHeight: 'calc(95vh - 180px)' }}>
+          <div className="flex flex-col h-full overflow-hidden bg-gradient-to-br from-white to-gray-50" style={{ height: '100vh', maxHeight: '100vh' }}>
             {/* Form Type Heading */}
-            <div className="sticky top-0 z-10 bg-gradient-to-r from-orange-50 to-red-50 border-b border-orange-100 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex-shrink-0 bg-gradient-to-r from-orange-50 to-red-50 border-b border-orange-100 px-4 sm:px-6 py-3 sm:py-4">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg sm:rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
                   {activeTab === 'rental' && <span className="text-white text-lg sm:text-xl">🔑</span>}
@@ -289,68 +311,71 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
               </div>
             </div>
 
-            {isSubmitting ? (
-              <div className="p-4 sm:p-6 md:p-8">
-                <PropertyFormSkeleton />
-              </div>
-            ) : (
-              <div className="p-4 sm:p-6">
-                <PropertyForm
-                  propertyType={activeTab as 'resale' | 'rental' | 'new_project'}
-                  currentStep={currentStep}
-                  onSubmit={handleSubmit}
-                  onCancel={handleCancel}
-                  isLoading={isSubmitting}
-                  onNext={handleNext}
-                  onPrevious={handlePrevious}
-                />
-              </div>
-            )}
-
-            {/* Success Message - Mobile Responsive */}
-            {submitSuccess && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 m-4 sm:m-6">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
+            <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar" style={{ WebkitOverflowScrolling: 'touch', height: '0' }}>
+              {isSubmitting ? (
+                <div className="p-4 sm:p-6 md:p-8 pb-40">
+                  <PropertyFormSkeleton />
                 </div>
-                <div className="ml-3">
-                  <h3 className="text-sm sm:text-base font-medium text-green-800">
-                    Property Posted Successfully!
-                  </h3>
-                  <div className="mt-2 text-sm text-green-700">
-                    <p>Your {activeTab ? getPropertyType(activeTab).toLowerCase() : 'property'} has been submitted and is under review.</p>
+              ) : (
+                <div className="p-4 sm:p-6" style={{ paddingBottom: '200px', minHeight: '100%' }}>
+                  <PropertyForm
+                    propertyType={activeTab as 'resale' | 'rental' | 'new_project'}
+                    currentStep={currentStep}
+                    onSubmit={handleSubmit}
+                    onCancel={handleCancel}
+                    isLoading={isSubmitting}
+                    onNext={handleNext}
+                    onPrevious={handlePrevious}
+                  />
+                </div>
+              )}
+
+              {/* Success Message - Mobile Responsive */}
+              {submitSuccess && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 m-4 sm:m-6">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm sm:text-base font-medium text-green-800">
+                      Property Posted Successfully!
+                    </h3>
+                    <div className="mt-2 text-sm text-green-700">
+                      <p>Your {activeTab ? getPropertyType(activeTab).toLowerCase() : 'property'} has been submitted and is under review.</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            )}
+              )}
 
-            {/* Error Message - Mobile Responsive */}
-            {submitError && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 m-4 sm:m-6">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm sm:text-base font-medium text-red-800">
-                    Error Submitting Property
-                  </h3>
-                  <div className="mt-2 text-sm text-red-700">
-                    <p>{submitError}</p>
+              {/* Error Message - Mobile Responsive */}
+              {submitError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 m-4 sm:m-6">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm sm:text-base font-medium text-red-800">
+                      Error Submitting Property
+                    </h3>
+                    <div className="mt-2 text-sm text-red-700">
+                      <p>{submitError}</p>
+                    </div>
                   </div>
                 </div>
               </div>
+              )}
             </div>
-          )}
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

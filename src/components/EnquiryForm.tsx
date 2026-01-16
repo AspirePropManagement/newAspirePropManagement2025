@@ -111,8 +111,20 @@ export const EnquiryForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-6xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2">
+    <>
+      {/* Full-screen loader overlay */}
+      {isSubmitting && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center space-y-4">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-500 border-t-transparent"></div>
+            <p className="text-lg font-semibold text-gray-900">Submitting your enquiry...</p>
+            <p className="text-sm text-gray-600">Please wait while we process your request</p>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2">
         {/* Left Section - Promotional Content */}
         <div className="bg-gradient-to-br from-orange-50 via-orange-100 to-amber-100 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
           {/* Background Pattern */}
@@ -396,6 +408,7 @@ export const EnquiryForm: React.FC = () => {
           </form>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };

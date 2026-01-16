@@ -91,8 +91,20 @@ export function PropertyEnquiryForm({ propertyTitle, propertyId, propertyType, p
 	};
 
 	return (
-		<div className="bg-white rounded-xl shadow-md border border-gray-200 p-5">
-			<h3 className="text-xl font-semibold text-gray-900 mb-3">Enquire about this property</h3>
+		<>
+			{/* Full-screen loader overlay */}
+			{isSubmitting && (
+				<div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center">
+					<div className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center space-y-4">
+						<div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-500 border-t-transparent"></div>
+						<p className="text-lg font-semibold text-gray-900">Submitting your enquiry...</p>
+						<p className="text-sm text-gray-600">Please wait while we process your request</p>
+					</div>
+				</div>
+			)}
+
+			<div className="bg-white rounded-xl shadow-md border border-gray-200 p-5">
+				<h3 className="text-xl font-semibold text-gray-900 mb-3">Enquire about this property</h3>
 
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<div>
@@ -149,6 +161,7 @@ export function PropertyEnquiryForm({ propertyTitle, propertyId, propertyType, p
 				</button>
 			</form>
 		</div>
+		</>
 	);
 }
 

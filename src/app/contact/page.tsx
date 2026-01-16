@@ -90,8 +90,20 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      {/* Hero Section */}
+    <>
+      {/* Full-screen loader overlay for form submission */}
+      {isSubmitting && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center space-y-4 max-w-md mx-4">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-500 border-t-transparent"></div>
+            <p className="text-lg font-semibold text-gray-900">Submitting your message...</p>
+            <p className="text-sm text-gray-600 text-center">Please wait while we process your request</p>
+          </div>
+        </div>
+      )}
+
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        {/* Hero Section */}
       <div className="bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-xl">
         <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
           <div className="max-w-4xl mx-auto text-center">
@@ -535,6 +547,7 @@ export default function ContactPage() {
 
       {/* Scroll Arrow */}
       <ScrollArrow />
-    </div>
+      </div>
+    </>
   );
 }

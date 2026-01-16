@@ -59,6 +59,26 @@ export default function Navbar() {
     };
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      // Prevent background scrolling
+      document.body.style.overflow = 'hidden';
+      // Also prevent scrolling on the html element
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      // Restore scrolling when menu is closed
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
   // Handle profile dropdown toggle
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen)
@@ -120,11 +140,11 @@ export default function Navbar() {
   }
 
   return (
-    <div className="navbar bg-white shadow-lg border-b border-gray-200">
+    <div className="navbar bg-white shadow-lg border-b border-gray-200 sticky top-0 z-30">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo Section - Left Side */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1 lg:flex-none">
             {/* Bar chart/skyline icon */}
             <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
               <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -132,16 +152,16 @@ export default function Navbar() {
               </svg>
             </div>
                          {/* Logo Text */}
-             <div className="flex flex-col">
-               <h1 className="text-sm sm:text-base md:text-lg font-bold">
+             <div className="flex flex-col min-w-0">
+               <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold truncate">
                  <span className="text-gray-800">ASPIRE PROP MANAGEMENT</span>
                </h1>
-               <p className="text-xs text-gray-500 -mt-1 hidden sm:block">NO ONE TARGETS YOUR NEED BETTER</p>
+               <p className="text-[10px] sm:text-xs text-gray-500 -mt-1 hidden sm:block">NO ONE TARGETS YOUR NEED BETTER</p>
              </div>
           </div>
 
                      {/* Desktop Navigation Menu */}
-           <nav className="hidden lg:flex items-center space-x-6 ml-8">
+           <nav className="hidden lg:flex items-center space-x-6 ml-8 flex-shrink-0">
              <Link href="/" className="text-gray-700 hover:text-orange-500 transition-colors text-sm font-medium">
                Home
              </Link>
@@ -171,27 +191,32 @@ export default function Navbar() {
            </nav>
 
           {/* Mobile Menu Button */}
-          <div className="lg:hidden">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={toggleMobileMenu}
-              className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+              className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+              aria-label="Toggle mobile menu"
+              aria-expanded={isMobileMenuOpen}
             >
-              <svg
-                className={`${isMobileMenuOpen ? 'hidden' : 'block'} h-6 w-6`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              <svg
-                className={`${isMobileMenuOpen ? 'block' : 'hidden'} h-6 w-6`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              {isMobileMenuOpen ? (
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
 
@@ -315,15 +340,16 @@ export default function Navbar() {
          <div 
            className="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 lg:hidden"
            onClick={closeMobileMenu}
+           style={{ touchAction: 'none' }}
          />
        )}
 
               {/* Mobile Navigation Menu */}
-       <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:hidden fixed top-0 left-0 w-80 h-full bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
+       <div className={`lg:hidden fixed top-0 left-0 w-80 max-w-[85vw] h-full bg-white shadow-xl z-50 transition-transform duration-300 ease-in-out flex flex-col ${
          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-       }`}>
+       }`} style={{ willChange: 'transform', touchAction: 'pan-y' }}>
          {/* Mobile Menu Header */}
-         <div className="flex items-center justify-between p-4 border-b border-gray-200">
+         <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white flex-shrink-0">
            <div className="flex items-center space-x-3">
              <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -345,7 +371,13 @@ export default function Navbar() {
            </button>
          </div>
 
-         <div className="px-4 py-6 space-y-4 overflow-y-auto h-full">
+         <div className="flex-1 overflow-y-auto px-4 py-6" style={{ 
+           WebkitOverflowScrolling: 'touch',
+           overscrollBehavior: 'contain',
+           minHeight: 0,
+           paddingBottom: '100px'
+         }}>
+           <div className="space-y-4">
                       {/* Mobile Navigation Links */}
            <nav className="space-y-2">
              <Link 
@@ -437,7 +469,7 @@ export default function Navbar() {
 
            {/* Mobile User Actions */}
            {isAuthenticated && user ? (
-             <div className="pt-4 border-t border-gray-200 space-y-3">
+             <div className="pt-4 border-t border-gray-200 space-y-3 pb-4">
                <button
                  onClick={() => {
                    handleRoleNavigation()
@@ -465,7 +497,7 @@ export default function Navbar() {
                </button>
              </div>
            ) : (
-             <div className="pt-4 border-t border-gray-200">
+             <div className="pt-4 border-t border-gray-200 pb-4">
                <Link 
                  href="/auth" 
                  className="block w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-lg font-medium transition-colors text-center flex items-center justify-center"
@@ -478,6 +510,7 @@ export default function Navbar() {
                </Link>
              </div>
            )}
+           </div>
         </div>
       </div>
 
