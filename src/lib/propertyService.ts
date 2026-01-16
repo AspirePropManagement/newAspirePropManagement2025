@@ -150,7 +150,7 @@ export interface NewProjectData extends PropertyFormData {
 export async function createResaleProperty(data: ResalePropertyData, userId?: string) {
   try {
     // Get current user ID if not provided
-    let currentUserId = userId || getCurrentUserId();
+    const currentUserId = userId || getCurrentUserId();
     if (!currentUserId) {
       return { success: false, error: 'No user logged in. Please login again to refresh your session.' };
     }
@@ -288,7 +288,7 @@ export async function createResaleProperty(data: ResalePropertyData, userId?: st
 export async function createRentalProperty(data: RentalPropertyData, userId?: string) {
   try {
     // Get current user ID if not provided
-    let currentUserId = userId || getCurrentUserId();
+    const currentUserId = userId || getCurrentUserId();
     if (!currentUserId) {
       return { success: false, error: 'No user logged in. Please login again to refresh your session.' };
     }
@@ -388,7 +388,7 @@ export async function createRentalProperty(data: RentalPropertyData, userId?: st
 export async function createNewProject(data: NewProjectData, userId?: string) {
   try {
     // Get current user ID if not provided
-    let currentUserId = userId || getCurrentUserId();
+    const currentUserId = userId || getCurrentUserId();
     if (!currentUserId) {
       return { success: false, error: 'No user logged in. Please login again to refresh your session.' };
     }
