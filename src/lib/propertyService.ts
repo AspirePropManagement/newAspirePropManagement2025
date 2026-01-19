@@ -113,14 +113,9 @@ export interface NewProjectData extends PropertyFormData {
   projectType: string;
   constructionType: string;
   projectLocation: string;
-  roomsPerFloor?: string;
   openSpace?: string;
   cpSables?: string;
   otherNotes?: string;
-  contactName1?: string;
-  contactNumber1?: string;
-  contactName2?: string;
-  contactNumber2?: string;
   isGovtApproved?: boolean;
   isReraApproved?: boolean;
   loanAvailable?: boolean;
@@ -442,14 +437,9 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     };
 
     // Optional basic fields
-    if (data.roomsPerFloor) insertData.rooms_per_floor = data.roomsPerFloor;
     if (data.openSpace) insertData.open_space = parseFloat(data.openSpace);
     if (data.cpSables) insertData.cp_sables = data.cpSables;
     if (data.otherNotes) insertData.project_description = data.otherNotes;
-    if (data.contactName1 || data.sellerName) insertData.contact_name_1 = data.contactName1 || data.sellerName;
-    if (data.contactNumber1 || data.contactNumber) insertData.contact_number_1 = data.contactNumber1 || data.contactNumber;
-    if (data.contactName2) insertData.contact_name_2 = data.contactName2;
-    if (data.contactNumber2) insertData.contact_number_2 = data.contactNumber2;
     // Set compliance and approval fields as hardcoded (as requested)
     insertData.is_govt_approved = false;
     insertData.is_rera_approved = false;
@@ -464,7 +454,6 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     if ((data as any).towersCount) insertData.towers_count = parseInt((data as any).towersCount);
     if ((data as any).totalFloors) insertData.total_floors = parseInt((data as any).totalFloors);
     if ((data as any).puggestionDate) insertData.puggestion_date = (data as any).puggestionDate;
-    if ((data as any).puggestionYear) insertData.puggestion_year = parseInt((data as any).puggestionYear);
     if ((data as any).flatsPerFloor) insertData.flats_per_floor = (data as any).flatsPerFloor;
     if ((data as any).roi) insertData.roi = (data as any).roi;
     if ((data as any).rentalYield) insertData.rental_yield = parseFloat((data as any).rentalYield);

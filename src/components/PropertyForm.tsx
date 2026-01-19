@@ -263,7 +263,6 @@ interface FormData {
   marketedBy: string;
   facingVastu: string;
   puggestionDate: string;
-  puggestionYear: string;
   availableBhkTypes: string[];
   
   // Property details fields
@@ -283,14 +282,9 @@ interface FormData {
   minPrice: string;
   websiteUrl: string;
   brochureUrl: string;
-  roomsPerFloor: string;
   openSpace: string;
   cpSables: string;
   unitsAvailableForSale: string;
-  contactName1: string;
-  contactNumber1: string;
-  contactName2: string;
-  contactNumber2: string;
   reraNumber: string;
   projectConversionRate: string;
   latitude: string;
@@ -395,7 +389,6 @@ export function PropertyForm({
     marketedBy: '',
     facingVastu: '',
     puggestionDate: '',
-    puggestionYear: '',
     availableBhkTypes: [] as string[],
     
     // Property details fields
@@ -415,14 +408,9 @@ export function PropertyForm({
     minPrice: '',
     websiteUrl: '',
     brochureUrl: '',
-    roomsPerFloor: '',
     openSpace: '',
     cpSables: '',
     unitsAvailableForSale: '',
-    contactName1: '',
-    contactNumber1: '',
-    contactName2: '',
-    contactNumber2: '',
     reraNumber: '',
     projectConversionRate: '',
     latitude: '',
@@ -626,13 +614,6 @@ export function PropertyForm({
       }
       if (!formData.listedBy?.trim()) {
         errors.push('Listed by is required for new projects');
-      }
-      // Validate new project contact numbers
-      if (formData.contactNumber1 && !/^\+?[0-9]{10,15}$/.test(formData.contactNumber1)) {
-        errors.push('Contact Number 1 must be 10-15 digits (numbers only, + prefix optional)');
-      }
-      if (formData.contactNumber2 && !/^\+?[0-9]{10,15}$/.test(formData.contactNumber2)) {
-        errors.push('Contact Number 2 must be 10-15 digits (numbers only, + prefix optional)');
       }
       // Validate available BHK types
       if (!formData.availableBhkTypes || formData.availableBhkTypes.length === 0) {
@@ -1181,18 +1162,6 @@ export function PropertyForm({
 
       {/* Possession Year as per RERA */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-        <div>
-          <label className={labelClass}>
-            Possession Year as per RERA
-          </label>
-          <input
-            type="number"
-            value={formData.puggestionYear}
-            onChange={(e) => handleInputChange('puggestionYear', e.target.value)}
-            className={inputClass}
-            placeholder="e.g., 2025"
-          />
-        </div>
       </div>
 
       {/* Eighth Row - Pricing */}
@@ -1210,18 +1179,6 @@ export function PropertyForm({
           />
         </div>
 
-        <div>
-          <label className={labelClass}>
-            Rooms per Floor
-          </label>
-          <input
-            type="text"
-            value={formData.roomsPerFloor}
-            onChange={(e) => handleInputChange('roomsPerFloor', e.target.value)}
-            className={inputClass}
-            placeholder="e.g., 2, 4, 6"
-          />
-        </div>
       </div>
 
       {/* Open Space Row */}
@@ -2086,7 +2043,6 @@ export function PropertyForm({
                   <p><span className="font-medium">Number of Towers:</span> {formData.towersCount || 'Not provided'}</p>
                   <p><span className="font-medium">Total Floors:</span> {formData.totalFloors || 'Not provided'}</p>
                   <p><span className="font-medium">Flats per Floor:</span> {formData.flatsPerFloor || 'Not provided'}</p>
-                  <p><span className="font-medium">Rooms per Floor:</span> {formData.roomsPerFloor || 'Not provided'}</p>
                   <p><span className="font-medium">ROI:</span> {formData.roi || 'Not provided'}</p>
                   <p><span className="font-medium">Carpet Area (RERA):</span> {formData.carpetArea ? `${formData.carpetArea} sq ft` : 'Not provided'}</p>
                   <p><span className="font-medium">Built-up Area:</span> {formData.squareFeet ? `${formData.squareFeet} sq ft` : 'Not provided'}</p>
@@ -2097,7 +2053,6 @@ export function PropertyForm({
                   <p><span className="font-medium">Marketed By:</span> {formData.marketedBy || 'Not provided'}</p>
                   <p><span className="font-medium">Launch Date:</span> {formData.launchDate || 'Not provided'}</p>
                   <p><span className="font-medium">Possession Date:</span> {formData.possessionDate || 'Not provided'}</p>
-                  <p><span className="font-medium">Possession Year:</span> {formData.puggestionYear || 'Not provided'}</p>
                   {formData.description && <p><span className="font-medium">Description:</span> {formData.description}</p>}
                   {formData.otherNotes && <p><span className="font-medium">Project Description:</span> {formData.otherNotes}</p>}
                   {formData.availableBhkTypes && formData.availableBhkTypes.length > 0 && (

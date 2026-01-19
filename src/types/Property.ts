@@ -165,14 +165,9 @@ export interface NewProject {
   project_type: 'residence' | 'gated_community_villa_or_bungalow' | 'commercial' | 'land_or_plot';
   construction_type: 'new_launching' | 'under_construction' | 'ready_to_move' | 'partial_ready_to_move';
   project_location: string;
-  rooms_per_floor?: string;
   open_space?: number;
   cp_sables?: string;
   project_description?: string;
-  contact_name_1?: string;
-  contact_number_1?: string;
-  contact_name_2?: string;
-  contact_number_2?: string;
   is_govt_approved?: boolean;
   is_rera_approved?: boolean;
   loan_available?: boolean;
@@ -211,7 +206,6 @@ export interface NewProject {
   towers_count?: number;
   total_floors?: number;
   puggestion_date?: string;
-  puggestion_year?: number;
   flats_per_floor?: string;
   roi?: string;
   rental_yield?: number;

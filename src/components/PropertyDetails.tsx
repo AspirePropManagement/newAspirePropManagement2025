@@ -69,26 +69,62 @@ export function PropertyDetails({ details, specifications, className = '', depos
     <div className={`space-y-6 sm:space-y-8 ${className}`}>
       {/* Basic Details */}
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 p-6 sm:p-8">
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center">
-          <svg className="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-5 flex items-center">
+          <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
           </svg>
           Basic Details
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {basicDetails.map((detail, index) => (
-            <div key={index} className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-              <span className="text-sm font-medium text-gray-500 mb-2 block">{detail.label}</span>
-              <span className="text-lg sm:text-xl text-gray-900 font-semibold">{detail.value}</span>
+            <div key={index} className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 overflow-hidden">
+              <span className="text-xs sm:text-sm font-medium text-gray-500 mb-1.5 block">{detail.label}</span>
+              <span className="text-sm sm:text-base text-gray-900 font-semibold break-words line-clamp-3">{detail.value}</span>
             </div>
           ))}
         </div>
       </div>
 
+      {/* Specifications - Remove duplicates and owner info */}
+      {specifications && Object.keys(specifications).length > 0 && (
+        <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl border border-orange-100 p-6 sm:p-8">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-5 flex items-center">
+            <svg className="w-5 h-5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            Specifications
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {Object.entries(specifications)
+              .filter(([key]) => {
+                // Remove fields that are already shown in Basic Details, Pricing, or Owner Info
+                const excludedKeys = [
+                  'Property Type', 'Project Type', 'BHK Type', 'Carpet Area', 'Built-up Area', 
+                  'Square Feet', 'Status', 'Location', 'Price', 'Rent Amount', 'Deposit', 
+                  'Price Per Sq Ft', 'Owner Name', 'Owner Email', 'Owner Contact', 
+                  'Owner Alternate Contact', 'Seller Name', 'Seller Email', 'Seller Contact',
+                  'Seller Contact No', 'Seller Alternate No'
+                ];
+                return !excludedKeys.some(excluded => key.includes(excluded) || excluded.includes(key));
+              })
+              .map(([key, value]) => (
+                <div key={key} className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 overflow-hidden">
+                  <span className="text-xs sm:text-sm font-medium text-gray-500 mb-1.5 block">
+                    {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                  </span>
+                  <span className="text-sm sm:text-base font-semibold text-gray-900 break-words line-clamp-3">
+                    {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : String(value)}
+                  </span>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+
       {/* Key Features */}
       <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl border border-indigo-100 p-6 sm:p-8">
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center">
-          <svg className="w-6 h-6 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-5 flex items-center">
+          <svg className="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
           </svg>
           Key Features
@@ -108,13 +144,13 @@ export function PropertyDetails({ details, specifications, className = '', depos
             'Swimming Pool',
             'Gymnasium'
           ].map((feature, index) => (
-            <div key={index} className="flex items-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+            <div key={index} className="flex items-center p-3 sm:p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 overflow-hidden">
+              <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-100 rounded-full flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
+                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               </div>
-              <span className="text-sm sm:text-base text-gray-700 font-medium">{feature}</span>
+              <span className="text-xs sm:text-sm text-gray-700 font-medium break-words">{feature}</span>
             </div>
           ))}
         </div>
@@ -123,8 +159,8 @@ export function PropertyDetails({ details, specifications, className = '', depos
       {/* Owner Information - Single blurred card */}
       {hasOwnerInfo && (
         <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl border border-yellow-100 p-6 sm:p-8">
-          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center">
-            <svg className="w-6 h-6 mr-3 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-5 flex items-center">
+            <svg className="w-5 h-5 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
             Owner Information
@@ -137,20 +173,20 @@ export function PropertyDetails({ details, specifications, className = '', depos
               <div className="space-y-4">
                 {ownerInfo.name && (
                   <div>
-                    <span className="text-sm font-medium text-gray-500 block mb-2">Owner Name</span>
-                    <div className="text-lg font-semibold text-gray-400 blur-sm select-none">●●●●●●●●</div>
+                    <span className="text-xs sm:text-sm font-medium text-gray-500 block mb-1.5">Owner Name</span>
+                    <div className="text-sm sm:text-base font-semibold text-gray-400 blur-sm select-none">●●●●●●●●</div>
                   </div>
                 )}
                 {ownerInfo.email && (
                   <div>
-                    <span className="text-sm font-medium text-gray-500 block mb-2">Owner Email</span>
-                    <div className="text-lg font-semibold text-gray-400 blur-sm select-none">●●●●●●●●●●●●</div>
+                    <span className="text-xs sm:text-sm font-medium text-gray-500 block mb-1.5">Owner Email</span>
+                    <div className="text-sm sm:text-base font-semibold text-gray-400 blur-sm select-none">●●●●●●●●●●●●</div>
                   </div>
                 )}
                 {ownerInfo.contact && (
                   <div>
-                    <span className="text-sm font-medium text-gray-500 block mb-2">Owner Contact</span>
-                    <div className="text-lg font-semibold text-gray-400 blur-sm select-none">●●●●●●●●●●</div>
+                    <span className="text-xs sm:text-sm font-medium text-gray-500 block mb-1.5">Owner Contact</span>
+                    <div className="text-sm sm:text-base font-semibold text-gray-400 blur-sm select-none">●●●●●●●●●●</div>
                   </div>
                 )}
               </div>
@@ -164,68 +200,32 @@ export function PropertyDetails({ details, specifications, className = '', depos
             <div className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-200">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {ownerInfo.name && (
-                  <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
-                    <span className="text-sm font-medium text-gray-500 mb-2 block">Owner Name</span>
-                    <span className="text-base sm:text-lg font-semibold text-gray-900">{ownerInfo.name}</span>
+                  <div className="bg-gray-50 rounded-xl p-4 sm:p-5 overflow-hidden">
+                    <span className="text-xs sm:text-sm font-medium text-gray-500 mb-1.5 block">Owner Name</span>
+                    <span className="text-sm sm:text-base font-semibold text-gray-900 break-words">{ownerInfo.name}</span>
                   </div>
                 )}
                 {ownerInfo.email && (
-                  <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
-                    <span className="text-sm font-medium text-gray-500 mb-2 block">Owner Email</span>
-                    <span className="text-base sm:text-lg font-semibold text-gray-900 break-all">{ownerInfo.email}</span>
+                  <div className="bg-gray-50 rounded-xl p-4 sm:p-5 overflow-hidden">
+                    <span className="text-xs sm:text-sm font-medium text-gray-500 mb-1.5 block">Owner Email</span>
+                    <span className="text-sm sm:text-base font-semibold text-gray-900 break-all">{ownerInfo.email}</span>
                   </div>
                 )}
                 {ownerInfo.contact && (
-                  <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
-                    <span className="text-sm font-medium text-gray-500 mb-2 block">Owner Contact</span>
-                    <span className="text-base sm:text-lg font-semibold text-gray-900">{ownerInfo.contact}</span>
+                  <div className="bg-gray-50 rounded-xl p-4 sm:p-5 overflow-hidden">
+                    <span className="text-xs sm:text-sm font-medium text-gray-500 mb-1.5 block">Owner Contact</span>
+                    <span className="text-sm sm:text-base font-semibold text-gray-900 break-words">{ownerInfo.contact}</span>
                   </div>
                 )}
                 {ownerInfo.alternateContact && (
-                  <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
-                    <span className="text-sm font-medium text-gray-500 mb-2 block">Alternate Contact</span>
-                    <span className="text-base sm:text-lg font-semibold text-gray-900">{ownerInfo.alternateContact}</span>
+                  <div className="bg-gray-50 rounded-xl p-4 sm:p-5 overflow-hidden">
+                    <span className="text-xs sm:text-sm font-medium text-gray-500 mb-1.5 block">Alternate Contact</span>
+                    <span className="text-sm sm:text-base font-semibold text-gray-900 break-words">{ownerInfo.alternateContact}</span>
                   </div>
                 )}
               </div>
             </div>
           )}
-        </div>
-      )}
-
-      {/* Specifications - Remove duplicates and owner info */}
-      {specifications && Object.keys(specifications).length > 0 && (
-        <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl border border-orange-100 p-6 sm:p-8">
-          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center">
-            <svg className="w-6 h-6 mr-3 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-            </svg>
-            Specifications
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {Object.entries(specifications)
-              .filter(([key]) => {
-                // Remove fields that are already shown in Basic Details, Pricing, or Owner Info
-                const excludedKeys = [
-                  'Property Type', 'Project Type', 'BHK Type', 'Carpet Area', 'Built-up Area', 
-                  'Square Feet', 'Status', 'Location', 'Price', 'Rent Amount', 'Deposit', 
-                  'Price Per Sq Ft', 'Owner Name', 'Owner Email', 'Owner Contact', 
-                  'Owner Alternate Contact', 'Seller Name', 'Seller Email', 'Seller Contact',
-                  'Seller Contact No', 'Seller Alternate No'
-                ];
-                return !excludedKeys.some(excluded => key.includes(excluded) || excluded.includes(key));
-              })
-              .map(([key, value]) => (
-                <div key={key} className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
-                  <span className="text-sm font-medium text-gray-500 mb-2 block">
-                    {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                  </span>
-                  <span className="text-base sm:text-lg font-semibold text-gray-900">
-                    {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : String(value)}
-                  </span>
-                </div>
-              ))}
-          </div>
         </div>
       )}
 
@@ -263,14 +263,14 @@ export function PropertyDetails({ details, specifications, className = '', depos
 
       {/* Property Description - Moved to last position below Specifications */}
       <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border border-purple-100 p-6 sm:p-8">
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center">
-          <svg className="w-6 h-6 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-5 flex items-center">
+          <svg className="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           Description
         </h3>
         <div className="bg-white rounded-xl p-5 sm:p-6 shadow-sm border border-gray-100">
-          <p className="text-base sm:text-lg text-gray-700 leading-relaxed">{details.description}</p>
+          <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{details.description}</p>
         </div>
       </div>
 

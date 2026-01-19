@@ -436,13 +436,8 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             project_type: updatedProperty.project_type,
             construction_type: updatedProperty.construction_type,
             project_location: updatedProperty.project_location,
-            contact_name_1: updatedProperty.contact_name_1,
-            contact_number_1: updatedProperty.contact_number_1,
-            contact_name_2: updatedProperty.contact_name_2,
-            contact_number_2: updatedProperty.contact_number_2,
             
             // Project details
-            rooms_per_floor: updatedProperty.rooms_per_floor,
             cp_sables: updatedProperty.cp_sables,
             project_description: updatedProperty.project_description,
             is_govt_approved: updatedProperty.is_govt_approved,
@@ -460,7 +455,6 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             towers_count: updatedProperty.towers_count,
             total_floors: updatedProperty.total_floors,
             puggestion_date: updatedProperty.puggestion_date,
-            puggestion_year: updatedProperty.puggestion_year,
             flats_per_floor: updatedProperty.flats_per_floor,
             roi: updatedProperty.roi,
             rental_yield: updatedProperty.rental_yield,
@@ -1368,18 +1362,6 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Rooms per Floor
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.rooms_per_floor || ''}
-                      onChange={(e) => handleInputChange('rooms_per_floor', e.target.value)}
-                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="e.g., 2, 4, 6"
-                    />
-                  </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1407,57 +1389,6 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Contact Name 1
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.contact_name_1 || ''}
-                      onChange={(e) => handleInputChange('contact_name_1', e.target.value)}
-                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Primary contact person"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Contact Number 1
-                    </label>
-                    <input
-                      type="tel"
-                      value={formData.contact_number_1 || ''}
-                      onChange={(e) => handleInputChange('contact_number_1', e.target.value)}
-                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="10-15 digit number"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Contact Name 2
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.contact_name_2 || ''}
-                      onChange={(e) => handleInputChange('contact_name_2', e.target.value)}
-                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Secondary contact person"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Contact Number 2
-                    </label>
-                    <input
-                      type="tel"
-                      value={formData.contact_number_2 || ''}
-                      onChange={(e) => handleInputChange('contact_number_2', e.target.value)}
-                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="10-15 digit number"
-                    />
-                  </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">

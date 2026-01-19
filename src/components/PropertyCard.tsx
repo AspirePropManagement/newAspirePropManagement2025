@@ -333,7 +333,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         </div>
 
         {/* Title */}
-        <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors duration-300 mb-2">
+        <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 line-clamp-1 group-hover:text-orange-600 transition-colors duration-300 mb-2">
           {getPropertyTitle()}
         </h3>
 

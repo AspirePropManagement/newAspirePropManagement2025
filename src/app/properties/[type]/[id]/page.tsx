@@ -275,13 +275,8 @@ export default function PropertyDetailPage() {
       if (property.towers_count) specs['Towers Count'] = property.towers_count;
       if (property.total_floors) specs['Total Floors'] = property.total_floors;
       if (property.flats_per_floor) specs['Flats per Floor'] = property.flats_per_floor;
-      if (property.rooms_per_floor) specs['Rooms per Floor'] = property.rooms_per_floor;
       if (property.cp_sables) specs['CP Sables'] = property.cp_sables;
       if (property.project_description) specs['Project Description'] = property.project_description;
-      if (property.contact_name_1) specs['Contact Name 1'] = property.contact_name_1;
-      if (property.contact_number_1) specs['Contact Number 1'] = property.contact_number_1;
-      if (property.contact_name_2) specs['Contact Name 2'] = property.contact_name_2;
-      if (property.contact_number_2) specs['Contact Number 2'] = property.contact_number_2;
       if (property.is_govt_approved !== undefined) specs['Govt Approved'] = property.is_govt_approved ? 'Yes' : 'No';
       if (property.is_rera_approved !== undefined) specs['RERA Approved'] = property.is_rera_approved ? 'Yes' : 'No';
       if (property.rera_number) specs['RERA Number'] = property.rera_number;
@@ -301,7 +296,6 @@ export default function PropertyDetailPage() {
       if (property.website_url) specs['Website'] = property.website_url;
       if (property.brochure_url) specs['Brochure'] = property.brochure_url;
       if (property.puggestion_date) specs['Puggestion Date'] = property.puggestion_date;
-      if (property.puggestion_year) specs['Puggestion Year'] = property.puggestion_year;
       if (property.facing_vastu) specs['Facing Vastu'] = property.facing_vastu;
       if (property.available_bhk_types && Array.isArray(property.available_bhk_types) && property.available_bhk_types.length > 0) {
         specs['Available BHK Types'] = property.available_bhk_types.join(', ');
@@ -406,6 +400,20 @@ export default function PropertyDetailPage() {
       return formatPrice(property.min_price || property.starting_price);
     }
     return '';
+  };
+
+  // Check if pricing data exists
+  const hasPricingData = () => {
+    if (!property) return false;
+    
+    if (type === 'rental') {
+      return !!(property.rent_amount && property.rent_amount > 0);
+    } else if (type === 'resale') {
+      return !!(property.asking_price && property.asking_price > 0);
+    } else if (type === 'new_project') {
+      return !!((property.min_price && property.min_price > 0) || (property.starting_price && property.starting_price > 0));
+    }
+    return false;
   };
 
   // Get BHK configuration
@@ -628,84 +636,86 @@ export default function PropertyDetailPage() {
             )}
 
             {/* Property Information Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className={`grid grid-cols-1 ${hasPricingData() ? 'md:grid-cols-2' : 'md:grid-cols-1'} gap-6`}>
               {/* Basic Info Card */}
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                  <HomeIcon className="w-5 h-5 mr-2 text-blue-600" />
-                  Property Details
+              <div className={`bg-white rounded-2xl shadow-lg border border-gray-100 p-6 overflow-hidden ${!hasPricingData() ? 'md:max-w-2xl' : ''}`}>
+                <h3 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
+                  <HomeIcon className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                  <span>Property Details</span>
                 </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">BHK Type</span>
-                    <span className="font-semibold text-gray-900">{getBHKConfig()}</span>
+                <div className="space-y-4">
+                  <div className="pb-3 border-b border-gray-100 last:border-b-0">
+                    <div className="text-sm text-gray-500 mb-1.5">BHK Type</div>
+                    <div className="text-base font-semibold text-gray-900 break-words">{getBHKConfig()}</div>
                   </div>
                   {property.carpet_area && property.carpet_area > 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">{type === 'new_project' ? 'Starting Carpet' : 'Carpet Area'}</span>
-                      <span className="font-semibold text-gray-900">{property.carpet_area} sq.ft</span>
+                    <div className="pb-3 border-b border-gray-100 last:border-b-0">
+                      <div className="text-sm text-gray-500 mb-1.5">{type === 'new_project' ? 'Starting Carpet' : 'Carpet Area'}</div>
+                      <div className="text-base font-semibold text-gray-900 break-words">{property.carpet_area} sq.ft</div>
                     </div>
                   )}
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{type === 'new_project' ? 'Project Type' : 'Property Type'}</span>
-                    <span className="font-semibold text-gray-900">
+                  <div className="pb-3 border-b border-gray-100 last:border-b-0">
+                    <div className="text-sm text-gray-500 mb-1.5">{type === 'new_project' ? 'Project Type' : 'Property Type'}</div>
+                    <div className="text-base font-semibold text-gray-900 break-words">
                       {type === 'new_project' 
                         ? (property.project_type?.replace('_', ' ').toUpperCase() || 'N/A')
                         : (property.property_type?.replace('_', ' ').toUpperCase() || 'N/A')
                       }
-                    </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Price Card - For rental: Rent and Deposit in same card */}
-              {type === 'rental' ? (
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-100 p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                    <CurrencyRupeeIcon className="w-5 h-5 mr-2 text-green-600" />
-                    Pricing
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Rent Amount</span>
-                      <span className="font-bold text-2xl text-green-600">{getPropertyPrice()}</span>
+              {/* Price Card - Only show if pricing data exists */}
+              {hasPricingData() && (
+                type === 'rental' ? (
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-100 p-6 overflow-hidden">
+                    <h3 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
+                      <CurrencyRupeeIcon className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span>Pricing</span>
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="pb-3 border-b border-green-200 last:border-b-0">
+                        <div className="text-sm text-gray-600 mb-1.5">Rent Amount</div>
+                        <div className="text-2xl font-bold text-green-600 break-words">{getPropertyPrice()}</div>
+                      </div>
+                      {property.deposit_amount && (
+                        <div className="pb-3 border-b border-green-200 last:border-b-0">
+                          <div className="text-sm text-gray-600 mb-1.5">Deposit Amount</div>
+                          <div className="text-xl font-semibold text-gray-900 break-words">
+                            ₹{Number(property.deposit_amount).toLocaleString('en-IN')}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    {property.deposit_amount && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600">Deposit Amount</span>
-                        <span className="font-semibold text-xl text-gray-900">
-                          ₹{Number(property.deposit_amount).toLocaleString('en-IN')}
-                        </span>
+                  </div>
+                ) : (
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-100 p-6 overflow-hidden">
+                    <h3 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
+                      <CurrencyRupeeIcon className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span>Pricing</span>
+                    </h3>
+                    {type === 'new_project' && (
+                      <div className="mb-4 pb-3 border-b border-green-200">
+                        <p className="text-sm text-gray-600 italic break-words">As per vastu compliances</p>
                       </div>
                     )}
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-100 p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                    <CurrencyRupeeIcon className="w-5 h-5 mr-2 text-green-600" />
-                    Pricing
-                  </h3>
-                  {type === 'new_project' && (
-                    <div className="mb-3">
-                      <p className="text-sm text-gray-600 italic">As per vastu compliances</p>
-                    </div>
-                  )}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600">Price</span>
-                      <span className="font-bold text-2xl text-green-600">{getPropertyPrice()}</span>
-                    </div>
-                    {property.carpet_area && property.asking_price && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600">Price/sq.ft</span>
-                        <span className="font-semibold text-gray-900">
-                          ₹{Math.round(property.asking_price / property.carpet_area).toLocaleString()}
-                        </span>
+                    <div className="space-y-4">
+                      <div className="pb-3 border-b border-green-200 last:border-b-0">
+                        <div className="text-sm text-gray-600 mb-1.5">Price</div>
+                        <div className="text-2xl font-bold text-green-600 break-words">{getPropertyPrice()}</div>
                       </div>
-                    )}
+                      {property.carpet_area && property.asking_price && (
+                        <div className="pb-3 border-b border-green-200 last:border-b-0">
+                          <div className="text-sm text-gray-600 mb-1.5">Price/sq.ft</div>
+                          <div className="text-lg font-semibold text-gray-900 break-words">
+                            ₹{Math.round(property.asking_price / property.carpet_area).toLocaleString()}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )
               )}
             </div>
           </div>
