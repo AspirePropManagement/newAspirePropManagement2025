@@ -286,7 +286,7 @@ export default function PropertyDetailPage() {
       if (property.units_available_for_sale) specs['Units Available'] = property.units_available_for_sale;
       if (property.project_conversion_rate) specs['Conversion Rate'] = property.project_conversion_rate;
       if (property.roi) specs['ROI'] = property.roi;
-      if (property.rental_yield) specs['Rental Yield'] = `${property.rental_yield}%`;
+      // Rental Yield removed from new projects - not applicable
       if (property.marketed_by) specs['Marketed By'] = property.marketed_by;
       if (property.launch_date) specs['Launch Date'] = property.launch_date;
       if (property.possession_date) specs['Possession Date'] = property.possession_date;

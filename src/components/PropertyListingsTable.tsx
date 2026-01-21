@@ -18,6 +18,8 @@ import {
   ChevronRightIcon
 } from '@heroicons/react/24/outline';
 import { PropertyImageManager, PropertyImageManagerRef } from './PropertyImageManager';
+import Image from 'next/image';
+import { extractPropertyImages } from '@/utils/imageUtils';
 
 interface PropertyListingsTableProps {
   onClose?: () => void;
@@ -204,7 +206,7 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
     setShowDetailModal(true);
   };
 
-  // Handle edit property
+  // Handle edit property by admin      
   const handleEditProperty = (property: PropertyData) => {
     // Check if user is admin or owns the property
     const isAdmin = user?.role === 'ADMIN';
@@ -239,7 +241,9 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
           break;
         default:
           throw new Error('Invalid property type');
-      }
+      } // end of switch statement
+
+      
 
       // Check if user is admin or owns the property
       const isAdmin = user.role === 'ADMIN';
@@ -440,10 +444,10 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
             // Project details
             cp_sables: updatedProperty.cp_sables,
             project_description: updatedProperty.project_description,
-            is_govt_approved: updatedProperty.is_govt_approved,
-            is_rera_approved: updatedProperty.is_rera_approved,
-            loan_available: updatedProperty.loan_available,
-            social_media_marketing_allowed: updatedProperty.social_media_marketing_allowed,
+            is_govt_approved: updatedProperty.is_govt_approved ?? false,
+            is_rera_approved: updatedProperty.is_rera_approved ?? false,
+            loan_available: updatedProperty.loan_available ?? false,
+            social_media_marketing_allowed: updatedProperty.social_media_marketing_allowed ?? false,
             important_notes: updatedProperty.important_notes,
             units_available_for_sale: updatedProperty.units_available_for_sale,
             rera_number: updatedProperty.rera_number,
@@ -654,9 +658,29 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
                     >
                       <td className="px-3 py-2.5 border-r border-gray-200 align-middle">
                         <div className="flex items-center space-x-2 min-w-0">
-                          <div className="w-7 h-7 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <HomeIcon className="w-3.5 h-3.5 text-blue-600" />
-                          </div>
+                          {(() => {
+                            const propertyImages = extractPropertyImages(property);
+                            const firstImage = propertyImages[0];
+                            return firstImage ? (
+                              <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                                <Image
+                                  src={firstImage.startsWith('data:image') || firstImage.startsWith('base64') ? firstImage : (firstImage.startsWith('http') ? firstImage : firstImage)}
+                                  alt={property.title}
+                                  fill
+                                  className="object-cover"
+                                  unoptimized={firstImage.startsWith('data:image') || firstImage.startsWith('base64')}
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = '/placeholder-property.svg';
+                                  }}
+                                />
+                              </div>
+                            ) : (
+                              <div className="w-10 h-10 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <HomeIcon className="w-5 h-5 text-blue-600" />
+                              </div>
+                            );
+                          })()}
                           <div className="min-w-0 flex-1">
                             <div className="text-[11px] font-semibold text-gray-900 truncate">{property.title}</div>
                             <div className="text-[10px] text-gray-500 capitalize truncate">{property.type.replace('_', ' ')}</div>
@@ -765,9 +789,29 @@ export default function PropertyListingsTable({ onClose }: PropertyListingsTable
                   {/* Property Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3 flex-1 min-w-0">
-                      <div className="w-10 h-10 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <HomeIcon className="w-5 h-5 text-blue-600" />
-                      </div>
+                      {(() => {
+                        const propertyImages = extractPropertyImages(property);
+                        const firstImage = propertyImages[0];
+                        return firstImage ? (
+                          <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                            <Image
+                              src={getImageSrc(firstImage)}
+                              alt={property.title}
+                              fill
+                              className="object-cover"
+                              unoptimized={isBase64Image(firstImage)}
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/placeholder-property.svg';
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-12 h-12 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <HomeIcon className="w-6 h-6 text-blue-600" />
+                          </div>
+                        );
+                      })()}
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-gray-900 text-sm truncate">{property.title}</h4>
                         <div className="flex items-center space-x-2 mt-1">
@@ -886,7 +930,22 @@ interface PropertyDetailModalProps {
   onClose: () => void;
 }
 
+// Helper functions for image handling
+const isBase64Image = (src: string) => {
+  return src.startsWith('data:image') || src.startsWith('base64');
+};
+
+const getImageSrc = (src: string) => {
+  if (!src) return '/placeholder-property.svg';
+  if (isBase64Image(src)) return src;
+  if (src.startsWith('http://') || src.startsWith('https://')) return src;
+  return src;
+};
+
 function PropertyDetailModal({ property, onClose }: PropertyDetailModalProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = extractPropertyImages(property);
+
   const renderPropertyDetails = () => {
     const details = [];
     
@@ -898,50 +957,96 @@ function PropertyDetailModal({ property, onClose }: PropertyDetailModalProps) {
           ? (property.project_type?.replace('_', ' ').toUpperCase() || 'N/A')
           : property.type.replace('_', ' ').toUpperCase() 
       },
-      { label: 'Status', value: property.status },
+      { label: 'Status', value: property.status || 'N/A' },
       { label: 'Listed Date', value: new Date(property.createdAt).toLocaleDateString('en-IN') }
     );
 
     // Type-specific fields
     if (property.type === 'resale') {
       details.push(
-        { label: 'Seller Name', value: property.seller_name },
-        { label: 'Seller Email', value: property.seller_email },
-        { label: 'Seller Contact', value: property.seller_contact_no },
+        { label: 'Seller Name', value: property.seller_name || 'N/A' },
+        { label: 'Seller Email', value: property.seller_email || 'N/A' },
+        { label: 'Seller Contact', value: property.seller_contact_no || 'N/A' },
+        { label: 'Seller Alternate Contact', value: property.seller_alternate_no || 'N/A' },
         { label: 'Society Name', value: property.society_name || 'N/A' },
-        { label: 'Square Feet', value: property.square_feet || 'N/A' },
-        { label: 'Carpet Area', value: property.carpet_area || 'N/A' },
+        { label: 'BHK Type', value: property.bhk_type?.replace('_', ' ').toUpperCase() || 'N/A' },
+        { label: 'Square Feet', value: property.square_feet ? `${property.square_feet} sq ft` : 'N/A' },
+        { label: 'Carpet Area', value: property.carpet_area ? `${property.carpet_area} sq ft` : 'N/A' },
+        { label: 'Asking Price', value: property.asking_price ? `₹${property.asking_price.toLocaleString('en-IN')}` : 'N/A' },
+        { label: 'Price Per Sq Ft', value: property.asking_price && property.carpet_area ? `₹${Math.round(property.asking_price / property.carpet_area).toLocaleString()}` : 'N/A' },
         { label: 'Floor No', value: property.floor_no || 'N/A' },
-        { label: 'Facing', value: property.facing || 'N/A' },
-        { label: 'Parking Type', value: property.parking_type || 'N/A' },
+        { label: 'Facing', value: property.facing?.replace('_', ' ') || 'N/A' },
+        { label: 'Parking Type', value: property.parking_type?.replace('_', ' ') || 'N/A' },
         { label: 'Furnishing', value: property.furnishing_type?.replace('_', ' ') || 'N/A' },
-        { label: 'Property Age', value: property.property_age || 'N/A' },
-        { label: 'Negotiable', value: property.is_negotiable ? 'Yes' : 'No' }
+        { label: 'Property Age', value: property.property_age?.replace('_', ' ') || 'N/A' },
+        { label: 'Negotiable', value: property.is_negotiable ? 'Yes' : 'No' },
+        { label: 'Maintenance Charge', value: property.maintenance_charge ? `₹${property.maintenance_charge.toLocaleString('en-IN')}` : 'N/A' },
+        { label: 'Maintenance Frequency', value: property.maintenance_frequency?.replace('_', ' ') || 'N/A' },
+        { label: 'Possession Status', value: property.possession_status?.replace('_', ' ') || 'N/A' },
+        { label: 'Possession Date', value: property.possession_date || 'N/A' },
+        { label: 'Flats per Floor', value: property.flats_per_floor || 'N/A' },
+        { label: 'Loan on Property', value: property.loan_on_property ? 'Yes' : 'No' },
+        { label: 'Loan Amount', value: property.loan_amount ? `₹${property.loan_amount.toLocaleString('en-IN')}` : 'N/A' },
+        { label: 'Bank Name', value: property.bank_name || 'N/A' }
       );
     } else if (property.type === 'rental') {
       details.push(
-        { label: 'Owner Name', value: property.owner_name },
-        { label: 'Owner Email', value: property.owner_email },
-        { label: 'Owner Contact', value: property.owner_contact_no },
+        { label: 'Owner Name', value: property.owner_name || 'N/A' },
+        { label: 'Owner Email', value: property.owner_email || 'N/A' },
+        { label: 'Owner Contact', value: property.owner_contact_no || 'N/A' },
+        { label: 'Owner Alternate Contact', value: property.owner_alternate_no || 'N/A' },
         { label: 'Society Name', value: property.society_name || 'N/A' },
+        { label: 'BHK Type', value: property.bhk_type?.replace('_', ' ').toUpperCase() || 'N/A' },
+        { label: 'Rent Amount', value: property.rent_amount ? `₹${property.rent_amount.toLocaleString('en-IN')}/month` : 'N/A' },
+        { label: 'Deposit Amount', value: property.deposit_amount ? `₹${property.deposit_amount.toLocaleString('en-IN')}` : 'N/A' },
+        { label: 'Square Feet', value: property.square_feet ? `${property.square_feet} sq ft` : 'N/A' },
+        { label: 'Carpet Area', value: property.carpet_area ? `${property.carpet_area} sq ft` : 'N/A' },
         { label: 'Floor No', value: property.floor_no || 'N/A' },
-        { label: 'Deposit Amount', value: property.deposit_amount ? `₹${property.deposit_amount.toLocaleString()}` : 'N/A' },
-        { label: 'Parking Type', value: property.parking_type || 'N/A' },
+        { label: 'Parking Type', value: property.parking_type?.replace('_', ' ') || 'N/A' },
         { label: 'Furnishing', value: property.furnishing_type?.replace('_', ' ') || 'N/A' },
         { label: 'Pets Allowed', value: property.pets_allowed ? 'Yes' : 'No' },
-        { label: 'Immediate Possession', value: property.immediate_possession ? 'Yes' : 'No' }
+        { label: 'Immediate Possession', value: property.immediate_possession ? 'Yes' : 'No' },
+        { label: 'Available From', value: property.available_from_date || 'N/A' },
+        { label: 'Tenant Type', value: property.tenant_type?.replace('_', ' ') || 'N/A' },
+        { label: 'Rent Negotiable', value: property.rent_negotiable ? 'Yes' : 'No' },
+        { label: 'Deposit Negotiable', value: property.deposit_negotiable ? 'Yes' : 'No' }
       );
     } else if (property.type === 'new_project') {
       details.push(
-        { label: 'Project Name', value: property.project_name },
+        { label: 'Project Name', value: property.project_name || 'N/A' },
         { label: 'Project Type', value: property.project_type?.replace('_', ' ') || 'N/A' },
         { label: 'Construction Type', value: property.construction_type?.replace('_', ' ') || 'N/A' },
-        { label: 'Crafted By', value: property.crafted_by },
+        { label: 'Crafted By', value: property.crafted_by || 'N/A' },
+        { label: 'Project Location', value: property.project_location || 'N/A' },
+        { label: 'Total Project Area', value: property.total_project_area_size || 'N/A' },
         { label: 'Total Floors', value: property.total_floors || 'N/A' },
         { label: 'Towers Count', value: property.towers_count || 'N/A' },
+        { label: 'Flats per Floor', value: property.flats_per_floor || 'N/A' },
+        { label: 'Available BHK Types', value: property.available_bhk_types?.map((bhk: string) => bhk.replace('_', ' ').toUpperCase()).join(', ') || 'N/A' },
+        { label: 'Carpet Area', value: property.carpet_area ? `${property.carpet_area} sq ft` : 'N/A' },
+        { label: 'Square Feet', value: property.square_feet ? `${property.square_feet} sq ft` : 'N/A' },
+        { label: 'Open Space', value: property.open_space ? `${property.open_space}%` : 'N/A' },
+        { label: 'Min Price', value: property.min_price ? `₹${property.min_price.toLocaleString('en-IN')}` : 'N/A' },
+        { label: 'Starting Price', value: property.starting_price ? `₹${property.starting_price.toLocaleString('en-IN')}` : 'N/A' },
+        { label: 'Asking Price', value: property.asking_price ? `₹${property.asking_price.toLocaleString('en-IN')}` : 'N/A' },
+        { label: 'ROI', value: property.roi || 'N/A' },
+        { label: 'Marketed By', value: property.marketed_by || 'N/A' },
+        { label: 'Listed By', value: property.listed_by?.replace('_', ' ') || 'N/A' },
+        { label: 'Facing Vastu', value: property.facing_vastu || 'N/A' },
+        { label: 'Launch Date', value: property.launch_date || 'N/A' },
+        { label: 'Possession Date', value: property.possession_date || 'N/A' },
+        { label: 'Govt Approved', value: property.is_govt_approved ? 'Yes' : 'No' },
         { label: 'RERA Approved', value: property.is_rera_approved ? 'Yes' : 'No' },
         { label: 'RERA Number', value: property.rera_number || 'N/A' },
-        { label: 'Loan Available', value: property.loan_available ? 'Yes' : 'No' }
+        { label: 'Loan Available', value: property.loan_available ? 'Yes' : 'No' },
+        { label: 'Social Media Marketing', value: property.social_media_marketing_allowed ? 'Allowed' : 'Not Allowed' },
+        { label: 'Units Available for Sale', value: property.units_available_for_sale || 'N/A' },
+        { label: 'Project Conversion Rate', value: property.project_conversion_rate || 'N/A' },
+        { label: 'CP Sables', value: property.cp_sables || 'N/A' },
+        { label: 'Project Description', value: property.project_description || 'N/A' },
+        { label: 'Important Notes', value: property.important_notes || 'N/A' },
+        { label: 'Description', value: property.description || 'N/A' },
+        { label: 'Notes', value: property.notes || 'N/A' }
       );
     }
 
@@ -974,22 +1079,77 @@ function PropertyDetailModal({ property, onClose }: PropertyDetailModalProps) {
 
         {/* Content - Mobile Responsive */}
         <div className="p-3 sm:p-6 overflow-y-auto max-h-[calc(95vh-100px)] sm:max-h-[calc(90vh-120px)] custom-scrollbar">
+          {/* Images Section */}
+          {images.length > 0 && (
+            <div className="mb-4 sm:mb-6">
+              <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-3">Property Images</h4>
+              <div className="relative w-full h-48 sm:h-64 md:h-80 bg-gray-100 rounded-xl overflow-hidden">
+                {images[currentImageIndex] && (
+                  <Image
+                    src={getImageSrc(images[currentImageIndex])}
+                    alt={`Property image ${currentImageIndex + 1}`}
+                    fill
+                    className="object-cover"
+                    unoptimized={isBase64Image(images[currentImageIndex])}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/placeholder-property.svg';
+                    }}
+                  />
+                )}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                    >
+                      <ChevronLeftIcon className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                    >
+                      <ChevronRightIcon className="w-5 h-5" />
+                    </button>
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-xs">
+                      {currentImageIndex + 1} / {images.length}
+                    </div>
+                  </>
+                )}
+              </div>
+              {images.length > 1 && (
+                <div className="flex space-x-2 mt-3 overflow-x-auto pb-2">
+                  {images.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                        index === currentImageIndex ? 'border-blue-500 scale-105' : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <Image
+                        src={getImageSrc(image)}
+                        alt={`Thumbnail ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        unoptimized={isBase64Image(image)}
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Property Details Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
-            {renderPropertyDetails().map((detail, index) => (
+            {renderPropertyDetails().filter(detail => detail.value && detail.value !== 'N/A').map((detail, index) => (
               <div key={index} className="bg-white/60 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-100">
                 <div className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">{detail.label}</div>
                 <div className="text-sm sm:text-base font-medium text-gray-900 break-words">{detail.value}</div>
               </div>
             ))}
           </div>
-
-          {/* Notes Section - Mobile Responsive */}
-          {property.notes && (
-            <div className="mt-4 sm:mt-6 bg-white/60 backdrop-blur-sm rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-100">
-              <div className="text-xs sm:text-sm font-semibold text-gray-600 mb-2">Notes</div>
-              <div className="text-sm sm:text-base text-gray-900 break-words">{property.notes}</div>
-            </div>
-          )}
         </div>
       </div>
     </div>
@@ -1011,13 +1171,21 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
     const initialData = { ...property };
     
     // Initialize property_images with the correct structure
-    initialData.property_images = {
+    initialData.property_images = property.property_images || {
       general_photos: property.general_photos || {},
       floor_plans: property.floor_plans || {},
       legal_docs: property.legal_docs || [],
       virtual_content: property.virtual_content || [],
       project_images: property.project_images || []
     };
+    
+    // Initialize boolean fields for new projects
+    if (property.type === 'new_project') {
+      initialData.is_govt_approved = property.is_govt_approved ?? false;
+      initialData.is_rera_approved = property.is_rera_approved ?? false;
+      initialData.loan_available = property.loan_available ?? false;
+      initialData.social_media_marketing_allowed = property.social_media_marketing_allowed ?? false;
+    }
     
     return initialData;
   });
@@ -1272,19 +1440,6 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Rental Yield
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.rental_yield || ''}
-                      onChange={(e) => handleInputChange('rental_yield', e.target.value)}
-                      className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Enter rental yield percentage"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Marketed By
                     </label>
                     <input
@@ -1401,6 +1556,59 @@ function PropertyEditModal({ property, onClose, onSave }: PropertyEditModalProps
                       className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Enter RERA registration number"
                     />
+                  </div>
+
+                  {/* Compliance Switches */}
+                  <div className="col-span-1 sm:col-span-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Govt Approved</label>
+                          <p className="text-xs text-gray-500 mt-1">Is this project approved by government?</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={formData.is_govt_approved || false}
+                            onChange={(e) => handleInputChange('is_govt_approved', e.target.checked)}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">RERA Approved</label>
+                          <p className="text-xs text-gray-500 mt-1">Is this project RERA approved?</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={formData.is_rera_approved || false}
+                            onChange={(e) => handleInputChange('is_rera_approved', e.target.checked)}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Social Media Marketing</label>
+                          <p className="text-xs text-gray-500 mt-1">Is social media marketing allowed?</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={formData.social_media_marketing_allowed || false}
+                            onChange={(e) => handleInputChange('social_media_marketing_allowed', e.target.checked)}
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                      </div>
+                    </div>
                   </div>
 
                   <div>

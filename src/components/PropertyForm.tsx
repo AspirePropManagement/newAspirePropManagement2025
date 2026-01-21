@@ -1107,19 +1107,6 @@ export function PropertyForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <label className={labelClass}>
-            Rental Yield
-          </label>
-          <input
-            type="number"
-            value={formData.rentalYield}
-            onChange={(e) => handleInputChange('rentalYield', e.target.value)}
-            className={inputClass}
-            placeholder="Enter rental yield percentage"
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>
             Marketed By
           </label>
           <input
@@ -1213,6 +1200,57 @@ export function PropertyForm({
             className={inputClass}
             placeholder="Enter RERA registration number"
           />
+        </div>
+      </div>
+
+      {/* Compliance Switches */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div>
+            <label className="text-sm sm:text-base font-medium text-gray-700">Govt Approved</label>
+            <p className="text-xs text-gray-500 mt-1">Is this project approved by government?</p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.isGovtApproved}
+              onChange={(e) => handleInputChange('isGovtApproved', e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div>
+            <label className="text-sm sm:text-base font-medium text-gray-700">RERA Approved</label>
+            <p className="text-xs text-gray-500 mt-1">Is this project RERA approved?</p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.isReraApproved}
+              onChange={(e) => handleInputChange('isReraApproved', e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div>
+            <label className="text-sm sm:text-base font-medium text-gray-700">Social Media Marketing</label>
+            <p className="text-xs text-gray-500 mt-1">Is social media marketing allowed?</p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.socialMediaMarketingAllowed}
+              onChange={(e) => handleInputChange('socialMediaMarketingAllowed', e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
         </div>
       </div>
 
@@ -2049,7 +2087,6 @@ export function PropertyForm({
                   <p><span className="font-medium">Open Space:</span> {formData.openSpace ? `${formData.openSpace}%` : 'Not provided'}</p>
                   <p><span className="font-medium">RERA Number:</span> {formData.reraNumber || 'Not provided'}</p>
                   <p><span className="font-medium">Starting Price:</span> ₹{formData.minPrice || 'Not provided'}</p>
-                  <p><span className="font-medium">Rental Yield:</span> {formData.rentalYield ? `${formData.rentalYield}%` : 'Not provided'}</p>
                   <p><span className="font-medium">Marketed By:</span> {formData.marketedBy || 'Not provided'}</p>
                   <p><span className="font-medium">Launch Date:</span> {formData.launchDate || 'Not provided'}</p>
                   <p><span className="font-medium">Possession Date:</span> {formData.possessionDate || 'Not provided'}</p>

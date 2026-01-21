@@ -440,11 +440,11 @@ export async function createNewProject(data: NewProjectData, userId?: string) {
     if (data.openSpace) insertData.open_space = parseFloat(data.openSpace);
     if (data.cpSables) insertData.cp_sables = data.cpSables;
     if (data.otherNotes) insertData.project_description = data.otherNotes;
-    // Set compliance and approval fields as hardcoded (as requested)
-    insertData.is_govt_approved = false;
-    insertData.is_rera_approved = false;
-    insertData.loan_available = false;
-    insertData.social_media_marketing_allowed = false;
+    // Set compliance and approval fields from form data
+    insertData.is_govt_approved = (data as any).isGovtApproved || false;
+    insertData.is_rera_approved = (data as any).isReraApproved || false;
+    insertData.loan_available = (data as any).loanAvailable || false;
+    insertData.social_media_marketing_allowed = (data as any).socialMediaMarketingAllowed || false;
     if (data.unitsAvailableForSale) insertData.units_available_for_sale = data.unitsAvailableForSale;
     if (data.reraNumber) insertData.rera_number = data.reraNumber;
     if (data.projectConversionRate) insertData.project_conversion_rate = data.projectConversionRate;
