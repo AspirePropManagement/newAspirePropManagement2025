@@ -33,9 +33,13 @@ export function Footer() {
           {/* Company Info */}
           <div className="sm:col-span-2 lg:col-span-2">
             <div className="flex items-center justify-center sm:justify-start space-x-3 mb-4 sm:mb-6">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
-                <HomeIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-              </div>
+              <Image
+                src="/Aspire logo.png"
+                alt="Aspire Prop Management"
+                width={48}
+                height={48}
+                className="w-10 h-10 sm:w-12 sm:h-12 object-contain rounded-xl"
+              />
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold">
                   <span className="text-white">{footerConfig.company.name.split(' ')[0]}</span>

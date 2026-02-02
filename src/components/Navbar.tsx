@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -145,12 +146,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo Section - Left Side */}
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1 lg:flex-none">
-            {/* Bar chart/skyline icon */}
-            <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
-              </svg>
-            </div>
+            {/* Company Logo */}
+            <Image
+              src="/Aspire logo.png"
+              alt="Aspire Prop Management"
+              width={40}
+              height={40}
+              className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-lg"
+            />
                          {/* Logo Text */}
              <div className="flex flex-col min-w-0">
                <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold truncate">
@@ -351,11 +354,13 @@ export default function Navbar() {
          {/* Mobile Menu Header */}
          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white flex-shrink-0">
            <div className="flex items-center space-x-3">
-             <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-               <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                 <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
-               </svg>
-             </div>
+             <Image
+               src="/Aspire logo.png"
+               alt="Aspire Prop Management"
+               width={40}
+               height={40}
+               className="w-8 h-8 object-contain rounded-lg"
+             />
              <div>
                <h2 className="text-lg font-bold text-gray-800">ASPIRE PROP MANAGEMENT</h2>
                <p className="text-xs text-gray-500">NO ONE TARGETS YOUR NEED BETTER</p>

@@ -354,7 +354,7 @@ function RentalPropertyCardWithCarousel({ property, images }: { property: Rental
         
         {/* Rent Amount */}
         <div className="mb-1 sm:mb-2">
-          <span className="text-sm sm:text-base md:text-lg font-bold text-green-600">
+          <span className="text-sm sm:text-base md:text-lg font-bold text-gray-900">
             {formatRent(property.rent_amount)}
           </span>
         </div>

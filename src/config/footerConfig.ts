@@ -46,7 +46,7 @@ export const footerConfig: FooterConfig = {
   contact: {
     email: 'aspireprop07@gmail.com',
     phone: '+91 92262 54182',
-    address: 'Mumbai, Maharashtra, India'
+    address: 'Office No 1, Dreams Rachana, Shiv Nagar, Hadapsar, Pune, Maharashtra 411028'
   },
   social: {
     facebook: '#',

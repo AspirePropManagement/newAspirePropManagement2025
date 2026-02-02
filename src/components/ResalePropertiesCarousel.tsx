@@ -447,7 +447,7 @@ function ResalePropertyCardWithCarousel({ property, images }: { property: Resale
         </h3>
 
         {/* Config */}
-        <p className="text-sm text-gray-700 mb-1">
+        <p className="text-sm text-gray-900 mb-1">
           {getBHKConfig()}
         </p>
 

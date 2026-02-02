@@ -126,7 +126,7 @@ export function PropertyTypesSection() {
                   </div>
                   
                   {/* Type Name */}
-                  <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-300">
+                  <span className="text-sm font-medium text-gray-900 group-hover:text-orange-600 transition-colors duration-300">
                     {type.name}
                   </span>
                 </div>

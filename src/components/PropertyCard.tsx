@@ -338,7 +338,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         </h3>
 
         {/* Configuration above Address */}
-        <div className="flex items-center text-gray-600 text-xs sm:text-sm mb-2 group-hover:text-gray-800 transition-colors duration-300">
+        <div className="flex items-center text-gray-900 text-xs sm:text-sm mb-2 group-hover:text-gray-900 transition-colors duration-300">
           <div className="w-4 h-4 sm:w-5 sm:h-5 bg-purple-100 rounded-lg flex items-center justify-center mr-2 group-hover:bg-purple-200 transition-colors duration-300 flex-shrink-0">
             <HomeIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-600" />
           </div>

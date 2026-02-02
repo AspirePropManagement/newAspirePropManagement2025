@@ -415,7 +415,7 @@ function ProjectCardWithImageCarousel({ project, images }: { project: NewProject
         </h3>
 
         {/* Config */}
-        <p className="text-sm text-gray-700 mb-1">
+        <p className="text-sm text-gray-900 mb-1">
           {getConfig(project)}
         </p>
 

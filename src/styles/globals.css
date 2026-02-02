@@ -506,8 +506,8 @@
   /* Allow vertical scrolling but prevent horizontal */
   html, body {
     overflow-x: hidden !important;
-    overflow-y: auto;
-    overscroll-behavior: none;
+    overflow-y: auto !important;
+    overscroll-behavior-x: none;
   }
   
   /* Hero: force-hide any inner scrollbars (Edge/Chrome/Firefox) */
