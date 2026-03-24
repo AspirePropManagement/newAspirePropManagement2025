@@ -16,6 +16,17 @@ interface AuthActions {
   signOut: () => void;
 }
 
+// Helper to set auth cookie (readable by middleware)
+function setAuthCookie(user: User) {
+  const cookieData = JSON.stringify({ id: user.id, role: user.role, email: user.email });
+  document.cookie = `auth-user=${encodeURIComponent(cookieData)}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+}
+
+// Helper to clear auth cookie
+function clearAuthCookie() {
+  document.cookie = 'auth-user=; path=/; max-age=0; SameSite=Lax';
+}
+
 export function useAuth(): AuthState & AuthActions {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
@@ -44,7 +55,7 @@ export function useAuth(): AuthState & AuthActions {
 
       const storedUser = localStorage.getItem('user');
       const storedAuth = localStorage.getItem('isAuthenticated');
-      
+
       if (storedUser && storedAuth === 'true') {
         const user = JSON.parse(storedUser);
         setAuthState({
@@ -75,21 +86,22 @@ export function useAuth(): AuthState & AuthActions {
   const login = async (email: string, password: string) => {
     try {
       const result = await AuthService.login(email, password);
-      
+
       if (result.success && result.user) {
         // Store user data in localStorage (only in browser)
         if (typeof window !== 'undefined') {
           localStorage.setItem('user', JSON.stringify(result.user));
           localStorage.setItem('isAuthenticated', 'true');
+          setAuthCookie(result.user);
         }
-        
+
         setAuthState({
           user: result.user,
           userRole: result.user.role,
           isAuthenticated: true,
           loading: false
         });
-        
+
         return { success: true };
       } else {
         return { success: false, error: result.error };
@@ -103,21 +115,22 @@ export function useAuth(): AuthState & AuthActions {
   const register = async (data: any) => {
     try {
       const result = await AuthService.register(data);
-      
+
       if (result.success && result.user) {
         // Store user data in localStorage (only in browser)
         if (typeof window !== 'undefined') {
           localStorage.setItem('user', JSON.stringify(result.user));
           localStorage.setItem('isAuthenticated', 'true');
+          setAuthCookie(result.user);
         }
-        
+
         setAuthState({
           user: result.user,
           userRole: result.user.role,
           isAuthenticated: true,
           loading: false
         });
-        
+
         return { success: true };
       } else {
         return { success: false, error: result.error };
@@ -129,12 +142,13 @@ export function useAuth(): AuthState & AuthActions {
   };
 
   const signOut = () => {
-    // Clear localStorage (only in browser)
+    // Clear localStorage and cookie (only in browser)
     if (typeof window !== 'undefined') {
       localStorage.removeItem('user');
       localStorage.removeItem('isAuthenticated');
+      clearAuthCookie();
     }
-    
+
     // Reset state
     setAuthState({
       user: null,

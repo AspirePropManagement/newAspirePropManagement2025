@@ -149,7 +149,15 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
     try {
       // Clear user session data
       // Session clearing handled by AuthService
-      
+
+      // Clear auth cookie
+      if (typeof window !== 'undefined') {
+        document.cookie = 'auth-user=; path=/; max-age=0; SameSite=Lax'
+        localStorage.removeItem('user')
+        localStorage.removeItem('isAuthenticated')
+        localStorage.removeItem('userRole')
+      }
+
       if (!supabase) {
         setUser(null)
         setSession(null)
@@ -164,10 +172,10 @@ export function SupabaseProvider({ children }: SupabaseProviderProps) {
       if (error) {
         console.error('Error signing out:', error.message)
       }
-      
+
       setUser(null)
       setSession(null)
-      
+
       // Redirect to home page after sign out
       if (typeof window !== 'undefined') {
         window.location.href = '/'
