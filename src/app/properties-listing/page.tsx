@@ -292,7 +292,7 @@ function PropertiesListingContent() {
       }
 
       // Apply final in-memory filters to ensure correctness
-      const finallyFiltered = allProperties.filter((p) => {
+      const filtered = allProperties.filter((p) => {
         // Enforce property type filter strictly
         if (typeFilters.length > 0 && !typeFilters.includes(p.type)) {
           return false;
@@ -316,7 +316,26 @@ function PropertiesListingContent() {
         return true;
       });
 
-      console.log('Fetched properties:', allProperties.length, 'After filters:', finallyFiltered.length);
+      // Deduplicate: by (type + id) first, then also by (type + name + location)
+      // for new_projects where the same project may have been inserted twice.
+      const seenKeys = new Set<string>();
+      const seenNameLocation = new Set<string>();
+      const finallyFiltered = filtered.filter((p) => {
+        const idKey = `${p.type}-${p.id}`;
+        if (seenKeys.has(idKey)) return false;
+        seenKeys.add(idKey);
+
+        if (p.type === 'new_project') {
+          const name = (p.project_name || p.title || '').toString().toLowerCase().trim();
+          const loc = (p.project_location || p.location || '').toString().toLowerCase().trim();
+          const nameLocKey = `${name}__${loc}`;
+          if (name && seenNameLocation.has(nameLocKey)) return false;
+          if (name) seenNameLocation.add(nameLocKey);
+        }
+        return true;
+      });
+
+      console.log('Fetched properties:', allProperties.length, 'After filters:', filtered.length, 'After dedupe:', finallyFiltered.length);
       setProperties(finallyFiltered);
       setTotalPages(Math.ceil(finallyFiltered.length / itemsPerPage));
     } catch (err) {
