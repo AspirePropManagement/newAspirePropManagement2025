@@ -383,6 +383,28 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
         )}
       </div>
 
+      {/* Category Guidance - shown for floor_plans / legal_docs to tell users what to upload here */}
+      {activeCategory === 'floor_plans' && (
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 sm:p-4">
+          <p className="text-sm sm:text-base font-semibold text-blue-900 mb-1">
+            What to upload in Floor Plans
+          </p>
+          <p className="text-xs sm:text-sm text-blue-800 mb-2">
+            Use this section ONLY for technical drawings — not regular property photos.
+            Property photos (rooms, balcony, exterior) belong in <strong>General Photos</strong>.
+          </p>
+          <ul className="text-xs sm:text-sm text-blue-800 list-disc pl-5 space-y-0.5">
+            <li><strong>Floor Plan</strong> — unit layout drawing showing rooms &amp; dimensions (1 BHK, 2 BHK, etc.)</li>
+            <li><strong>Site Plan</strong> — layout of the whole project / society on the plot</li>
+            <li><strong>Blueprint</strong> — architectural blueprint of the building</li>
+            <li><strong>Elevation</strong> — front / side elevation drawings of the tower</li>
+          </ul>
+          <p className="text-xs sm:text-sm text-blue-900 mt-2">
+            👉 First select the correct <em>Image Type</em> above, then upload. Upload at least one floor plan so the &quot;Floor Plans&quot; tab on the property detail page is not empty.
+          </p>
+        </div>
+      )}
+
       {/* Upload Area - Mobile Responsive */}
       <div
         className={`border-2 border-dashed rounded-lg sm:rounded-xl p-4 sm:p-6 md:p-8 text-center transition-all duration-200 ${
@@ -402,6 +424,11 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
             <p className="text-base sm:text-lg font-medium text-gray-900">
               Upload {safeSubcategory?.name || 'Images'}
             </p>
+            {safeSubcategory?.description && (
+              <p className="text-xs sm:text-sm text-gray-700 mt-1 italic">
+                {safeSubcategory.description}
+              </p>
+            )}
             <p className="text-sm sm:text-base text-gray-600 mt-1">
               Drag and drop files here, or click to browse
             </p>
