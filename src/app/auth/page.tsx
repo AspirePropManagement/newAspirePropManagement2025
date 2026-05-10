@@ -126,7 +126,7 @@ export default function AuthPage() {
         {/* Header */}
         <div className="text-center">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-            Aspire Property Management
+            Aspire Prop Management
           </h1>
           <p className="text-sm sm:text-base text-gray-600">
             {isLogin ? 'Sign in to your account' : 'Create your account'}

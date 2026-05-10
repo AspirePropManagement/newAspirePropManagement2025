@@ -151,7 +151,7 @@ export const HeroCarousel: React.FC = () => {
               <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd"/>
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Aspire Property Management</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Aspire Prop Management</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Your trusted partner in premium property management and real estate services.
           </p>

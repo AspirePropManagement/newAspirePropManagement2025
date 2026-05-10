@@ -128,7 +128,7 @@ export function AuthDashboard() {
 
       {/* Authentication Redirect */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Get Started with Aspire Property Management</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Get Started with Aspire Prop Management</h2>
         <p className="text-gray-600 mb-6">Choose your role and create an account to access our platform</p>
         <div className="flex justify-center space-x-4">
           <a

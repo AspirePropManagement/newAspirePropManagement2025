@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
           
           <div style="margin-top: 20px; padding: 15px; background-color: #fef3c7; border-radius: 8px;">
             <p style="margin: 0; color: #92400e; font-size: 14px;">
-              <strong>Note:</strong> This message was sent from the Aspire Property Management contact form.
+              <strong>Note:</strong> This message was sent from the Aspire Prop Management contact form.
             </p>
           </div>
         </div>
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
         ${message}
         
         ---
-        This message was sent from the Aspire Property Management contact form.
+        This message was sent from the Aspire Prop Management contact form.
       `
     };
 
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     const confirmationMailOptions = {
       from: process.env.SMTP_FROM || 'princekumarshah12@gmail.com',
       to: email,
-      subject: 'Thank you for contacting Aspire Property Management',
+      subject: 'Thank you for contacting Aspire Prop Management',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #f97316; border-bottom: 2px solid #f97316; padding-bottom: 10px;">
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
           
           <p>Dear ${name},</p>
           
-          <p>Thank you for reaching out to Aspire Property Management. We have received your message and will get back to you within 24 hours.</p>
+          <p>Thank you for reaching out to Aspire Prop Management. We have received your message and will get back to you within 24 hours.</p>
           
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #333; margin-top: 0;">Your Message Details</h3>
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
           </ul>
           
           <p>Best regards,<br>
-          <strong>Aspire Property Management Team</strong></p>
+          <strong>Aspire Prop Management Team</strong></p>
           
           <div style="margin-top: 30px; padding: 15px; background-color: #f3f4f6; border-radius: 8px; font-size: 12px; color: #6b7280;">
             <p style="margin: 0;">This is an automated response. Please do not reply to this email.</p>
@@ -112,11 +112,11 @@ export async function POST(request: NextRequest) {
         </div>
       `,
       text: `
-        Thank You for Contacting Aspire Property Management!
+        Thank You for Contacting Aspire Prop Management!
         
         Dear ${name},
         
-        Thank you for reaching out to Aspire Property Management. We have received your message and will get back to you within 24 hours.
+        Thank you for reaching out to Aspire Prop Management. We have received your message and will get back to you within 24 hours.
         
         Your Message Details:
         Subject: ${subject}
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
         - Call us directly at +91 92262 54182
         
         Best regards,
-        Aspire Property Management Team
+        Aspire Prop Management Team
         
         ---
         This is an automated response. Please do not reply to this email.

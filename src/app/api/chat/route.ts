@@ -137,7 +137,7 @@ function getFallbackResponse(userInput: string): string {
   }
   
   if (input.includes('hello') || input.includes('hi') || input.includes('hey')) {
-    return 'Hello! I\'m Kriti, your property assistant at Aspire Property Management. I\'m here to help you with all your real estate needs! How can I assist you today?'
+    return 'Hello! I\'m Kriti, your property assistant at Aspire Prop Management. I\'m here to help you with all your real estate needs! How can I assist you today?'
   }
   
   return 'Hello! I\'m Kriti, your property assistant. Thank you for your message! I\'m here to help with property-related questions. You can ask me about properties, pricing, locations, or connect with our agents. How can I help you today?'
@@ -256,7 +256,7 @@ async function getUserData(userId: string, userRole: string) {
  * Create system prompt based on user data and role
  */
 function createSystemPrompt(userData: any, userRole: string): string {
-  let basePrompt = `You are Kriti, a friendly and knowledgeable property assistant for Aspire Property Management. You help users with:
+  let basePrompt = `You are Kriti, a friendly and knowledgeable property assistant for Aspire Prop Management. You help users with:
 
 - Property searches and recommendations
 - Pricing information and market insights
@@ -268,7 +268,7 @@ function createSystemPrompt(userData: any, userRole: string): string {
 
 Always be helpful, professional, and encouraging. Keep responses concise but informative.
 
-Company: Aspire Property Management
+Company: Aspire Prop Management
 Tagline: "NO ONE TARGETS YOUR NEED BETTER"
 Toll-free: +91 92262 54182`
 

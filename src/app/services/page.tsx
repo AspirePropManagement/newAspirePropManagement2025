@@ -9,7 +9,7 @@ import { ScrollArrow } from '@/components/ScrollArrow'
 
 /**
  * Services page component
- * Displays comprehensive real estate services offered by Aspire Property Management
+ * Displays comprehensive real estate services offered by Aspire Prop Management
  * Implements clean, modern design with clear service descriptions and call-to-actions
  */
 

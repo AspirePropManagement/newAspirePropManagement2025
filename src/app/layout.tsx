@@ -8,7 +8,7 @@ import GlobalChatbot from '@/components/GlobalChatbot'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Aspire Property Management',
+  title: 'Aspire Prop Management',
   description: 'Premium property management and real estate services',
 }
 

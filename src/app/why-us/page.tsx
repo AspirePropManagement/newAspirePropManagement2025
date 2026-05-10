@@ -6,7 +6,7 @@ import { ScrollArrow } from '@/components/ScrollArrow'
 
 /**
  * Why Us page component
- * Showcases the unique value propositions and competitive advantages of Aspire Property Management
+ * Showcases the unique value propositions and competitive advantages of Aspire Prop Management
  * Implements clean, modern design with compelling content and visual elements
  */
 
@@ -136,7 +136,7 @@ export default function WhyUsPage() {
     {
       name: "Rajesh Kumar",
       role: "Property Buyer",
-      content: "Aspire Property Management made my home buying journey seamless. Their expert guidance and transparent process helped me find the perfect property within my budget.",
+      content: "Aspire Prop Management made my home buying journey seamless. Their expert guidance and transparent process helped me find the perfect property within my budget.",
       rating: 5
     },
     {
@@ -160,7 +160,7 @@ export default function WhyUsPage() {
         <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
-              Why Choose Aspire Property Management?
+              Why Choose Aspire Prop Management?
             </h1>
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-orange-100 mb-6 sm:mb-8 leading-relaxed px-2">
               We&apos;re not just another property platform. We&apos;re your trusted partner in real estate success, 
@@ -266,7 +266,7 @@ export default function WhyUsPage() {
               Ready to Experience the Difference?
             </h2>
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-orange-100 mb-6 sm:mb-8 leading-relaxed px-2">
-              Join thousands of satisfied customers who&apos;ve found their perfect property with Aspire Property Management. 
+              Join thousands of satisfied customers who&apos;ve found their perfect property with Aspire Prop Management. 
               Start your real estate journey today.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">

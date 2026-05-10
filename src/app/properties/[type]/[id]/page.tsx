@@ -701,10 +701,25 @@ export default function PropertyDetailPage() {
                       </div>
                     )}
                     <div className="space-y-4">
-                      <div className="pb-3 border-b border-green-200 last:border-b-0">
-                        <div className="text-sm text-gray-600 mb-1.5">Price</div>
-                        <div className="text-2xl font-bold text-green-600 break-words">{getPropertyPrice()}</div>
-                      </div>
+                      {type === 'new_project' && property.starting_price && Number(property.starting_price) > 0 ? (
+                        <>
+                          <div className="pb-3 border-b border-green-200">
+                            <div className="text-sm text-gray-600 mb-1.5">Starting Price</div>
+                            <div className="text-2xl font-bold text-green-600 break-words">{formatPrice(property.starting_price)}</div>
+                          </div>
+                          {property.min_price && Number(property.min_price) > 0 && Number(property.min_price) !== Number(property.starting_price) && (
+                            <div className="pb-3 border-b border-green-200 last:border-b-0">
+                              <div className="text-sm text-gray-600 mb-1.5">Min Price</div>
+                              <div className="text-xl font-semibold text-gray-900 break-words">{formatPrice(property.min_price)}</div>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="pb-3 border-b border-green-200 last:border-b-0">
+                          <div className="text-sm text-gray-600 mb-1.5">Price</div>
+                          <div className="text-2xl font-bold text-green-600 break-words">{getPropertyPrice()}</div>
+                        </div>
+                      )}
                       {property.carpet_area && property.asking_price && (
                         <div className="pb-3 border-b border-green-200 last:border-b-0">
                           <div className="text-sm text-gray-600 mb-1.5">Price/sq.ft</div>
@@ -774,12 +789,15 @@ export default function PropertyDetailPage() {
       {/* Comprehensive Property Layout */}
       <PropertyLayout
         propertyImages={(() => {
+          // Fall back to separate columns if property_images doesn't have the data.
+          // New projects sometimes have images in dedicated columns (floor_plans, general_photos, etc.)
+          // instead of nested under property_images.
           const images = {
-            general_photos: property.property_images?.general_photos || {},
-            floor_plans: property.property_images?.floor_plans || {},
-            project_images: property.property_images?.project_images || {},
-            legal_docs: property.property_images?.legal_docs || {},
-            virtual_content: property.property_images?.virtual_content || {}
+            general_photos: property.property_images?.general_photos || property.general_photos || {},
+            floor_plans: property.property_images?.floor_plans || property.floor_plans || {},
+            project_images: property.property_images?.project_images || property.project_images || {},
+            legal_docs: property.property_images?.legal_docs || property.legal_docs || {},
+            virtual_content: property.property_images?.virtual_content || property.virtual_content || {}
           };
           console.log('PropertyLayout - Images being passed:', images);
           return images;

@@ -24,18 +24,41 @@ export function FloorPlanViewer({ images, className = '' }: FloorPlanViewerProps
   // Get all available floor plan images
   const getFloorPlanImages = () => {
     const plans: any[] = [];
-    
-    if (images.floor_plans) {
-      Object.entries(images.floor_plans).forEach(([key, urls]) => {
-        if (urls && urls.length > 0) {
+
+    // Parse floor_plans if stored as a JSON string (defensive — JSONB usually comes parsed)
+    let floorPlansData: any = images.floor_plans;
+    if (typeof floorPlansData === 'string') {
+      try {
+        floorPlansData = JSON.parse(floorPlansData);
+      } catch {
+        floorPlansData = null;
+      }
+    }
+
+    if (floorPlansData && typeof floorPlansData === 'object') {
+      // If it's an array directly (e.g., flat list of floor plan URLs), wrap it.
+      if (Array.isArray(floorPlansData)) {
+        if (floorPlansData.length > 0) {
           plans.push({
-            id: key,
-            name: key.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
-            images: urls,
+            id: 'floor_plan',
+            name: 'Floor Plan',
+            images: floorPlansData,
             type: 'floor_plan'
           });
         }
-      });
+      } else {
+        Object.entries(floorPlansData).forEach(([key, urls]) => {
+          const list = Array.isArray(urls) ? urls : (urls ? [urls] : []);
+          if (list.length > 0) {
+            plans.push({
+              id: key,
+              name: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              images: list,
+              type: 'floor_plan'
+            });
+          }
+        });
+      }
     }
 
     return plans;
