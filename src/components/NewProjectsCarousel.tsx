@@ -410,9 +410,10 @@ function ProjectCardWithImageCarousel({ project, images }: { project: NewProject
 
       {/* Project Details */}
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-orange-600 transition-colors duration-200 line-clamp-2">
+                <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
           {project.project_name}
         </h3>
+
 
         {/* Config */}
         <p className="text-sm text-gray-900 mb-1">
