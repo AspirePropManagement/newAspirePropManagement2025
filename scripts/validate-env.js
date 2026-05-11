@@ -48,29 +48,24 @@ function validateEnvironment() {
   }
   
   // Report results
+    // Never print env var values — only confirm presence. Avoids leaking
+  // credentials (DATABASE_URL, OPENAI_KEY, SMTP_PASS, etc.) into build logs.
   if (recommendedPresent.length > 0) {
     console.log('✅ Present recommended environment variables:')
     recommendedPresent.forEach(varName => {
-      const value = process.env[varName]
-      const displayValue = varName.includes('KEY') || varName.includes('SECRET') || varName.includes('PASS')
-        ? '*'.repeat(Math.min(value.length, 8)) + '...'
-        : value
-      console.log(`   ${varName}: ${displayValue}`)
+      console.log(`   ${varName}: [set]`)
     })
     console.log('')
   }
-  
+
   if (optionalPresent.length > 0) {
     console.log('✅ Present optional environment variables:')
     optionalPresent.forEach(varName => {
-      const value = process.env[varName]
-      const displayValue = varName.includes('KEY') || varName.includes('SECRET') || varName.includes('PASS')
-        ? '*'.repeat(Math.min(value.length, 8)) + '...'
-        : value
-      console.log(`   ${varName}: ${displayValue}`)
+      console.log(`   ${varName}: [set]`)
     })
     console.log('')
   }
+
   
   if (recommendedMissing.length > 0) {
     console.log('⚠️  Missing recommended environment variables (some features may not work):')
