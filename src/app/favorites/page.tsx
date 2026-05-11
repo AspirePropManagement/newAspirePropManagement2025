@@ -139,7 +139,7 @@ export default function FavoritesPage() {
             </p>
             <a
               href="/properties-listing"
-              className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-lg sm:rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+              className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-lg sm:rounded-xl transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -179,7 +179,7 @@ export default function FavoritesPage() {
                 const href = `/properties/${property.type}/${property.id}`;
                 return (
                   <Link key={property.id} href={href} className="group block">
-                    <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1 border border-gray-100">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1 border border-gray-100/50">
                       <div className="w-full aspect-[16/10] bg-gradient-to-br from-gray-100 to-gray-200 relative">
                         {images.length > 0 ? (
                           <Image
@@ -201,7 +201,7 @@ export default function FavoritesPage() {
                         )}
                         
                         {/* Property Type Badge */}
-                        <span className="absolute top-2 sm:top-3 left-2 sm:left-3 inline-flex items-center px-2 sm:px-2.5 py-1 rounded-full text-xs font-medium bg-white/90 backdrop-blur-sm text-gray-700 shadow-md">
+                        <span className="absolute top-2 sm:top-3 left-2 sm:left-3 inline-flex items-center px-2 sm:px-2.5 py-1 rounded-full text-xs font-medium bg-white/90 backdrop-blur-sm text-gray-800 shadow-md">
                           {property.type === 'resale' ? '🏠 Resale' : property.type === 'rental' ? '🔑 Rental' : '🏗️ New Project'}
                         </span>
                         
@@ -211,8 +211,9 @@ export default function FavoritesPage() {
                         </span>
                       </div>
                       <div className="p-3 sm:p-4">
-                                                <div className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-2" title={title}>
-
+                        <div className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors duration-200" title={title}>
+                          {title}
+                        </div>
                         <div className="mt-2 flex items-center text-xs sm:text-sm text-gray-500">
                           <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
