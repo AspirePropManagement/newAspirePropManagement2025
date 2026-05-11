@@ -119,9 +119,10 @@ export function RecommendedPropertiesCarousel({ projects }: RecommendedPropertie
                         </div>
                       </div>
                       <div className="p-1.5 sm:p-2">
-                        <p className="text-[10px] sm:text-xs md:text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-orange-600">
+                                                <p className="text-[10px] sm:text-xs md:text-sm font-medium text-gray-900 line-clamp-2">
                           {proj.project_name}
                         </p>
+
                       </div>
                     </Link>
                   );
