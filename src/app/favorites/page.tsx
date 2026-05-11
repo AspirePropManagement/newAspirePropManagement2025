@@ -211,7 +211,7 @@ export default function FavoritesPage() {
                         </span>
                       </div>
                       <div className="p-3 sm:p-4">
-                        <div className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors duration-200" title={title}>
+                        <div className="text-sm sm:text-base font-semibold text-gray-900 line-clamp-2" title={title}>
                           {title}
                         </div>
                         <div className="mt-2 flex items-center text-xs sm:text-sm text-gray-500">
