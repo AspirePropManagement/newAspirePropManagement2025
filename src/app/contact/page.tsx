@@ -183,7 +183,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 sm:mb-2">Office Address</h3>
-                      <p className="text-sm sm:text-base text-gray-600 mb-1 font-medium">Mumbai, Maharashtra, India</p>
+                      <p className="text-sm sm:text-base text-gray-600 mb-1 font-medium">Office No 1, Dreams Rachana, Autadwadi Handewadi, Shiv Nagar, Hadapsar, Pune, Maharashtra 411028</p>
                       <p className="text-xs sm:text-sm text-gray-500">Visit us for in-person consultations</p>
                     </div>
                   </div>
