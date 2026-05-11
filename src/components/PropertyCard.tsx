@@ -363,9 +363,10 @@ export function PropertyCard({ property }: PropertyCardProps) {
             <div className="w-5 h-5 bg-orange-100 rounded-lg flex items-center justify-center mr-2 group-hover:bg-orange-200 transition-colors duration-300 flex-shrink-0">
               <CurrencyRupeeIcon className="w-3.5 h-3.5 text-orange-600" />
             </div>
-            <span className="text-base sm:text-lg md:text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors duration-300">
+            <span className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
               {getPropertyPrice()}
             </span>
+
           </div>
         </div>
 
