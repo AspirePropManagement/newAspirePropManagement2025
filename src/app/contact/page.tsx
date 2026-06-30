@@ -533,7 +533,7 @@ export default function ContactPage() {
                   What areas do you serve?
                 </h3>
                 <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                  We primarily serve Mumbai and surrounding areas, but we also have partnerships across Maharashtra for property investments and consultations.
+                  We primarily serve Pune and surrounding areas, but we also have partnerships across Maharashtra for property investments and consultations.
                 </p>
               </div>
 

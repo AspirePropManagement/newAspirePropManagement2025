@@ -70,7 +70,12 @@ export default function PostPropertyPage() {
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
-    // Reset error and success states when switching tabs
+    // Each property type is its own form. Start the selected type fresh at step 1;
+    // combined with the key={activeTab} on <PropertyForm>, this resets the form's
+    // internal field state on switch so one tab's values can never leak into another
+    // tab's submission (which previously caused New Project inserts to fail on
+    // columns like furnishing_type/society_name that new_projects doesn't have).
+    setStepStates(prev => ({ ...prev, [tabId]: 1 }));
     setSubmitError(null);
     setSubmitSuccess(false);
   };
@@ -402,6 +407,7 @@ export default function PostPropertyPage() {
           ) : (
             <div className="p-4 sm:p-6 md:p-8">
               <PropertyForm
+                key={activeTab}
                 propertyType={activeTab as 'resale' | 'rental' | 'new_project'}
                 currentStep={currentStep}
                 onSubmit={handleSubmit}

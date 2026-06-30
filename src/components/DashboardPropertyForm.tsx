@@ -73,7 +73,10 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
     setTabSelected(true); // Mark that user has selected a tab
-    // Reset error and success states when switching tabs
+    // Start the selected property type fresh at step 1. With key={activeTab} on
+    // <PropertyForm>, this resets the form's internal field state so one type's
+    // values can never leak into another type's submission.
+    setStepStates(prev => ({ ...prev, [tabId]: 1 }));
     setSubmitError(null);
     setSubmitSuccess(false);
   };
@@ -319,6 +322,7 @@ export default function DashboardPropertyForm({ isOpen, onClose, onSuccess }: Da
               ) : (
                 <div className="p-4 sm:p-6" style={{ paddingBottom: '200px', minHeight: '100%' }}>
                   <PropertyForm
+                    key={activeTab}
                     propertyType={activeTab as 'resale' | 'rental' | 'new_project'}
                     currentStep={currentStep}
                     onSubmit={handleSubmit}

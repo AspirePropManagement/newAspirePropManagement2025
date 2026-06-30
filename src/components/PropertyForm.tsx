@@ -486,6 +486,10 @@ export function PropertyForm({
   const imageManagerRef = useRef<PropertyImageManagerRef>(null);
   const [savedImages, setSavedImages] = useState({});
 
+  // Validation errors for the current step (shown inline, works on mobile + desktop)
+  const [stepErrors, setStepErrors] = useState<string[]>([]);
+  const errorBannerRef = useRef<HTMLDivElement>(null);
+
   // Save images whenever they change in the image manager
   const handleImagesChange = (images: any) => {
     setSavedImages(images);
@@ -522,9 +526,14 @@ export function PropertyForm({
     const validationErrors = validateFormData();
     if (validationErrors.length > 0) {
       console.log('Validation errors:', validationErrors);
-      alert(`Please fix the following errors:\n${validationErrors.join('\n')}`);
+      setStepErrors(validationErrors);
+      // Bring the error summary into view (important on mobile where it may be off-screen)
+      setTimeout(() => {
+        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 0);
       return;
     }
+    setStepErrors([]);
     
     console.log('Form validation passed, preparing to submit...');
     
@@ -622,6 +631,90 @@ export function PropertyForm({
     }
     
     return errors;
+  };
+
+  // Validate only the fields that belong to a specific step.
+  // This gates the "Next" button so a step cannot be skipped while empty.
+  const validateStep = (step: number): string[] => {
+    const errors: string[] = [];
+
+    if (step === 1) {
+      if (!formData.sellerName?.trim()) errors.push('Seller/Owner name is required');
+      if (!formData.sellerEmail?.trim()) {
+        errors.push('Email is required');
+      } else if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(formData.sellerEmail)) {
+        errors.push('Please enter a valid email address');
+      }
+      if (!formData.contactNumber?.trim()) {
+        errors.push('Contact number is required');
+      } else if (!/^\+?[0-9]{10,15}$/.test(formData.contactNumber)) {
+        errors.push('Contact number must be a valid 10-digit number');
+      }
+      if (formData.alternateNumber && formData.alternateNumber.trim() && !/^\+?[0-9]{10,15}$/.test(formData.alternateNumber)) {
+        errors.push('Alternate number must be a valid 10-digit number');
+      }
+      if (!formData.bhkType?.trim()) errors.push('BHK type is required');
+      if (!formData.propertyType?.trim()) {
+        errors.push(`${propertyType === 'new_project' ? 'Project' : 'Property'} type is required`);
+      }
+      if (!formData.location?.trim()) errors.push('Location is required');
+      if (!formData.listedBy?.trim()) errors.push('Listed by is required');
+
+      if (propertyType === 'rental') {
+        if (!formData.rentAmount?.trim()) {
+          errors.push('Rent amount is required');
+        } else if (isNaN(parseFloat(formData.rentAmount)) || parseFloat(formData.rentAmount) <= 0) {
+          errors.push('Rent amount must be a valid positive number');
+        }
+      }
+      if (propertyType === 'resale') {
+        if (!formData.askingPrice?.trim()) {
+          errors.push('Asking price is required');
+        } else if (isNaN(parseFloat(formData.askingPrice)) || parseFloat(formData.askingPrice) <= 0) {
+          errors.push('Asking price must be a valid positive number');
+        }
+      }
+    }
+
+    if (step === 2) {
+      if (propertyType !== 'new_project' && !formData.furnishingType?.trim()) {
+        errors.push('Furnishing type is required');
+      }
+      if (propertyType === 'rental' && !formData.tenantType?.trim()) {
+        errors.push('Tenant type is required');
+      }
+      if (propertyType === 'new_project') {
+        if (!formData.projectName?.trim()) errors.push('Project name is required');
+        if (!formData.craftedBy?.trim()) errors.push('Crafted by is required');
+        if (!formData.constructionType?.trim()) errors.push('Construction type is required');
+        if (!formData.availableBhkTypes || formData.availableBhkTypes.length === 0) {
+          errors.push('At least one available BHK type must be selected');
+        }
+      }
+    }
+
+    // Steps 3 (Images) and 4 (Amenities) have no mandatory fields.
+    return errors;
+  };
+
+  // "Next" gate: validate the current step before allowing navigation forward.
+  const handleNextClick = () => {
+    const errors = validateStep(currentStep);
+    if (errors.length > 0) {
+      setStepErrors(errors);
+      setTimeout(() => {
+        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 0);
+      return;
+    }
+    setStepErrors([]);
+    onNext?.();
+  };
+
+  // Going back never needs validation; just clear any pending errors.
+  const handlePreviousClick = () => {
+    setStepErrors([]);
+    onPrevious?.();
   };
 
   // Render different form sections based on current step
@@ -2399,25 +2492,49 @@ export function PropertyForm({
       </div>
 
       <form onSubmit={handleFormSubmit} className="space-y-8">
+        {stepErrors.length > 0 && (
+          <div
+            ref={errorBannerRef}
+            className="bg-red-50 border-2 border-red-200 rounded-xl p-4 sm:p-5"
+            role="alert"
+          >
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-sm sm:text-base font-semibold text-red-800 mb-2">
+                  Please complete the following before continuing:
+                </h4>
+                <ul className="list-disc list-inside space-y-1 text-sm text-red-700">
+                  {stepErrors.map((err, index) => (
+                    <li key={index}>{err}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+
         {renderStepContent()}
-      
+
       {/* Navigation and Submit buttons - Mobile Responsive */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 pt-6 pb-4 border-t border-gray-200">
         {currentStep > 1 && (
           <button
             type="button"
-            onClick={onPrevious}
+            onClick={handlePreviousClick}
             className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors text-sm sm:text-base"
           >
             ← Previous
           </button>
         )}
-        
+
         {currentStep < 5 && (
           <div className="w-full sm:w-auto sm:ml-auto">
             <button
               type="button"
-              onClick={onNext}
+              onClick={handleNextClick}
               className="w-full sm:w-auto px-4 sm:px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm sm:text-base"
             >
               Next →
@@ -2445,13 +2562,6 @@ export function PropertyForm({
           </div>
         )}
       </div>
-      
-      {/* Debug info */}
-      {currentStep === 5 && (
-        <div className="text-xs text-gray-500 mt-2">
-          Debug: Step {currentStep}, Form has {Object.keys(formData).length} fields
-        </div>
-      )}
       </form>
     </div>
   );

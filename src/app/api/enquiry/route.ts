@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     const userEmailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #f97316, #ea580c); padding: 30px; text-align: center; color: white;">
-          <h1 style="margin: 0; font-size: 28px;">NewAspireProp</h1>
+          <h1 style="margin: 0; font-size: 28px;">Aspire Prop Management</h1>
           <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Thank you for your interest!</p>
         </div>
         
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
         
         <div style="background: #1f2937; padding: 20px; text-align: center; color: #9ca3af;">
           <p style="margin: 0; font-size: 14px;">
-            © 2025 NewAspireProp Management. All rights reserved.
+            © 2025 Aspire Prop Management. All rights reserved.
           </p>
         </div>
       </div>
@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
     const userMailOptions = {
       from: 'princekumarshah12@gmail.com',
       to: email,
-      subject: 'Thank you for your consultation request - NewAspireProp',
+      subject: 'Thank you for your consultation request - Aspire Prop Management',
       html: userEmailContent,
     };
 
