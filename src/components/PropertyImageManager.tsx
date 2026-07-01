@@ -49,12 +49,20 @@ export const PropertyImageManager = forwardRef<PropertyImageManagerRef, Property
     setImages: (images: PropertyImages) => setLocalImages(images)
   }), [localImages]);
 
+  // Keep a ref to the latest onImagesChange so the notify effect below only
+  // re-runs when the images actually change — not every time the parent passes
+  // a new callback identity. Depending on onImagesChange directly caused an
+  // update loop (parent setState -> new callback -> effect -> setState ...),
+  // which broke the upload step and left the review with no images.
+  const onImagesChangeRef = useRef(onImagesChange);
+  React.useEffect(() => {
+    onImagesChangeRef.current = onImagesChange;
+  }, [onImagesChange]);
+
   // Notify parent when images change
   React.useEffect(() => {
-    if (onImagesChange) {
-      onImagesChange(localImages);
-    }
-  }, [localImages, onImagesChange]);
+    onImagesChangeRef.current?.(localImages);
+  }, [localImages]);
 
   // Memoize categories to prevent recreation
   const IMAGE_CATEGORIES = useMemo(() => ({

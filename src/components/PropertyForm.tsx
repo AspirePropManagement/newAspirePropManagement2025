@@ -490,14 +490,16 @@ export function PropertyForm({
   const [stepErrors, setStepErrors] = useState<string[]>([]);
   const errorBannerRef = useRef<HTMLDivElement>(null);
 
-  // Save images whenever they change in the image manager
-  const handleImagesChange = (images: any) => {
+  // Save images whenever they change in the image manager.
+  // Memoized so its identity is stable across renders (an unstable identity
+  // previously fed an update loop inside PropertyImageManager).
+  const handleImagesChange = useCallback((images: any) => {
     setSavedImages(images);
     setFormData((prev: FormData) => ({
       ...prev,
       propertyImages: images
     }));
-  };
+  }, []);
 
   // Restore images when returning to step 3
   const restoreImages = useCallback(() => {
@@ -2306,13 +2308,16 @@ export function PropertyForm({
         <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Review Your Uploaded Images</h3>
         
         {(() => {
-          // Get all images from the image manager
-          const allImages = imageManagerRef.current?.getImages() || savedImages;
-          const hasImages = Object.values(allImages).some(category => 
-            category && Object.values(category).some(subcategory => 
-              Array.isArray(subcategory) && subcategory.length > 0
-            )
-          );
+          // The image manager is unmounted on the review step, so this resolves to
+          // savedImages (kept in sync by handleImagesChange).
+          const allImages: any = imageManagerRef.current?.getImages() || savedImages || {};
+          const categoryHasImages = (category: any): boolean => {
+            if (!category) return false;
+            // Categories without subcategories store a plain array of images.
+            if (Array.isArray(category)) return category.length > 0;
+            return Object.values(category).some((sub: any) => Array.isArray(sub) && sub.length > 0);
+          };
+          const hasImages = Object.values(allImages).some(categoryHasImages);
 
           if (!hasImages) {
             return (
@@ -2328,16 +2333,23 @@ export function PropertyForm({
 
           return (
             <div className="space-y-3 sm:space-y-4">
-              {Object.entries(allImages).map(([categoryKey, category]) => {
+              {Object.entries(allImages).map(([categoryKey, category]: [string, any]) => {
                 if (!category) return null;
-                
+
+                // Handle both shapes: { subcategory: [imgs] } objects and plain [imgs] arrays.
+                const subGroups: [string, any][] = Array.isArray(category)
+                  ? [[categoryKey, category]]
+                  : Object.entries(category);
+
+                if (!subGroups.some(([, sub]) => Array.isArray(sub) && sub.length > 0)) return null;
+
                 return (
                   <div key={categoryKey} className="border border-gray-200 rounded-lg sm:rounded-xl p-3 sm:p-4 bg-white">
                     <h4 className="font-medium text-gray-800 mb-2 sm:mb-3 capitalize text-sm sm:text-base">
                       {categoryKey.replace('_', ' ')} Images
                     </h4>
-                    
-                    {Object.entries(category).map(([subcategoryKey, subcategory]) => {
+
+                    {subGroups.map(([subcategoryKey, subcategory]) => {
                       if (!Array.isArray(subcategory) || subcategory.length === 0) return null;
                       
                       return (
